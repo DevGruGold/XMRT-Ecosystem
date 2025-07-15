@@ -8,15 +8,7 @@
     "dev": "concurrently \"bash -c \"cd backend/xmrt-dao-backend && source venv/bin/activate && python src/main.py\"\" \"cd frontend/xmrt-dao-frontend && pnpm run dev\"",
     "install-frontend": "cd frontend/xmrt-dao-frontend && pnpm install",
     "install-backend": "cd backend/xmrt-dao-backend && pip install -r requirements.txt",
-    "compile": "hardhat compile",
-    "test": "hardhat test",
-    "deploy:sepolia": "hardhat run scripts/deploy-complete-dao.js --network sepolia",
-    "deploy:mainnet": "hardhat run scripts/deploy-complete-dao.js --network ethereum",
-    "verify:sepolia": "hardhat verify --network sepolia",
-    "node": "hardhat node",
-    "clean": "hardhat clean",
-    "coverage": "hardhat coverage",
-    "size": "hardhat size-contracts",
+    "deploy:starknet": "python scripts/deploy_starknet.py",
     "start:automation": "cd backend/ai-automation-service && python main.py",
     "start:all": "concurrently \"npm run start:automation\" \"cd backend/xmrt-dao-backend && python src/main.py\" \"cd frontend/xmrt-dao-frontend && pnpm run dev\""
   },
@@ -25,7 +17,8 @@
     "blockchain",
     "ai",
     "eliza",
-    "ethereum",
+    "starknet",
+    "cairo",
     "defi",
     "governance"
   ],
@@ -41,20 +34,11 @@
   },
   "packageManager": "pnpm@10.4.1",
   "dependencies": {
-    "@openzeppelin/contracts": "^5.3.0",
-    "@openzeppelin/contracts-upgradeable": "^5.3.0",
     "concurrently": "^9.2.0",
     "dotenv": "^16.3.1"
   },
   "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
-    "@openzeppelin/hardhat-upgrades": "^3.0.0",
-    "chai": "^4.3.10",
-    "ethers": "^6.14.0",
-    "hardhat": "^2.19.0",
-    "hardhat-contract-sizer": "^2.10.0",
-    "hardhat-gas-reporter": "^1.0.9",
-    "solidity-coverage": "^0.8.5"
   }
 }
+
 

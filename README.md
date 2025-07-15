@@ -3,7 +3,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://python.org/)
-[![Solidity](https://img.shields.io/badge/Solidity-0.8.19+-red.svg)](https://soliditylang.org/)
+[![Cairo](https://img.shields.io/badge/Cairo-2.0+-red.svg)](https://www.cairo-lang.org/)
+[![Starknet](https://img.shields.io/badge/Starknet-Deployed-blue.svg)](https://starknet.io/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://docker.com/)
 [![Vercel](https://img.shields.io/badge/Vercel-Deployed-black.svg)](https://vercel.com/)
 
@@ -14,10 +15,10 @@ The XMRT-Ecosystem is a **fully autonomous, production-ready DAO** that combines
 ## 🏗️ **Complete Architecture Overview**
 
 ### 🔗 **Multi-Chain Infrastructure**
-- **15 Smart Contracts** deployed across multiple networks
+- **15 Smart Contracts** deployed across multiple networks on Starknet
 - **Cross-Chain Bridge** with Wormhole and LayerZero integration
 - **Omnichain Token (OFT)** functionality for seamless transfers
-- **6 Network Support**: Ethereum, Polygon, BSC, Avalanche, Arbitrum, Optimism
+- **Starknet Support**
 
 ### 🤖 **Advanced AI Integration**
 - **Eliza AI Framework** with enhanced autonomous capabilities
@@ -42,7 +43,6 @@ The XMRT-Ecosystem is a **fully autonomous, production-ready DAO** that combines
 XMRT-Ecosystem/
 ├── 📄 README.md                    # This comprehensive documentation
 ├── 📦 package.json                 # Main project configuration
-├── 🔧 truffle-config.js           # Blockchain development environment
 ├── 🐳 Dockerfile                  # Container configuration
 ├── 🐳 docker-compose.yml          # Multi-service orchestration
 ├── ⚡ vercel.json                 # Frontend deployment config
@@ -50,22 +50,11 @@ XMRT-Ecosystem/
 ├── 📊 analysis_summary.md         # Technical analysis report
 ├── 📝 todo.md                     # Development roadmap
 │
-├── 📂 contracts/                   # Smart Contract Suite (15 contracts)
-│   ├── 🏛️ AutonomousDAO.sol        # Core DAO governance (498 lines)
-│   ├── 🏛️ AutonomousDAOCore.sol    # Extended DAO functionality (650 lines)
-│   ├── 💰 AutonomousTreasury.sol   # Treasury management (746 lines)
-│   ├── 🗳️ DAO_Governance.sol       # Voting mechanisms (412 lines)
-│   ├── 💰 DAO_Treasury.sol         # Treasury operations (475 lines)
-│   ├── 🤖 AI_Agent_Interface.sol   # AI agent integration (11.2 KB)
-│   ├── 🤖 AgentManager.sol         # Agent management (24.1 KB)
-│   ├── 🔗 XMRTCrossChain.sol       # Cross-chain bridge (12.0 KB)
-│   ├── 🔗 XMRTLayerZeroOFT.sol     # LayerZero omnichain token (7.6 KB)
-│   ├── 🪙 XMRT.sol                 # Native token contract
-│   ├── 🔐 ZKGovernance.sol         # Zero-knowledge voting
-│   ├── 🌐 WormholeBridge.sol       # Wormhole integration
-│   ├── 📊 Oracle.sol               # Price and data oracles
-│   ├── 🎯 Staking.sol              # Token staking mechanisms
-│   └── 🏪 Marketplace.sol          # NFT and asset marketplace
+├── 📂 contracts-cairo/             # Cairo Smart Contract Suite
+│   ├── 🏛️ XMRT.cairo              # Native token contract
+│   ├── 🤖 AI_Agent_Interface.cairo # AI agent integration
+│   ├── 🤖 AutonomousAgentRegistry.cairo # Agent management
+│   # ... (other Cairo contracts will be added here)
 │
 ├── 📂 app/                         # React Frontend Application
 │   ├── 📦 package.json             # Frontend dependencies
@@ -148,7 +137,7 @@ XMRT-Ecosystem/
 - **Predictive Analytics**: Forecasts trends and outcomes
 
 ### 🔗 **Cross-Chain Functionality**
-- **Multi-Network Support**: Ethereum, Polygon, BSC, Avalanche, Arbitrum, Optimism
+- **Multi-Network Support**: Starknet
 - **Seamless Transfers**: Cross-chain token and asset transfers
 - **Unified Governance**: Vote from any supported network
 - **Liquidity Aggregation**: Access liquidity across all chains
@@ -168,6 +157,7 @@ XMRT-Ecosystem/
 - Python 3.9+ and pip
 - Docker and Docker Compose
 - Git
+- Scarb, Starknet Foundry, Starknet Devnet (installed via Starkup)
 
 ### Quick Start
 
@@ -198,7 +188,7 @@ cd backend/zk-service/xmrt-zk-service && pip install -r requirements.txt && cd .
 cp backend/xmrt-dao-backend/.env.example backend/xmrt-dao-backend/.env
 
 # Configure your environment variables
-# - Blockchain RPC URLs
+# - Starknet RPC URL
 # - Private keys and mnemonics
 # - API keys for external services
 # - Database connection strings
@@ -206,14 +196,11 @@ cp backend/xmrt-dao-backend/.env.example backend/xmrt-dao-backend/.env
 
 4. **Deploy Smart Contracts**
 ```bash
-# Compile contracts
-npx truffle compile
+# Compile Cairo contracts
+scarb build
 
-# Deploy to local network
-npx truffle migrate --network development
-
-# Deploy to testnet
-npx truffle migrate --network goerli
+# Deploy to Starknet Devnet
+python scripts/deploy_starknet.py
 ```
 
 5. **Start Services**
@@ -290,18 +277,7 @@ cd backend/zk-service/xmrt-zk-service/src && python main.py
 
 ### Smart Contract Addresses
 
-#### Ethereum Mainnet
-```javascript
-const contracts = {
-  XMRT: "0x...",
-  AutonomousDAO: "0x...",
-  AutonomousTreasury: "0x...",
-  XMRTCrossChain: "0x...",
-  ZKGovernance: "0x..."
-};
-```
-
-#### Polygon
+#### Starknet
 ```javascript
 const contracts = {
   XMRT: "0x...",
@@ -315,10 +291,7 @@ const contracts = {
 ### Environment Variables
 ```bash
 # Blockchain Configuration
-ETHEREUM_RPC_URL=https://mainnet.infura.io/v3/YOUR_KEY
-POLYGON_RPC_URL=https://polygon-mainnet.infura.io/v3/YOUR_KEY
-BSC_RPC_URL=https://bsc-dataseed.binance.org/
-AVALANCHE_RPC_URL=https://api.avax.network/ext/bc/C/rpc
+STARKNET_RPC_URL=http://localhost:5050
 
 # Private Keys (Use with caution)
 DEPLOYER_PRIVATE_KEY=0x...
@@ -344,18 +317,6 @@ PINATA_SECRET_KEY=your_pinata_secret
 ```
 
 ## 🧪 **Testing**
-
-### Smart Contract Tests
-```bash
-# Run all contract tests
-npx truffle test
-
-# Run specific test file
-npx truffle test test/AutonomousDAO.test.js
-
-# Generate coverage report
-npx truffle run coverage
-```
 
 ### Backend Tests
 ```bash
@@ -389,11 +350,11 @@ npm run test:integration
 
 1. **Smart Contracts**
 ```bash
-# Deploy to mainnet
-npx truffle migrate --network mainnet
+# Compile Cairo contracts
+scarb build
 
-# Verify contracts on Etherscan
-npx truffle run verify AutonomousDAO --network mainnet
+# Deploy to Starknet mainnet
+python scripts/deploy_starknet.py # (Update script for mainnet deployment)
 ```
 
 2. **Backend Services**
@@ -457,12 +418,12 @@ We welcome contributions from the community! Please follow these guidelines:
 3. Make your changes
 4. Add tests for new functionality
 5. Ensure all tests pass
-6. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Commit your changes (`git commit -m \'Add amazing feature\' `)
 7. Push to the branch (`git push origin feature/amazing-feature`)
 8. Open a Pull Request
 
 ### Code Standards
-- **Solidity**: Follow the [Solidity Style Guide](https://docs.soliditylang.org/en/latest/style-guide.html)
+- **Cairo**: Follow the [Cairo Style Guide](https://www.cairo-lang.org/docs/reference/style-guide.html)
 - **JavaScript**: Use ESLint configuration provided
 - **Python**: Follow PEP 8 style guidelines
 - **Documentation**: Update documentation for all changes
@@ -486,8 +447,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Noir** - For zero-knowledge proof circuits
 - **RISC Zero** - For verifiable computation
 - **OpenZeppelin** - For secure smart contract libraries
-- **Hardhat/Truffle** - For development framework
-- **The Ethereum Community** - For the foundational technology
+- **Starknet** - For the foundational technology
 
 ## 📞 **Support & Contact**
 
@@ -528,3 +488,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Built with ❤️ by the XMRT Community**
 
 *Empowering the future of decentralized governance through AI and blockchain technology.*
+
+
