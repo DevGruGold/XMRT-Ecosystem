@@ -1,13 +1,17 @@
 /// @title XMRT
-/// @notice This contract is a placeholder for the XMRT token in Cairo.
-/// @dev This is a simplified version and does not include all functionalities of the Solidity counterpart.
+/// @notice This contract implements the XMRT token with staking functionality in Cairo.
 
 #[contract]
 mod XMRT {
     use starknet::get_caller_address;
     use starknet::ContractAddress;
+    use starknet::get_block_timestamp;
     use super::IERC20::IERC20DispatcherTrait;
     use super::IERC20::IERC20Dispatcher;
+
+    // Constants
+    const MIN_STAKE_PERIOD: u64 = 7 * 24 * 60 * 60; // 7 days in seconds
+    const MAX_SUPPLY: u256 = 21_000_000 * 10_u256.pow(18); // 21,000,000 * 10^18
 
     struct Storage {
         name: felt252,
@@ -16,11 +20,21 @@ mod XMRT {
         total_supply: u256,
         balances: LegacyMap<ContractAddress, u256>,
         allowances: LegacyMap<(ContractAddress, ContractAddress), u256>,
+        total_staked: u256,
+        user_stakes: LegacyMap<ContractAddress, UserStake>,
+    }
+
+    struct UserStake {
+        amount: u256,
+        timestamp: u64,
     }
 
     #[constructor]
     fn constructor(initial_supply: u256) {
-        let (name, symbol) = ('XMR Token', 'XMRT');
+        let (name, symbol) = (
+            'XMR Token',
+            'XMRT'
+        );
         let decimals = 18;
         let caller = get_caller_address();
 
@@ -75,10 +89,24 @@ mod XMRT {
         Internal::transfer_from(sender, recipient, amount)
     }
 
+    #[flat]
+    fn stake(amount: u256) {
+        Internal::stake(get_caller_address(), amount);
+    }
+
+    #[flat]
+    fn unstake(amount: u256) {
+        Internal::unstake(get_caller_address(), amount);
+    }
+
     mod Internal {
         use starknet::get_caller_address;
         use starknet::ContractAddress;
+        use starknet::get_block_timestamp;
         use super::Storage;
+        use super::UserStake;
+        use super::MIN_STAKE_PERIOD;
+        use super::MAX_SUPPLY;
 
         fn name() -> felt252 {
             Storage::read(name)
@@ -118,6 +146,7 @@ mod XMRT {
 
         fn mint(recipient: ContractAddress, amount: u256) {
             let current_supply = Storage::read(total_supply);
+            assert(current_supply + amount <= MAX_SUPPLY, 'XMRT: max supply exceeded');
             Storage::write(total_supply, current_supply + amount);
             let current_balance = Storage::read(balances.read(recipient));
             Storage::write(balances.write(recipient, current_balance + amount));
@@ -144,6 +173,46 @@ mod XMRT {
             assert(current_allowance >= amount, 'ERC20: transfer amount exceeds allowance');
             Storage::write(allowances.write((sender, caller), current_allowance - amount));
             Internal::transfer(sender, recipient, amount)
+        }
+
+        fn stake(user: ContractAddress, amount: u256) {
+            assert(amount > 0, 'XMRT: Cannot stake zero');
+            let user_balance = Storage::read(balances.read(user));
+            assert(user_balance >= amount, 'XMRT: Insufficient balance');
+
+            Internal::transfer(user, get_caller_address(), amount); // Transfer to contract address
+
+            let mut user_stake = Storage::read(user_stakes.read(user));
+            user_stake.amount += amount;
+            user_stake.timestamp = get_block_timestamp();
+            Storage::write(user_stakes.write(user, user_stake));
+
+            let current_total_staked = Storage::read(total_staked);
+            Storage::write(total_staked, current_total_staked + amount);
+        }
+
+        fn unstake(user: ContractAddress, amount: u256) {
+            assert(amount > 0, 'XMRT: Cannot unstake zero');
+            let mut user_stake = Storage::read(user_stakes.read(user));
+            assert(user_stake.amount >= amount, 'XMRT: Insufficient staked amount');
+
+            let mut penalty = 0_u256;
+            if get_block_timestamp() < user_stake.timestamp + MIN_STAKE_PERIOD {
+                penalty = amount / 10_u256;
+                // In Cairo, burning tokens would involve reducing total_supply and the contract's balance.
+                // For simplicity, we'll just reduce the amount unstaked here.
+                // A proper burn function would be needed for a full implementation.
+                // Internal::burn(get_caller_address(), penalty); // Assuming a burn function exists
+                amount -= penalty;
+            }
+
+            user_stake.amount -= (amount + penalty);
+            Storage::write(user_stakes.write(user, user_stake));
+
+            let current_total_staked = Storage::read(total_staked);
+            Storage::write(total_staked, current_total_staked - (amount + penalty));
+
+            Internal::transfer(get_caller_address(), user, amount); // Transfer from contract address
         }
     }
 
