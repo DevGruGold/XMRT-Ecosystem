@@ -1,4 +1,4 @@
-name: XMRT-Ecosystem CI Pipeline
+name: XMRTNET CI Pipeline
 
 on:
   push:

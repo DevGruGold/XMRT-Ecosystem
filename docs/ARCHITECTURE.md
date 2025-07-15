@@ -1,8 +1,8 @@
-# XMRT-Ecosystem DAO Prototype: Full-Stack Architecture Design
+# XMRTNET DAO Prototype: Full-Stack Architecture Design
 
 ## Introduction
 
-This document outlines the proposed full-stack architecture for the XMRT-Ecosystem Decentralized Autonomous Organization (DAO) prototype. The core objective is to integrate Eliza, an AI agent framework, to enable intelligent autonomous decision-making and facilitate seamless interaction with the XMRT token smart contract on the Sepolia testnet. The architecture will leverage existing components and concepts identified from the user's GitHub starred repositories and Medium articles, aiming for a robust, scalable, and user-friendly system.
+This document outlines the proposed full-stack architecture for the XMRTNET Decentralized Autonomous Organization (DAO) prototype. The core objective is to integrate Eliza, an AI agent framework, to enable intelligent autonomous decision-making and facilitate seamless interaction with the XMRT token smart contract on the Sepolia testnet. The architecture will leverage existing components and concepts identified from the user's GitHub starred repositories and Medium articles, aiming for a robust, scalable, and user-friendly system.
 
 ## Core Principles
 
@@ -14,7 +14,7 @@ This document outlines the proposed full-stack architecture for the XMRT-Ecosyst
 
 ## High-Level Architecture Overview
 
-The XMRT-Ecosystem DAO prototype can be broadly divided into three main layers:
+The XMRTNET DAO prototype can be broadly divided into three main layers:
 
 1.  **Blockchain Layer:** Comprising the XMRT token smart contract and the underlying Sepolia testnet.
 2.  **Backend Layer:** Housing the Eliza AI agent framework, API services for blockchain interaction, and data storage.
@@ -26,11 +26,11 @@ Each layer will be detailed in subsequent sections, outlining their respective c
 
 ### 1.1. XMRT Token Smart Contract
 
-At the heart of the XMRT-Ecosystem is the `XMRT` ERC20 token smart contract, deployed on the Sepolia testnet. This contract, as analyzed in `smart_contract_analysis.md`, provides the foundational functionalities for the DAO, including token issuance, staking, and unstaking with penalty mechanisms. Its upgradeable nature via UUPSUpgradeable ensures future adaptability and maintainability. The `ADMIN_ROLE` and `ORACLE_ROLE` within the contract are critical for privileged operations, and their assignment to AI agent wallets will be a key aspect of Eliza's on-chain capabilities.
+At the heart of the XMRTNET is the `XMRT` ERC20 token smart contract, deployed on the Sepolia testnet. This contract, as analyzed in `smart_contract_analysis.md`, provides the foundational functionalities for the DAO, including token issuance, staking, and unstaking with penalty mechanisms. Its upgradeable nature via UUPSUpgradeable ensures future adaptability and maintainability. The `ADMIN_ROLE` and `ORACLE_ROLE` within the contract are critical for privileged operations, and their assignment to AI agent wallets will be a key aspect of Eliza's on-chain capabilities.
 
 ### 1.2. Sepolia Testnet
 
-The Sepolia testnet serves as the development and testing environment for the XMRT-Ecosystem. All on-chain interactions, including token transfers, staking operations, and smart contract calls initiated by Eliza or users, will occur on this network. This allows for realistic testing without incurring real financial costs.
+The Sepolia testnet serves as the development and testing environment for the XMRTNET. All on-chain interactions, including token transfers, staking operations, and smart contract calls initiated by Eliza or users, will occur on this network. This allows for realistic testing without incurring real financial costs.
 
 ### 1.3. Blockchain Interaction Libraries
 
@@ -42,7 +42,7 @@ To facilitate communication between the backend/frontend and the blockchain, sta
 
 ## 2. Backend Layer
 
-The Backend Layer is the operational core of the XMRT-Ecosystem DAO, responsible for housing the Eliza AI agent, managing interactions with the blockchain, and providing necessary API services for the frontend. This layer will be built with scalability and modularity in mind, potentially leveraging microservices architecture.
+The Backend Layer is the operational core of the XMRTNET DAO, responsible for housing the Eliza AI agent, managing interactions with the blockchain, and providing necessary API services for the frontend. This layer will be built with scalability and modularity in mind, potentially leveraging microservices architecture.
 
 ### 2.1. Eliza AI Agent Framework
 
@@ -71,7 +71,7 @@ Three AI agent wallets will be set up to enable Eliza to execute actions on-chai
 
 ## 3. Frontend Layer
 
-The Frontend Layer will be the primary interface through which users interact with the XMRT-Ecosystem DAO and Eliza. It will be designed for intuitive navigation, clear presentation of information, and seamless interaction with the backend services.
+The Frontend Layer will be the primary interface through which users interact with the XMRTNET DAO and Eliza. It will be designed for intuitive navigation, clear presentation of information, and seamless interaction with the backend services.
 
 ### 3.1. User Interface (UI)
 
@@ -112,7 +112,7 @@ To illustrate the interactions between the different components, a high-level da
 
 ## 5. Security Considerations
 
-Security is paramount for the XMRT-Ecosystem DAO, especially given its interaction with blockchain assets and AI-driven decision-making. Key security considerations include:
+Security is paramount for the XMRTNET DAO, especially given its interaction with blockchain assets and AI-driven decision-making. Key security considerations include:
 
 *   **Smart Contract Security:** The `XMRT` contract already incorporates `ReentrancyGuardUpgradeable` and `PausableUpgradeable`. Further security audits and formal verification of the contract are essential before mainnet deployment.
 *   **AI Agent Security:** Ensuring the integrity and security of Eliza and its underlying models is critical. This includes protecting against adversarial attacks, ensuring data privacy, and implementing robust access controls for AI agent wallets.
@@ -126,11 +126,11 @@ Security is paramount for the XMRT-Ecosystem DAO, especially given its interacti
 
 ## 4. Cross-Chain Interoperability Layer
 
-To achieve true omnichain functionality and expand the XMRT-Ecosystem beyond a single blockchain, a robust cross-chain interoperability layer is essential. This layer will primarily integrate **Wormhole** and **LayerZero**, two leading protocols that enable secure and efficient communication and asset transfer across disparate blockchain networks. The inclusion of these technologies addresses a critical gap in the initial single-chain prototype, transforming the XMRT DAO into a truly multi-chain entity capable of interacting with a broader Web3 landscape.
+To achieve true omnichain functionality and expand the XMRTNET beyond a single blockchain, a robust cross-chain interoperability layer is essential. This layer will primarily integrate **Wormhole** and **LayerZero**, two leading protocols that enable secure and efficient communication and asset transfer across disparate blockchain networks. The inclusion of these technologies addresses a critical gap in the initial single-chain prototype, transforming the XMRT DAO into a truly multi-chain entity capable of interacting with a broader Web3 landscape.
 
 ### 4.1. Wormhole Protocol Integration
 
-Wormhole serves as a generic message passing protocol that facilitates communication between over 30 different blockchain networks. Its core strength lies in its ability to securely relay arbitrary data, including token transfers and governance messages, from one chain to another via a network of Guardians. The integration of Wormhole will enable the XMRT-Ecosystem to:
+Wormhole serves as a generic message passing protocol that facilitates communication between over 30 different blockchain networks. Its core strength lies in its ability to securely relay arbitrary data, including token transfers and governance messages, from one chain to another via a network of Guardians. The integration of Wormhole will enable the XMRTNET to:
 
 *   **Cross-Chain Token Bridging:** Allow XMRT tokens to be seamlessly transferred between the Sepolia testnet and other supported blockchains. This is achieved by locking tokens on the source chain and minting wrapped versions on the destination chain. The `xmrt-wagmi` repository, which provides reactive primitives for Ethereum apps, will be crucial for building the frontend interfaces for these bridging operations.
 *   **Cross-Chain Governance Messaging:** Enable the XMRT DAO to extend its governance reach across multiple chains. Proposals originating on one chain can be relayed to others, allowing for broader participation and the execution of decisions on various network environments. This is particularly relevant for the `xmrt-ai-organization` and `xmrt-autogen-boardroom` components, as Eliza and other AI agents can leverage Wormhole to coordinate actions and proposals across a multi-chain environment.
@@ -144,7 +144,7 @@ Wormhole serves as a generic message passing protocol that facilitates communica
 
 ### 4.2. LayerZero Protocol Integration
 
-LayerZero is an omnichain interoperability protocol that focuses on providing a low-level communication primitive, allowing smart contracts to directly read and write state to different blockchains. Unlike traditional bridges that rely on intermediary chains or multi-sig federations, LayerZero uses a novel Ultra Light Node (ULN) design, enhancing security and efficiency. Integrating LayerZero will provide the XMRT-Ecosystem with:
+LayerZero is an omnichain interoperability protocol that focuses on providing a low-level communication primitive, allowing smart contracts to directly read and write state to different blockchains. Unlike traditional bridges that rely on intermediary chains or multi-sig federations, LayerZero uses a novel Ultra Light Node (ULN) design, enhancing security and efficiency. Integrating LayerZero will provide the XMRTNET with:
 
 *   **Omnichain Fungible Tokens (OFT):** A standard that allows XMRT tokens to exist natively across multiple chains without being wrapped. This provides a more seamless user experience and simplifies liquidity management across the ecosystem. This directly addresses the need for a unified token standard across chains.
 *   **Direct Smart Contract Communication:** Enable smart contracts on different chains to communicate directly and securely. This is crucial for complex DAO operations that require state synchronization or coordinated actions across various network environments. For instance, Eliza could trigger a treasury action on one chain based on a governance decision made on another.
@@ -158,17 +158,17 @@ LayerZero is an omnichain interoperability protocol that focuses on providing a 
 
 ### 4.3. Synergies and Complementarity
 
-Wormhole and LayerZero, while both cross-chain solutions, offer complementary strengths. Wormhole's generic message passing and robust Guardian network provide a flexible foundation for broad interoperability, while LayerZero's focus on direct smart contract communication and OFT standard offers a more native and efficient omnichain experience for tokens and applications. By integrating both, the XMRT-Ecosystem gains a comprehensive and resilient cross-chain infrastructure, capable of handling diverse interoperability needs, from simple token transfers to complex, multi-chain governance decisions orchestrated by Eliza and the AI agents. This dual integration ensures redundancy and flexibility, allowing the DAO to choose the most suitable protocol for specific cross-chain operations.
+Wormhole and LayerZero, while both cross-chain solutions, offer complementary strengths. Wormhole's generic message passing and robust Guardian network provide a flexible foundation for broad interoperability, while LayerZero's focus on direct smart contract communication and OFT standard offers a more native and efficient omnichain experience for tokens and applications. By integrating both, the XMRTNET gains a comprehensive and resilient cross-chain infrastructure, capable of handling diverse interoperability needs, from simple token transfers to complex, multi-chain governance decisions orchestrated by Eliza and the AI agents. This dual integration ensures redundancy and flexibility, allowing the DAO to choose the most suitable protocol for specific cross-chain operations.
 
 
 
 ## 5. Zero-Knowledge Proofs (ZKP) Integration
 
-Zero-Knowledge Proofs (ZKPs) are cryptographic methods that allow one party (the prover) to prove to another party (the verifier) that a statement is true, without revealing any information beyond the validity of the statement itself. Integrating ZKPs into the XMRT-Ecosystem DAO will significantly enhance privacy, security, and scalability, particularly for sensitive governance operations and verifiable computation. The starred repositories `xmrt-noir`, `xmrt-zk-oracles`, `xmrt-risc0-ethereum`, and `xmrt-risc0-proofs` indicate a strong interest in this area.
+Zero-Knowledge Proofs (ZKPs) are cryptographic methods that allow one party (the prover) to prove to another party (the verifier) that a statement is true, without revealing any information beyond the validity of the statement itself. Integrating ZKPs into the XMRTNET DAO will significantly enhance privacy, security, and scalability, particularly for sensitive governance operations and verifiable computation. The starred repositories `xmrt-noir`, `xmrt-zk-oracles`, `xmrt-risc0-ethereum`, and `xmrt-risc0-proofs` indicate a strong interest in this area.
 
 ### 5.1. Noir for ZKP Circuit Development
 
-**Noir** is a domain-specific language (DSL) for writing zero-knowledge circuits. It provides a high-level, Rust-like syntax that simplifies the process of creating ZK-friendly programs. Integrating Noir will enable the XMRT-Ecosystem to:
+**Noir** is a domain-specific language (DSL) for writing zero-knowledge circuits. It provides a high-level, Rust-like syntax that simplifies the process of creating ZK-friendly programs. Integrating Noir will enable the XMRTNET to:
 
 *   **Private Voting:** Allow DAO members to cast votes without revealing their individual choices, enhancing privacy and preventing vote buying or coercion. Only the validity of the vote (e.g., that the voter is eligible and has not double-voted) would be publicly verifiable.
 *   **Verifiable Computations:** Enable complex computations to be performed off-chain, with a ZKP generated to prove the correctness of the computation. This can be used for things like private treasury calculations or verifiable execution of complex governance logic.
@@ -180,7 +180,7 @@ Zero-Knowledge Proofs (ZKPs) are cryptographic methods that allow one party (the
 
 ### 5.2. RISC Zero for Verifiable Computation
 
-**RISC Zero** provides a verifiable general-purpose computing platform, allowing developers to prove arbitrary computations in a verifiable way. Its integration with Ethereum and EVM chains (`xmrt-risc0-ethereum`) makes it highly relevant for the XMRT-Ecosystem. RISC Zero can be used to:
+**RISC Zero** provides a verifiable general-purpose computing platform, allowing developers to prove arbitrary computations in a verifiable way. Its integration with Ethereum and EVM chains (`xmrt-risc0-ethereum`) makes it highly relevant for the XMRTNET. RISC Zero can be used to:
 
 *   **Off-Chain Computation with On-Chain Verification:** Execute complex or resource-intensive computations off-chain (e.g., simulating economic models for treasury management, analyzing large datasets for proposal impact) and then generate a ZKP that can be verified on-chain. This significantly reduces gas costs and expands the complexity of operations that can be verified by the DAO.
 *   **Scalable Governance Logic:** Enable more sophisticated governance mechanisms that might be too expensive or complex to execute directly on-chain, by offloading the computation to RISC Zero and only verifying the proof on the blockchain.
@@ -202,22 +202,22 @@ Zero-Knowledge Proofs (ZKPs) are cryptographic methods that allow one party (the
 *   **Backend Services:** A dedicated oracle service will integrate the TLSNotary protocol to fetch and prove the origin of external data. This service will then provide the necessary inputs for ZKP circuits.
 *   **Smart Contracts:** Smart contracts can be designed to consume proofs generated by the ZK oracles, allowing on-chain logic to react to verifiable off-chain events.
 
-### 5.4. Impact on XMRT-Ecosystem
+### 5.4. Impact on XMRTNET
 
-The integration of Zero-Knowledge Proofs will transform the XMRT-Ecosystem DAO by:
+The integration of Zero-Knowledge Proofs will transform the XMRTNET DAO by:
 
 *   **Enhancing Privacy:** Enabling private voting and confidential computations, protecting sensitive information of DAO members and operations.
 *   **Improving Scalability:** Offloading complex computations from the blockchain, reducing gas costs and increasing transaction throughput.
 *   **Increasing Security and Trust:** Providing cryptographic guarantees for the correctness of off-chain computations and the authenticity of external data, reducing reliance on trusted third parties.
 *   **Enabling New Use Cases:** Opening up possibilities for more sophisticated and privacy-preserving governance mechanisms, such as private auctions, confidential treasury management, and verifiable machine learning models within the DAO.
 
-This comprehensive ZKP layer will significantly strengthen the XMRT-Ecosystem, making it a more robust, private, and efficient decentralized autonomous organization. The `xmrt-noir`, `xmrt-risc0-ethereum`, `xmrt-risc0-proofs`, and `xmrt-zk-oracles` repositories provide the foundational tools for building this advanced capability.
+This comprehensive ZKP layer will significantly strengthen the XMRTNET, making it a more robust, private, and efficient decentralized autonomous organization. The `xmrt-noir`, `xmrt-risc0-ethereum`, `xmrt-risc0-proofs`, and `xmrt-zk-oracles` repositories provide the foundational tools for building this advanced capability.
 
 
 
 ## 6. AI Agent Framework (Eliza)
 
-Eliza is the central intelligent component of the XMRT-Ecosystem DAO, designed to provide AI-driven insights, automation, and interaction capabilities. While the initial prototype uses OpenAI's GPT-3.5-turbo as the underlying large language model, Eliza represents a broader framework capable of integrating various AI models and tools. The starred repositories `xmrt-ai-organization`, `xmrt-openai-python`, `xmrt-llama_index`, `xmrt-ai-knowledge`, `xmrt-langchain-memory`, `xmrt-agenticSeek`, and `xmrt-autogen-boardroom` are all highly relevant to the comprehensive development of Eliza.
+Eliza is the central intelligent component of the XMRTNET DAO, designed to provide AI-driven insights, automation, and interaction capabilities. While the initial prototype uses OpenAI's GPT-3.5-turbo as the underlying large language model, Eliza represents a broader framework capable of integrating various AI models and tools. The starred repositories `xmrt-ai-organization`, `xmrt-openai-python`, `xmrt-llama_index`, `xmrt-ai-knowledge`, `xmrt-langchain-memory`, `xmrt-agenticSeek`, and `xmrt-autogen-boardroom` are all highly relevant to the comprehensive development of Eliza.
 
 ### 6.1. Core Eliza AI Agent
 
@@ -268,7 +268,7 @@ Eliza would act as an orchestrator, coordinating the activities of these special
 
 ## 7. Governance Infrastructure
 
-The governance infrastructure of the XMRT-Ecosystem DAO is designed to facilitate transparent, efficient, and AI-augmented decision-making. It combines on-chain smart contract mechanisms with off-chain interfaces and AI-powered analysis. The `xmrt-gov-ui-kit` (forked from Aragon's Governance UI Kit) is a critical component for building a comprehensive and user-friendly governance portal.
+The governance infrastructure of the XMRTNET DAO is designed to facilitate transparent, efficient, and AI-augmented decision-making. It combines on-chain smart contract mechanisms with off-chain interfaces and AI-powered analysis. The `xmrt-gov-ui-kit` (forked from Aragon's Governance UI Kit) is a critical component for building a comprehensive and user-friendly governance portal.
 
 ### 7.1. On-Chain Governance Mechanisms
 

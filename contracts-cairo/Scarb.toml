@@ -1,0 +1,26 @@
+[package]
+name = "xmrt_ecosystem"
+version = "0.1.0"
+edition = "2023_11"
+
+[dependencies]
+starknet = ">=2.3.0"
+
+[[target.starknet-contract]]
+sierra = true
+casm = true
+
+[tool.snforge]
+# Add any snforge-specific configuration here
+
+[scripts]
+build = "scarb build"
+test = "scarb test"
+format = "scarb fmt"
+
+[profile.dev]
+sierra-replace-ids = true
+
+[profile.release]
+sierra-replace-ids = false
+
