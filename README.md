@@ -1,20 +1,10 @@
-# 🚀 XMRT-Ecosystem DAO: Complete Autonomous Organization
+# 🚀 XMRTNET DAO: Complete Autonomous Organization
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
-[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://python.org/)
-[![Cairo](https://img.shields.io/badge/Cairo-2.0+-red.svg)](https://www.cairo-lang.org/)
-[![Starknet](https://img.shields.io/badge/Starknet-Deployed-blue.svg)](https://starknet.io/)
-[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://docker.com/)
-[![Vercel](https://img.shields.io/badge/Vercel-Deployed-black.svg)](https://vercel.com/)
-
-## ✨ **Starknet & Cairo Migration Branch**
-
-This branch is dedicated to the ongoing migration of the XMRT-Ecosystem to Starknet, leveraging Cairo for smart contract development. It contains the latest advancements and experimental features related to our Starknet integration efforts. Starknet fans and developers interested in the Cairo ecosystem are encouraged to explore this branch for cutting-edge developments.
+This branch is dedicated to the ongoing migration of the XMRTNET to Starknet, leveraging Cairo for smart contract development. It contains the latest advancements and experimental features related to our Starknet integration efforts. Starknet fans and developers interested in the Cairo ecosystem are encouraged to explore this branch for cutting-edge developments.
 
 ## 🌟 **Production-Ready Autonomous DAO Platform**
 
-The XMRT-Ecosystem is a **fully autonomous, production-ready DAO** that combines cutting-edge blockchain technology with advanced AI capabilities. This comprehensive platform integrates cross-chain functionality, zero-knowledge privacy, and intelligent automation to create the next generation of decentralized governance.
+The XMRTNET is a **fully autonomous, production-ready DAO** that combines cutting-edge blockchain technology with advanced AI capabilities. This comprehensive platform integrates cross-chain functionality, zero-knowledge privacy, and intelligent automation to create the next generation of decentralized governance.
 
 ## 🏗️ **Complete Architecture Overview**
 
@@ -44,7 +34,7 @@ The XMRT-Ecosystem is a **fully autonomous, production-ready DAO** that combines
 ## 📁 **Project Structure**
 
 ```
-XMRT-Ecosystem/
+XMRTNET/
 ├── 📄 README.md                    # This comprehensive documentation
 ├── 📦 package.json                 # Main project configuration
 ├── 🐳 Dockerfile                  # Container configuration
@@ -167,8 +157,8 @@ XMRT-Ecosystem/
 
 1. **Clone the Repository**
 ```bash
-git clone https://github.com/DevGruGold/XMRT-Ecosystem.git
-cd XMRT-Ecosystem
+git clone https://github.com/DevGruGold/XMRTNET.git
+cd XMRTNET
 ```
 
 2. **Install Dependencies**
@@ -459,7 +449,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Discord**: [Join our community](https://discord.gg/xmrt)
 - **Twitter**: [@XMRT_DAO](https://twitter.com/XMRT_DAO)
 - **Email**: support@xmrt.io
-- **GitHub Issues**: [Report bugs and request features](https://github.com/DevGruGold/XMRT-Ecosystem/issues)
+- **GitHub Issues**: [Report bugs and request features](https://github.com/DevGruGold/XMRTNET/issues)
 
 ## 🗺️ **Roadmap**
 

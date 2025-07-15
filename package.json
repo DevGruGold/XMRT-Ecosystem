@@ -1,7 +1,7 @@
 {
-  "name": "xmrt-ecosystem",
+  "name": "xmrtnet",
   "version": "1.0.0",
-  "description": "Full-stack XMRT-Ecosystem DAO prototype with Eliza AI integration",
+  "description": "Full-stack XMRTNET DAO prototype with Eliza AI integration",
   "scripts": {
     "build": "cd frontend/xmrt-dao-frontend && pnpm install && pnpm run build",
     "vercel-build": "cd frontend/xmrt-dao-frontend && pnpm install && pnpm run build",

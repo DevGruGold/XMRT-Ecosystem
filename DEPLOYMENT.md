@@ -1,8 +1,8 @@
-# XMRT-Ecosystem Deployment Guide
+# XMRTNET Deployment Guide
 
 ## Overview
 
-This guide provides instructions for deploying and running the XMRT-Ecosystem DAO prototype with Eliza AI integration.
+This guide provides instructions for deploying and running the XMRTNET DAO prototype with Eliza AI integration.
 
 ## Prerequisites
 
@@ -159,7 +159,7 @@ For production deployment:
 ## Support
 
 For issues and questions:
-- GitHub Issues: https://github.com/DevGruGold/XMRT-Ecosystem/issues
+- GitHub Issues: https://github.com/DevGruGold/XMRTNET/issues
 - Discord: https://discord.gg/xmrtdao
 - Twitter: @xmrtdao
 
