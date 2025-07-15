@@ -8,6 +8,10 @@
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://docker.com/)
 [![Vercel](https://img.shields.io/badge/Vercel-Deployed-black.svg)](https://vercel.com/)
 
+## ✨ **Starknet & Cairo Migration Branch**
+
+This branch is dedicated to the ongoing migration of the XMRT-Ecosystem to Starknet, leveraging Cairo for smart contract development. It contains the latest advancements and experimental features related to our Starknet integration efforts. Starknet fans and developers interested in the Cairo ecosystem are encouraged to explore this branch for cutting-edge developments.
+
 ## 🌟 **Production-Ready Autonomous DAO Platform**
 
 The XMRT-Ecosystem is a **fully autonomous, production-ready DAO** that combines cutting-edge blockchain technology with advanced AI capabilities. This comprehensive platform integrates cross-chain functionality, zero-knowledge privacy, and intelligent automation to create the next generation of decentralized governance.
