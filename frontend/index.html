@@ -3,49 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XMRTNET UI Simulation</title>
+    <title>XMRTNET - Starknet DeFi Platform</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
-        .container { background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 800px; margin: auto; }
-        h1 { color: #0056b3; }
-        .section { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background-color: #e9ecef; }
-        .button { background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; }
-        .button:hover { background-color: #0056b3; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333; 
+            min-height: 100vh;
+        }
+        .container { 
+            background-color: rgba(255, 255, 255, 0.95); 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+            max-width: 1000px; 
+            margin: 20px auto; 
+            backdrop-filter: blur(10px);
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            padding-bottom: 20px; 
+            border-bottom: 2px solid #e0e0e0; 
+        }
+        h1 { 
+            color: #4a5568; 
+            font-size: 2.5rem; 
+            margin-bottom: 10px; 
+        }
+        .subtitle { 
+            color: #718096; 
+            font-size: 1.1rem; 
+        }
+        .wallet-section { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin-bottom: 20px; 
+            text-align: center; 
+        }
+        .section { 
+            margin-bottom: 25px; 
+            padding: 20px; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 10px; 
+            background-color: #f8fafc; 
+            transition: all 0.3s ease; 
+        }
+        .section:hover { 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+            transform: translateY(-2px); 
+        }
+        .section h2 { 
+            color: #2d3748; 
+            margin-bottom: 15px; 
+            font-size: 1.4rem; 
+        }
+        .button { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            padding: 12px 20px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 1rem; 
+            font-weight: 600; 
+            margin: 5px; 
+            transition: all 0.3s ease; 
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); 
+        }
+        .button:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6); 
+        }
+        .button:disabled { 
+            opacity: 0.6; 
+            cursor: not-allowed; 
+            transform: none; 
+        }
+        .status { 
+            padding: 10px; 
+            border-radius: 5px; 
+            margin: 10px 0; 
+            font-weight: 500; 
+        }
+        .status.connected { 
+            background-color: #c6f6d5; 
+            color: #22543d; 
+            border: 1px solid #9ae6b4; 
+        }
+        .status.disconnected { 
+            background-color: #fed7d7; 
+            color: #742a2a; 
+            border: 1px solid #fc8181; 
+        }
+        .address { 
+            font-family: 'Courier New', monospace; 
+            background-color: #edf2f7; 
+            padding: 8px; 
+            border-radius: 5px; 
+            word-break: break-all; 
+        }
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 20px; 
+        }
+        .loading { 
+            display: inline-block; 
+            width: 20px; 
+            height: 20px; 
+            border: 3px solid #f3f3f3; 
+            border-top: 3px solid #667eea; 
+            border-radius: 50%; 
+            animation: spin 1s linear infinite; 
+        }
+        @keyframes spin { 
+            0% { transform: rotate(0deg); } 
+            100% { transform: rotate(360deg); } 
+        }
+        .transaction-list { 
+            max-height: 200px; 
+            overflow-y: auto; 
+        }
+        .transaction-item { 
+            padding: 10px; 
+            border-bottom: 1px solid #e2e8f0; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .transaction-item:last-child { 
+            border-bottom: none; 
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>XMRTNET Dashboard Simulation</h1>
-        <p>Welcome to the simulated XMRTNET user interface. This is a placeholder for the actual application UI.</p>
+        <div class="header">
+            <h1>XMRTNET</h1>
+            <p class="subtitle">Decentralized Finance Platform on Starknet</p>
+        </div>
 
-        <div class="section">
-            <h2>Account Overview</h2>
-            <p><strong>Wallet Address:</strong> 0x123...abc</p>
-            <p><strong>Current Balance:</strong> 1000 XMRT</p>
-            <button class="button">Connect Wallet</button>
+        <div class="wallet-section">
+            <h2>Wallet Connection</h2>
+            <div id="wallet-status" class="status disconnected">
+                Not Connected
+            </div>
+            <div id="wallet-address" class="address" style="display: none;"></div>
+            <button id="connect-wallet" class="button">Connect Starknet Wallet</button>
+            <button id="disconnect-wallet" class="button" style="display: none;">Disconnect</button>
+        </div>
+
+        <div class="grid">
+            <div class="section">
+                <h2>Account Overview</h2>
+                <p><strong>Network:</strong> <span id="network">Starknet Mainnet</span></p>
+                <p><strong>Balance:</strong> <span id="balance">0 ETH</span></p>
+                <p><strong>XMRT Tokens:</strong> <span id="xmrt-balance">0 XMRT</span></p>
+                <button class="button" id="refresh-balance">Refresh Balance</button>
+            </div>
+
+            <div class="section">
+                <h2>Staking Pool</h2>
+                <p><strong>Staked Amount:</strong> <span id="staked-amount">0 XMRT</span></p>
+                <p><strong>Estimated Rewards:</strong> <span id="rewards">0 XMRT/day</span></p>
+                <button class="button" id="stake-tokens">Stake XMRT</button>
+                <button class="button" id="unstake-tokens">Unstake XMRT</button>
+            </div>
         </div>
 
         <div class="section">
             <h2>Recent Transactions</h2>
-            <ul>
-                <li>Deposit: +500 XMRT (TxID: 0xdef...)</li>
-                <li>Withdrawal: -200 XMRT (TxID: 0xghi...)</li>
-                <li>Transfer: -100 XMRT (TxID: 0xjkl...)</li>
-            </ul>
-            <button class="button">View All Transactions</button>
+            <div id="transaction-list" class="transaction-list">
+                <div class="transaction-item">
+                    <span>No transactions yet</span>
+                    <span>-</span>
+                </div>
+            </div>
+            <button class="button" id="load-transactions">Load Transactions</button>
         </div>
 
         <div class="section">
-            <h2>Staking Pool</h2>
-            <p><strong>Staked Amount:</strong> 500 XMRT</p>
-            <p><strong>Estimated Rewards:</strong> 5 XMRT/day</p>
-            <button class="button">Stake XMRT</button>
-            <button class="button">Unstake XMRT</button>
+            <h2>Smart Contract Interactions</h2>
+            <p>Interact with XMRTNET smart contracts deployed on Starknet</p>
+            <button class="button" id="deploy-contract">Deploy Contract</button>
+            <button class="button" id="call-contract">Call Contract</button>
         </div>
-
-        <p>This simulation demonstrates basic UI elements and layout. Further development will integrate with the Starknet Cairo backend.</p>
     </div>
-    <script src="app.js"></script>
+
+    <script type="module" src="app.js"></script>
 </body>
 </html>
 
