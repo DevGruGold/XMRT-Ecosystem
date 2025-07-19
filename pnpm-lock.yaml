@@ -10,40 +10,40 @@ importers:
     dependencies:
       '@elizaos/adapter-postgres':
         specifier: ^0.25.6-alpha.1
-        version: 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
+        version: 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
       '@elizaos/adapter-sqlite':
         specifier: ^0.25.6-alpha.1
-        version: 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(whatwg-url@14.2.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
+        version: 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(whatwg-url@14.2.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
       '@elizaos/client-discord':
         specifier: ^0.25.6-alpha.1
-        version: 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(bufferutil@4.0.9)(canvas@2.11.2)(ffmpeg-static@5.2.0)(onnxruntime-node@1.22.0)(puppeteer-core@19.11.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(puppeteer@19.11.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(react@19.1.0)(typescript@5.8.3)(utf-8-validate@5.0.10)(whatwg-url@14.2.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
+        version: 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(bufferutil@4.0.9)(canvas@2.11.2)(ffmpeg-static@5.2.0)(onnxruntime-node@1.22.0)(puppeteer-core@19.11.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(puppeteer@19.11.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(react@19.1.0)(typescript@5.8.3)(utf-8-validate@5.0.10)(whatwg-url@14.2.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
       '@elizaos/client-telegram':
         specifier: ^0.25.6-alpha.1
-        version: 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
+        version: 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
       '@elizaos/client-twitter':
         specifier: ^0.25.6-alpha.1
-        version: 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10)(whatwg-url@14.2.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
+        version: 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10)(whatwg-url@14.2.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
       '@elizaos/core':
         specifier: ^1.2.12
-        version: 1.2.12(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(axios@1.10.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+        version: 1.2.12(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(axios@1.10.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@elizaos/plugin-evm':
         specifier: ^1.0.12
-        version: 1.0.12(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(@solana/wallet-adapter-base@0.9.27(@solana/web3.js@1.98.2(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)))(@solana/web3.js@1.98.2(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(@types/react@19.1.8)(axios@1.10.0)(bufferutil@4.0.9)(immer@10.1.1)(jiti@2.4.2)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(postcss@8.5.6)(react@19.1.0)(typescript@5.8.3)(use-sync-external-store@1.5.0(react@19.1.0))(utf-8-validate@5.0.10)(viem@2.32.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76))(whatwg-url@14.2.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(yaml@2.8.0)(zod@3.25.76)
+        version: 1.0.12(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(@solana/wallet-adapter-base@0.9.27(@solana/web3.js@1.98.2(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)))(@solana/web3.js@1.98.2(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(@types/react@19.1.8)(axios@1.10.0)(bufferutil@4.0.9)(immer@10.1.1)(jiti@2.4.2)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(postcss@8.5.6)(react@19.1.0)(typescript@5.8.3)(use-sync-external-store@1.5.0(react@19.1.0))(utf-8-validate@5.0.10)(viem@2.32.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76))(whatwg-url@14.2.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(yaml@2.8.0)(zod@3.25.76)
       '@elizaos/plugin-node':
         specifier: ^0.25.6-alpha.1
-        version: 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(bufferutil@4.0.9)(canvas@2.11.2)(onnxruntime-node@1.22.0)(puppeteer-core@19.11.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(puppeteer@19.11.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(react@19.1.0)(typescript@5.8.3)(utf-8-validate@5.0.10)(whatwg-url@14.2.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
+        version: 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(bufferutil@4.0.9)(canvas@2.11.2)(onnxruntime-node@1.22.0)(puppeteer-core@19.11.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(puppeteer@19.11.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(react@19.1.0)(typescript@5.8.3)(utf-8-validate@5.0.10)(whatwg-url@14.2.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
       '@elizaos/plugin-solana':
         specifier: ^1.0.3
-        version: 1.0.3(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(@types/debug@4.1.12)(@types/node@24.0.14)(axios@1.10.0)(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(form-data@4.0.3)(jiti@2.4.2)(jsdom@25.0.1(bufferutil@4.0.9)(canvas@2.11.2)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(typescript@5.8.3)(utf-8-validate@5.0.10)(whatwg-url@14.2.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(yaml@2.8.0)
+        version: 1.0.3(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(@types/debug@4.1.12)(@types/node@24.0.14)(axios@1.10.0)(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(form-data@4.0.3)(jiti@2.4.2)(jsdom@25.0.1(bufferutil@4.0.9)(canvas@2.11.2)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(typescript@5.8.3)(utf-8-validate@5.0.10)(whatwg-url@14.2.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(yaml@2.8.0)
       '@elizaos/test-utils':
         specifier: ^1.2.9
-        version: 1.2.12(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(axios@1.10.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+        version: 1.2.12(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(axios@1.10.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@openzeppelin/contracts':
-        specifier: ^5.3.0
-        version: 5.3.0
+        specifier: ^5.4.0
+        version: 5.4.0
       '@openzeppelin/contracts-upgradeable':
-        specifier: ^5.3.0
-        version: 5.3.0(@openzeppelin/contracts@5.3.0)
+        specifier: ^5.4.0
+        version: 5.4.0(@openzeppelin/contracts@5.4.0)
       concurrently:
         specifier: ^9.2.0
         version: 9.2.0
@@ -3001,13 +3001,13 @@ packages:
     resolution: {integrity: sha512-3giAOQvZiH5F9bMlMiv8+GSPMeqg0dbaeo58/0SlA9sxSqZhnUtxzX9/2FzyhS9sWQf5S0GJE0AKBrFqjpeYcg==}
     engines: {node: '>=8.0.0'}
 
-  '@openzeppelin/contracts-upgradeable@5.3.0':
-    resolution: {integrity: sha512-yVzSSyTMWO6rapGI5tuqkcLpcGGXA0UA1vScyV5EhE5yw8By3Ewex9rDUw8lfVw0iTkvR/egjfcW5vpk03lqZg==}
+  '@openzeppelin/contracts-upgradeable@5.4.0':
+    resolution: {integrity: sha512-STJKyDzUcYuB35Zub1JpWW58JxvrFFVgQ+Ykdr8A9PGXgtq/obF5uoh07k2XmFyPxfnZdPdBdhkJ/n2YxJ87HQ==}
     peerDependencies:
-      '@openzeppelin/contracts': 5.3.0
+      '@openzeppelin/contracts': 5.4.0
 
-  '@openzeppelin/contracts@5.3.0':
-    resolution: {integrity: sha512-zj/KGoW7zxWUE8qOI++rUM18v+VeLTTzKs/DJFkSzHpQFPD/jKKF0TrMxBfGLl3kpdELCNccvB3zmofSzm4nlA==}
+  '@openzeppelin/contracts@5.4.0':
+    resolution: {integrity: sha512-eCYgWnLg6WO+X52I16TZt8uEjbtdkgLC0SUX/xnAksjjrQI4Xfn4iBRoI5j55dmlOhDv1Y7BoR3cU7e3WWhC6A==}
 
   '@openzeppelin/defender-sdk-base-client@2.7.0':
     resolution: {integrity: sha512-J5IpvbFfdIJM4IadBcXfhCXVdX2yEpaZtRR1ecq87d8CdkmmEpniYfef/yVlG98yekvu125LaIRg0yXQOt9Bdg==}
@@ -4721,6 +4721,9 @@ packages:
 
   abbrev@1.0.9:
     resolution: {integrity: sha512-LEyx4aLEC3x6T0UguF6YILf+ntvmOaWsVfENmIW0E9H09vKlLDGelMjjSm0jkDHALj8A8quZ/HapKNigzwge+Q==}
+
+  abbrev@1.1.1:
+    resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
 
   abitype@1.0.8:
     resolution: {integrity: sha512-ZeiI6h3GnW06uYDLx0etQtX/p8E24UaHHBj57RSjK7YBFe7iuVn07EDpOeP451D06sF27VOz9JJPlIKJmXgkEg==}
@@ -11719,9 +11722,9 @@ snapshots:
       '@huggingface/jinja': 0.2.2
       onnxruntime-node: 1.22.0
 
-  '@elizaos/adapter-postgres@0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)':
+  '@elizaos/adapter-postgres@0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)':
     dependencies:
-      '@elizaos/core': 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
+      '@elizaos/core': 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
       '@types/pg': 8.11.10
       pg: 8.13.1
     transitivePeerDependencies:
@@ -11748,9 +11751,9 @@ snapshots:
       - ws
       - zod
 
-  '@elizaos/adapter-sqlite@0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(whatwg-url@14.2.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)':
+  '@elizaos/adapter-sqlite@0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(whatwg-url@14.2.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)':
     dependencies:
-      '@elizaos/core': 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
+      '@elizaos/core': 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
       '@types/better-sqlite3': 7.6.12
       better-sqlite3: 11.8.1
       sqlite-vec: 0.1.6
@@ -11778,13 +11781,13 @@ snapshots:
       - ws
       - zod
 
-  '@elizaos/client-discord@0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(bufferutil@4.0.9)(canvas@2.11.2)(ffmpeg-static@5.2.0)(onnxruntime-node@1.22.0)(puppeteer-core@19.11.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(puppeteer@19.11.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(react@19.1.0)(typescript@5.8.3)(utf-8-validate@5.0.10)(whatwg-url@14.2.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)':
+  '@elizaos/client-discord@0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(bufferutil@4.0.9)(canvas@2.11.2)(ffmpeg-static@5.2.0)(onnxruntime-node@1.22.0)(puppeteer-core@19.11.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(puppeteer@19.11.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(react@19.1.0)(typescript@5.8.3)(utf-8-validate@5.0.10)(whatwg-url@14.2.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)':
     dependencies:
       '@discordjs/opus': https://codeload.github.com/discordjs/opus/tar.gz/09c713e90a3ae8640c47d024ff48ed87ebe934ba
       '@discordjs/rest': 2.4.0
       '@discordjs/voice': 0.17.0(@discordjs/opus@https://codeload.github.com/discordjs/opus/tar.gz/09c713e90a3ae8640c47d024ff48ed87ebe934ba)(bufferutil@4.0.9)(ffmpeg-static@5.2.0)(utf-8-validate@5.0.10)
-      '@elizaos/core': 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
-      '@elizaos/plugin-node': 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(bufferutil@4.0.9)(canvas@2.11.2)(onnxruntime-node@1.22.0)(puppeteer-core@19.11.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(puppeteer@19.11.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(react@19.1.0)(typescript@5.8.3)(utf-8-validate@5.0.10)(whatwg-url@14.2.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
+      '@elizaos/core': 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
+      '@elizaos/plugin-node': 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(bufferutil@4.0.9)(canvas@2.11.2)(onnxruntime-node@1.22.0)(puppeteer-core@19.11.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(puppeteer@19.11.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(react@19.1.0)(typescript@5.8.3)(utf-8-validate@5.0.10)(whatwg-url@14.2.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
       discord.js: 14.16.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       libsodium-wrappers: 0.7.15
       prism-media: 1.3.5(@discordjs/opus@https://codeload.github.com/discordjs/opus/tar.gz/09c713e90a3ae8640c47d024ff48ed87ebe934ba)(ffmpeg-static@5.2.0)
@@ -11826,9 +11829,9 @@ snapshots:
       - ws
       - zod
 
-  '@elizaos/client-telegram@0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)':
+  '@elizaos/client-telegram@0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)':
     dependencies:
-      '@elizaos/core': 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
+      '@elizaos/core': 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
       '@telegraf/types': 7.1.0
       telegraf: 4.16.3
     transitivePeerDependencies:
@@ -11854,9 +11857,9 @@ snapshots:
       - ws
       - zod
 
-  '@elizaos/client-twitter@0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10)(whatwg-url@14.2.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)':
+  '@elizaos/client-twitter@0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(bufferutil@4.0.9)(react@19.1.0)(utf-8-validate@5.0.10)(whatwg-url@14.2.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)':
     dependencies:
-      '@elizaos/core': 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
+      '@elizaos/core': 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
       agent-twitter-client: 0.0.18(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       discord.js: 14.16.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       glob: 11.0.0
@@ -11886,7 +11889,7 @@ snapshots:
       - ws
       - zod
 
-  '@elizaos/core@0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)':
+  '@elizaos/core@0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)':
     dependencies:
       '@ai-sdk/amazon-bedrock': 1.1.0(zod@3.25.76)
       '@ai-sdk/anthropic': 0.0.56(zod@3.25.76)
@@ -11908,9 +11911,9 @@ snapshots:
       handlebars: 4.7.8
       js-sha1: 0.7.0
       js-tiktoken: 1.0.15
-      langchain: 0.3.6(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(handlebars@4.7.8)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      langchain: 0.3.6(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(handlebars@4.7.8)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       ollama-ai-provider: 0.16.1(zod@3.25.76)
-      openai: 4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
+      openai: 4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
       pino: 9.7.0
       pino-pretty: 13.0.0
       tinyld: 1.3.4
@@ -11940,7 +11943,7 @@ snapshots:
       - ws
       - zod
 
-  '@elizaos/core@1.2.12(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(axios@1.10.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
+  '@elizaos/core@1.2.12(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(axios@1.10.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
     dependencies:
       '@sentry/browser': 9.40.0
       buffer: 6.0.3
@@ -11950,7 +11953,7 @@ snapshots:
       glob: 11.0.3
       handlebars: 4.7.8
       js-sha1: 0.7.0
-      langchain: 0.3.30(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(axios@1.10.0)(handlebars@4.7.8)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      langchain: 0.3.30(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(axios@1.10.0)(handlebars@4.7.8)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       pdfjs-dist: 5.3.93
       pino: 9.7.0
       pino-pretty: 13.0.0
@@ -11982,9 +11985,9 @@ snapshots:
       - typeorm
       - ws
 
-  '@elizaos/plugin-evm@1.0.12(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(@solana/wallet-adapter-base@0.9.27(@solana/web3.js@1.98.2(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)))(@solana/web3.js@1.98.2(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(@types/react@19.1.8)(axios@1.10.0)(bufferutil@4.0.9)(immer@10.1.1)(jiti@2.4.2)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(postcss@8.5.6)(react@19.1.0)(typescript@5.8.3)(use-sync-external-store@1.5.0(react@19.1.0))(utf-8-validate@5.0.10)(viem@2.32.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76))(whatwg-url@14.2.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(yaml@2.8.0)(zod@3.25.76)':
+  '@elizaos/plugin-evm@1.0.12(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(@solana/wallet-adapter-base@0.9.27(@solana/web3.js@1.98.2(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)))(@solana/web3.js@1.98.2(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(@types/react@19.1.8)(axios@1.10.0)(bufferutil@4.0.9)(immer@10.1.1)(jiti@2.4.2)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(postcss@8.5.6)(react@19.1.0)(typescript@5.8.3)(use-sync-external-store@1.5.0(react@19.1.0))(utf-8-validate@5.0.10)(viem@2.32.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76))(whatwg-url@14.2.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(yaml@2.8.0)(zod@3.25.76)':
     dependencies:
-      '@elizaos/core': 1.2.12(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(axios@1.10.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@elizaos/core': 1.2.12(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(axios@1.10.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@lifi/data-types': 5.15.5
       '@lifi/sdk': 3.8.1(@solana/wallet-adapter-base@0.9.27(@solana/web3.js@1.98.2(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)))(@solana/web3.js@1.98.2(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(@types/react@19.1.8)(bufferutil@4.0.9)(immer@10.1.1)(react@19.1.0)(typescript@5.8.3)(use-sync-external-store@1.5.0(react@19.1.0))(utf-8-validate@5.0.10)(viem@2.32.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76)
       '@lifi/types': 17.22.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76)
@@ -12034,7 +12037,7 @@ snapshots:
       - yaml
       - zod
 
-  '@elizaos/plugin-node@0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(bufferutil@4.0.9)(canvas@2.11.2)(onnxruntime-node@1.22.0)(puppeteer-core@19.11.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(puppeteer@19.11.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(react@19.1.0)(typescript@5.8.3)(utf-8-validate@5.0.10)(whatwg-url@14.2.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)':
+  '@elizaos/plugin-node@0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(bufferutil@4.0.9)(canvas@2.11.2)(onnxruntime-node@1.22.0)(puppeteer-core@19.11.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(puppeteer@19.11.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(react@19.1.0)(typescript@5.8.3)(utf-8-validate@5.0.10)(whatwg-url@14.2.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)':
     dependencies:
       '@aws-sdk/client-s3': 3.848.0
       '@aws-sdk/s3-request-presigner': 3.848.0
@@ -12042,7 +12045,7 @@ snapshots:
       '@echogarden/espeak-ng-emscripten': 0.3.3
       '@echogarden/kissfft-wasm': 0.2.0
       '@echogarden/speex-resampler-wasm': 0.2.1
-      '@elizaos/core': 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
+      '@elizaos/core': 0.25.6-alpha.1(@google-cloud/vertexai@1.10.0)(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(react@19.1.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
       '@huggingface/transformers': 3.0.2
       '@opendocsg/pdf2md': 0.1.32
       '@types/uuid': 10.0.0
@@ -12124,9 +12127,9 @@ snapshots:
       - ws
       - zod
 
-  '@elizaos/plugin-solana@1.0.3(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(@types/debug@4.1.12)(@types/node@24.0.14)(axios@1.10.0)(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(form-data@4.0.3)(jiti@2.4.2)(jsdom@25.0.1(bufferutil@4.0.9)(canvas@2.11.2)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(typescript@5.8.3)(utf-8-validate@5.0.10)(whatwg-url@14.2.0)(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(yaml@2.8.0)':
+  '@elizaos/plugin-solana@1.0.3(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(@types/debug@4.1.12)(@types/node@24.0.14)(axios@1.10.0)(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(form-data@4.0.3)(jiti@2.4.2)(jsdom@25.0.1(bufferutil@4.0.9)(canvas@2.11.2)(utf-8-validate@5.0.10))(lightningcss@1.30.1)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(typescript@5.8.3)(utf-8-validate@5.0.10)(whatwg-url@14.2.0)(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(yaml@2.8.0)':
     dependencies:
-      '@elizaos/core': 1.2.12(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(axios@1.10.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@elizaos/core': 1.2.12(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(axios@1.10.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/spl-token': 0.4.13(@solana/web3.js@1.98.2(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(utf-8-validate@5.0.10)
       '@solana/web3.js': 1.98.2(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)
       bignumber.js: 9.3.0
@@ -12182,9 +12185,9 @@ snapshots:
       - ws
       - yaml
 
-  '@elizaos/test-utils@1.2.12(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(axios@1.10.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
+  '@elizaos/test-utils@1.2.12(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(axios@1.10.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
     dependencies:
-      '@elizaos/core': 1.2.12(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(axios@1.10.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@elizaos/core': 1.2.12(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(axios@1.10.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       zod: 3.24.2
     transitivePeerDependencies:
       - '@langchain/anthropic'
@@ -12816,14 +12819,14 @@ snapshots:
 
   '@kwsites/promise-deferred@1.1.1': {}
 
-  '@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))':
+  '@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))':
     dependencies:
       '@cfworker/json-schema': 4.1.1
       ansi-styles: 5.2.0
       camelcase: 6.3.0
       decamelize: 1.2.0
       js-tiktoken: 1.0.20
-      langsmith: 0.3.46(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))
+      langsmith: 0.3.46(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))
       mustache: 4.2.0
       p-queue: 6.6.2
       p-retry: 4.6.2
@@ -12836,29 +12839,29 @@ snapshots:
       - '@opentelemetry/sdk-trace-base'
       - openai
 
-  '@langchain/openai@0.3.17(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
+  '@langchain/openai@0.3.17(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
     dependencies:
-      '@langchain/core': 0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))
+      '@langchain/core': 0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))
       js-tiktoken: 1.0.15
-      openai: 4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
+      openai: 4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
       zod: 3.25.76
       zod-to-json-schema: 3.24.6(zod@3.25.76)
     transitivePeerDependencies:
       - encoding
       - ws
 
-  '@langchain/openai@0.6.2(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
+  '@langchain/openai@0.6.2(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
     dependencies:
-      '@langchain/core': 0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))
+      '@langchain/core': 0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))
       js-tiktoken: 1.0.20
-      openai: 5.10.1(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
+      openai: 5.10.1(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
       zod: 3.25.76
     transitivePeerDependencies:
       - ws
 
-  '@langchain/textsplitters@0.1.0(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))':
+  '@langchain/textsplitters@0.1.0(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))':
     dependencies:
-      '@langchain/core': 0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))
+      '@langchain/core': 0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))
       js-tiktoken: 1.0.20
 
   '@lifi/data-types@5.15.5':
@@ -13360,11 +13363,11 @@ snapshots:
 
   '@opentelemetry/api@1.9.0': {}
 
-  '@openzeppelin/contracts-upgradeable@5.3.0(@openzeppelin/contracts@5.3.0)':
+  '@openzeppelin/contracts-upgradeable@5.4.0(@openzeppelin/contracts@5.4.0)':
     dependencies:
-      '@openzeppelin/contracts': 5.3.0
+      '@openzeppelin/contracts': 5.4.0
 
-  '@openzeppelin/contracts@5.3.0': {}
+  '@openzeppelin/contracts@5.4.0': {}
 
   '@openzeppelin/defender-sdk-base-client@2.7.0':
     dependencies:
@@ -15653,6 +15656,8 @@ snapshots:
 
   abbrev@1.0.9: {}
 
+  abbrev@1.1.1: {}
+
   abitype@1.0.8(typescript@5.8.3)(zod@3.25.76):
     optionalDependencies:
       typescript: 5.8.3
@@ -17378,7 +17383,7 @@ snapshots:
 
   extract-zip@2.0.1:
     dependencies:
-      debug: 4.4.1(supports-color@8.1.1)
+      debug: 4.3.4
       get-stream: 5.2.0
       yauzl: 2.10.0
     optionalDependencies:
@@ -18462,15 +18467,15 @@ snapshots:
       doublearray: 0.0.2
       zlibjs: 0.3.1
 
-  langchain@0.3.30(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(axios@1.10.0)(handlebars@4.7.8)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)):
+  langchain@0.3.30(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(@opentelemetry/api@1.9.0)(axios@1.10.0)(handlebars@4.7.8)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10)):
     dependencies:
-      '@langchain/core': 0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))
-      '@langchain/openai': 0.6.2(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
-      '@langchain/textsplitters': 0.1.0(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))
+      '@langchain/core': 0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))
+      '@langchain/openai': 0.6.2(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@langchain/textsplitters': 0.1.0(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))
       js-tiktoken: 1.0.20
       js-yaml: 4.1.0
       jsonpointer: 5.0.1
-      langsmith: 0.3.46(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))
+      langsmith: 0.3.46(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))
       openapi-types: 12.1.3
       p-retry: 4.6.2
       uuid: 10.0.0
@@ -18486,15 +18491,15 @@ snapshots:
       - openai
       - ws
 
-  langchain@0.3.6(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(handlebars@4.7.8)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)):
+  langchain@0.3.6(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(axios@1.10.0)(handlebars@4.7.8)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10)):
     dependencies:
-      '@langchain/core': 0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))
-      '@langchain/openai': 0.3.17(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
-      '@langchain/textsplitters': 0.1.0(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))
+      '@langchain/core': 0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))
+      '@langchain/openai': 0.3.17(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@langchain/textsplitters': 0.1.0(@langchain/core@0.3.66(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)))
       js-tiktoken: 1.0.15
       js-yaml: 4.1.0
       jsonpointer: 5.0.1
-      langsmith: 0.2.15(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))
+      langsmith: 0.2.15(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76))
       openapi-types: 12.1.3
       p-retry: 4.6.2
       uuid: 10.0.0
@@ -18509,7 +18514,7 @@ snapshots:
       - openai
       - ws
 
-  langsmith@0.2.15(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)):
+  langsmith@0.2.15(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)):
     dependencies:
       '@types/uuid': 10.0.0
       commander: 10.0.1
@@ -18518,9 +18523,9 @@ snapshots:
       semver: 7.7.2
       uuid: 10.0.0
     optionalDependencies:
-      openai: 4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
+      openai: 4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
 
-  langsmith@0.3.46(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)):
+  langsmith@0.3.46(@opentelemetry/api@1.9.0)(openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)):
     dependencies:
       '@types/uuid': 10.0.0
       chalk: 4.1.2
@@ -18531,7 +18536,7 @@ snapshots:
       uuid: 10.0.0
     optionalDependencies:
       '@opentelemetry/api': 1.9.0
-      openai: 4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
+      openai: 4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
 
   lazy-cache@0.2.7: {}
 
@@ -19091,7 +19096,7 @@ snapshots:
 
   nopt@5.0.0:
     dependencies:
-      abbrev: 1.0.9
+      abbrev: 1.1.1
 
   normalize-package-data@3.0.3:
     dependencies:
@@ -19227,7 +19232,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  openai@4.82.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76):
+  openai@4.82.0(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76):
     dependencies:
       '@types/node': 18.19.120
       '@types/node-fetch': 2.6.12
@@ -19237,14 +19242,14 @@ snapshots:
       formdata-node: 4.4.1
       node-fetch: 2.7.0
     optionalDependencies:
-      ws: 8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      ws: 7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       zod: 3.25.76
     transitivePeerDependencies:
       - encoding
 
-  openai@5.10.1(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76):
+  openai@5.10.1(ws@7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76):
     optionalDependencies:
-      ws: 8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      ws: 7.5.10(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       zod: 3.25.76
 
   openapi-types@12.1.3: {}
