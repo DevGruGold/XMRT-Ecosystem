@@ -1,0 +1,17 @@
+"
+<!DOCTYPE html><html><body>
+<h1>ðŸª™ XMRT Rewards Claim Portal</h1>
+<input id="uid" placeholder="Enter your user ID"/><button onclick="claim()">Claim</button>
+<script src="https://cdn.jsdelivr.net/npm/ethers"></script>
+<script>
+async function claim() {
+  const uid = document.getElementById("uid").value;
+  if (!window.ethereum) return alert("Install MetaMask");
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  await provider.send("eth_requestAccounts", []);
+  const signer = provider.getSigner();
+  const contract = new ethers.Contract("REPLACE_WITH_REWARDS_CONTRACT_ADDRESS", [], signer);
+  await contract.claim(uid);
+  alert("Claim submitted.");
+}
+</script></body></html>
