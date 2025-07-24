@@ -22,6 +22,8 @@ jobs:
       # ---- Frontend (Vite/React) ----
       - name: Setup Node.js
         uses: actions/setup-node@v4
+        - name: Setup pnpm
+          uses: pnpm/action-setup@v4
         with:
           node-version: ${{ matrix.node-version }}
 
