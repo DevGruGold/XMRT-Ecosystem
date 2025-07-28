@@ -1,0 +1,111 @@
+
+# XMRT-Ecosystem Render Blueprint
+# This Blueprint defines the complete XMRT Ecosystem with Eliza AI integration
+
+services:
+  # Frontend service - Unified XMRT Frontend
+  - type: web
+    name: xmrt-frontend
+    env: node
+    region: oregon # Adjust as needed
+    buildCommand: cd frontend/xmrt-unified-cashdapp && npm install && npm run build
+    startCommand: cd frontend/xmrt-unified-cashdapp && npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - fromGroup: xmrt-env-group
+
+  # ElizaOS AI Automation Service - Autonomous DAO operations
+  - type: web
+    name: xmrt-eliza-automation
+    env: python
+    region: oregon # Adjust as needed
+    buildCommand: cd backend/ai-automation-service && pip install -r requirements.txt
+    startCommand: cd backend/ai-automation-service && python main.py
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: PORT
+        value: 10001
+      - fromGroup: xmrt-env-group
+
+  # Eliza Backend Service - API and AI agent interaction
+  - type: web
+    name: xmrt-eliza-backend
+    env: python
+    region: oregon # Adjust as needed
+    buildCommand: cd backend/eliza-backend && pip install -r requirements.txt
+    startCommand: cd backend/eliza-backend && python -m src.main
+    healthCheckPath: /api/eliza/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: PORT
+        value: 10002
+      - fromGroup: xmrt-env-group
+
+# Environment variable group that will be applied to all services
+envVarGroups:
+  - name: xmrt-env-group
+    envVars:
+      # Blockchain Configuration
+      - key: VITE_ETHEREUM_RPC_URL
+        sync: false
+      - key: VITE_POLYGON_RPC_URL
+        sync: false
+      - key: VITE_BSC_RPC_URL
+        sync: false
+      - key: VITE_AVALANCHE_RPC_URL
+        sync: false
+
+      # Wallet Integration
+      - key: VITE_WALLET_CONNECT_PROJECT_ID
+        sync: false
+      - key: VITE_METAMASK_ENABLED
+        value: "true"
+      - key: VITE_COINBASE_WALLET_ENABLED
+        value: "true"
+
+      # API Keys
+      - key: VITE_MORALIS_API_KEY
+        sync: false
+      - key: VITE_ALCHEMY_API_KEY
+        sync: false
+      - key: VITE_COINGECKO_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+
+      # Backend Services
+      - key: VITE_API_BASE_URL
+        value: "https://xmrt-eliza-backend.onrender.com"
+      - key: VITE_WEBSOCKET_URL
+        value: "wss://xmrt-eliza-backend.onrender.com"
+      - key: ELIZA_AI_ENDPOINT
+        value: "https://xmrt-eliza-automation.onrender.com"
+
+      # Feature Flags
+      - key: VITE_ENABLE_CRYPTO_TRADING
+        value: "true"
+      - key: VITE_ENABLE_NFT_MARKETPLACE
+        value: "true"
+      - key: VITE_ENABLE_STAKING
+        value: "true"
+      - key: VITE_ENABLE_LENDING
+        value: "true"
+
+      # Security
+      - key: VITE_ENCRYPTION_KEY
+        sync: false
+
+      # Development
+      - key: VITE_DEBUG_MODE
+        value: "false"
+      - key: VITE_MOCK_API
+        value: "false"
