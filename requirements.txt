@@ -1,13 +1,13 @@
 flask==3.0.3
-flask-cors==4.0.1
-gunicorn==22.0.0
-requests==2.32.3
+flask-cors==6.0.0
+gunicorn==23.0.0
+requests==2.32.4
 python-dotenv==1.0.1
 click==8.1.7
 openai==1.35.13
 psutil==6.0.0
 orjson==3.10.6
 python-dateutil==2.9.0.post0
-aiohttp==3.9.5
+aiohttp==3.12.14
 setuptools>=65.0.0
 wheel>=0.40.0
