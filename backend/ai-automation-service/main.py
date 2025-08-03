@@ -9,6 +9,7 @@ from src.central_autonomous_orchestrator import CentralAutonomousOrchestrator
 
 logger = logging.getLogger(__name__)
 
+
 class AIAutomationService:
     def __init__(self):
         logger.info("Initializing AI Automation Service...")
@@ -24,7 +25,9 @@ class AIAutomationService:
 
         # Initialize Central Autonomous Orchestrator
         # Pass necessary utilities to the orchestrator for its own system initializations
-        self.central_orchestrator = CentralAutonomousOrchestrator(ai_utils, blockchain_utils)
+        self.central_orchestrator = CentralAutonomousOrchestrator(
+            ai_utils, blockchain_utils
+        )
 
         logger.info("AIAutomationService engine initialized and ready.")
 
@@ -50,6 +53,7 @@ class AIAutomationService:
             except Exception as e:
                 logger.error(f"FATAL ERROR in main agent cycle: {e}")
                 await asyncio.sleep(10)
+
 
 # Create global instance for launcher
 # This instance will be used by launcher.py to start the service
