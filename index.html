@@ -290,6 +290,201 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* Enhanced Boardroom Styles */
+        .boardroom {
+            padding: 80px 0;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            text-align: center;
+        }
+
+        .boardroom-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .boardroom-agent-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .boardroom-agent-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .boardroom-agent-card.active {
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .boardroom-agent-card h3 {
+            color: #ffd700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .boardroom-agent-status {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4ade80;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.idle {
+            background: #6b7280;
+            animation: none;
+        }
+
+        .status-indicator.processing {
+            background: #f59e0b;
+        }
+
+        .status-indicator.communicating {
+            background: #3b82f6;
+        }
+
+        .boardroom-agent-log {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            padding: 1rem;
+            min-height: 120px;
+            max-height: 180px;
+            overflow-y: auto;
+            text-align: left;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .boardroom-agent-log::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .boardroom-agent-log::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+
+        .boardroom-agent-log::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+        }
+
+        .boardroom-agent-log p {
+            margin-bottom: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            animation: fadeInMessage 0.5s ease-in;
+        }
+
+        .boardroom-agent-log p:last-child {
+            margin-bottom: 0;
+        }
+
+        .boardroom-agent-log .message {
+            color: #86efac;
+            background: rgba(34, 197, 94, 0.1);
+            border-left: 3px solid #22c55e;
+        }
+
+        .boardroom-agent-log .task {
+            color: #93c5fd;
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 3px solid #3b82f6;
+        }
+
+        .boardroom-agent-log .processing {
+            color: #fbbf24;
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 3px solid #f59e0b;
+        }
+
+        .boardroom-agent-log .error {
+            color: #fca5a5;
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid #ef4444;
+        }
+
+        @keyframes fadeInMessage {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .agent-metrics {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .metric {
+            text-align: center;
+        }
+
+        .metric-value {
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .communication-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #3b82f6;
+            opacity: 0;
+            animation: communicationPulse 1s ease-in-out;
+        }
+
+        @keyframes communicationPulse {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .boardroom-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
@@ -301,6 +496,7 @@
                 <li><a href="#features">Features</a></li>
                 <li><a href="#agents">AI Agents</a></li>
                 <li><a href="#stats">Stats</a></li>
+                <li><a href="#boardroom">Boardroom</a></li>
                 <li><a href="https://xmrtnet-eliza.onrender.com/" target="_blank">API Service</a></li>
             </ul>
             <button class="mobile-menu">☰</button>
@@ -395,6 +591,115 @@
                 </div>
             </div>
         </section>
+
+        <section id="boardroom" class="boardroom">
+            <div class="container">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">🏢 AI Executive Boardroom</h2>
+                <p style="font-size: 1.1rem; margin-bottom: 2rem; opacity: 0.9;">Observe the autonomous agents in real-time as they process tasks and communicate with each other.</p>
+                <div class="boardroom-grid">
+                    <div class="boardroom-agent-card fade-in" id="agent-dao">
+                        <div class="communication-indicator" id="comm-dao"></div>
+                        <h3>🏛️ DAO Governor</h3>
+                        <p class="boardroom-agent-status">
+                            <span class="status-indicator idle" id="status-dao"></span>
+                            Status: <span id="status-text-dao">Idle</span>
+                        </p>
+                        <div class="boardroom-agent-log" id="log-dao">
+                            <p class="task">[Task] Awaiting new governance proposals...</p>
+                        </div>
+                        <div class="agent-metrics">
+                            <div class="metric">
+                                <div class="metric-value" id="tasks-dao">0</div>
+                                <div>Tasks</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="messages-dao">0</div>
+                                <div>Messages</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="uptime-dao">100%</div>
+                                <div>Uptime</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="boardroom-agent-card fade-in" id="agent-defi">
+                        <div class="communication-indicator" id="comm-defi"></div>
+                        <h3>📈 DeFi Specialist</h3>
+                        <p class="boardroom-agent-status">
+                            <span class="status-indicator idle" id="status-defi"></span>
+                            Status: <span id="status-text-defi">Idle</span>
+                        </p>
+                        <div class="boardroom-agent-log" id="log-defi">
+                            <p class="task">[Task] Monitoring market for yield opportunities...</p>
+                        </div>
+                        <div class="agent-metrics">
+                            <div class="metric">
+                                <div class="metric-value" id="tasks-defi">0</div>
+                                <div>Tasks</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="messages-defi">0</div>
+                                <div>Messages</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="uptime-defi">100%</div>
+                                <div>Uptime</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="boardroom-agent-card fade-in" id="agent-security">
+                        <div class="communication-indicator" id="comm-security"></div>
+                        <h3>🛡️ Security Guardian</h3>
+                        <p class="boardroom-agent-status">
+                            <span class="status-indicator idle" id="status-security"></span>
+                            Status: <span id="status-text-security">Idle</span>
+                        </p>
+                        <div class="boardroom-agent-log" id="log-security">
+                            <p class="task">[Task] Scanning network for vulnerabilities...</p>
+                        </div>
+                        <div class="agent-metrics">
+                            <div class="metric">
+                                <div class="metric-value" id="tasks-security">0</div>
+                                <div>Tasks</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="messages-security">0</div>
+                                <div>Messages</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="uptime-security">100%</div>
+                                <div>Uptime</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="boardroom-agent-card fade-in" id="agent-community">
+                        <div class="communication-indicator" id="comm-community"></div>
+                        <h3>🌟 Community Manager</h3>
+                        <p class="boardroom-agent-status">
+                            <span class="status-indicator idle" id="status-community"></span>
+                            Status: <span id="status-text-community">Idle</span>
+                        </p>
+                        <div class="boardroom-agent-log" id="log-community">
+                            <p class="task">[Task] Engaging with community members...</p>
+                        </div>
+                        <div class="agent-metrics">
+                            <div class="metric">
+                                <div class="metric-value" id="tasks-community">0</div>
+                                <div>Tasks</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="messages-community">0</div>
+                                <div>Messages</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="uptime-community">100%</div>
+                                <div>Uptime</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="footer">
@@ -482,6 +787,225 @@
                 hero.style.transform = `translateY(${scrolled * 0.5}px)`;
             }
         });
+
+        // Enhanced Boardroom simulation
+        const agents = {
+            'dao': {
+                name: 'DAO Governor',
+                tasks: [
+                    '[Task] Analyzing new governance proposal: #124',
+                    '[Task] Coordinating voting for proposal: #124',
+                    '[Task] Executing approved proposal: #124',
+                    '[Task] Reviewing treasury allocation: Q4',
+                    '[Task] Processing community feedback on governance',
+                    '[Task] Updating voting mechanisms',
+                    '[Task] Auditing proposal compliance'
+                ],
+                messages: [
+                    '[Message] Requesting DeFi analysis from Specialist.',
+                    '[Message] Coordinating with Security Guardian on audit.',
+                    '[Message] Sharing governance updates with Community Manager.',
+                    '[Message] Discussing treasury optimization strategies.',
+                    '[Message] Requesting security review for new proposal.'
+                ],
+                taskCount: 0,
+                messageCount: 0
+            },
+            'defi': {
+                name: 'DeFi Specialist',
+                tasks: [
+                    '[Task] Optimizing yield for ETH-USDC pool',
+                    '[Task] Rebalancing portfolio for risk mitigation',
+                    '[Task] Researching new farming opportunities',
+                    '[Task] Analyzing gas fees for transactions',
+                    '[Task] Monitoring liquidity across protocols',
+                    '[Task] Calculating impermanent loss risks',
+                    '[Task] Evaluating new DeFi protocols'
+                ],
+                messages: [
+                    '[Message] Providing liquidity data to DAO Governor.',
+                    '[Message] Requesting security review for new contract.',
+                    '[Message] Sharing market insights with Community Manager.',
+                    '[Message] Alerting about high gas fees.',
+                    '[Message] Recommending portfolio rebalancing.'
+                ],
+                taskCount: 0,
+                messageCount: 0
+            },
+            'security': {
+                name: 'Security Guardian',
+                tasks: [
+                    '[Task] Performing smart contract audit: v2.2',
+                    '[Task] Monitoring network for suspicious activity',
+                    '[Task] Updating firewall rules',
+                    '[Task] Reviewing access control policies',
+                    '[Task] Scanning for vulnerabilities',
+                    '[Task] Analyzing threat intelligence',
+                    '[Task] Implementing security patches'
+                ],
+                messages: [
+                    '[Message] Reporting audit findings to DAO Governor.',
+                    '[Message] Alerting DeFi Specialist about potential exploit.',
+                    '[Message] Coordinating security awareness with Community Manager.',
+                    '[Message] Sharing threat intelligence updates.',
+                    '[Message] Requesting emergency protocol activation.'
+                ],
+                taskCount: 0,
+                messageCount: 0
+            },
+            'community': {
+                name: 'Community Manager',
+                tasks: [
+                    '[Task] Organizing AMA session with core team',
+                    '[Task] Moderating Discord channels',
+                    '[Task] Drafting weekly community update',
+                    '[Task] Analyzing sentiment from social media',
+                    '[Task] Coordinating community events',
+                    '[Task] Managing social media presence',
+                    '[Task] Gathering user feedback'
+                ],
+                messages: [
+                    '[Message] Gathering community feedback for DAO Governor.',
+                    '[Message] Promoting DeFi Specialist\'s new yield strategy.',
+                    '[Message] Disseminating security best practices.',
+                    '[Message] Sharing community sentiment analysis.',
+                    '[Message] Requesting governance participation increase.'
+                ],
+                taskCount: 0,
+                messageCount: 0
+            }
+        };
+
+        function addLogEntry(agentId, type, text) {
+            const logElement = document.getElementById(`log-${agentId}`);
+            const p = document.createElement('p');
+            p.classList.add(type);
+            p.textContent = text;
+            logElement.appendChild(p);
+            logElement.scrollTop = logElement.scrollHeight;
+
+            // Update counters
+            if (type === 'task') {
+                agents[agentId].taskCount++;
+                document.getElementById(`tasks-${agentId}`).textContent = agents[agentId].taskCount;
+            } else if (type === 'message') {
+                agents[agentId].messageCount++;
+                document.getElementById(`messages-${agentId}`).textContent = agents[agentId].messageCount;
+            }
+
+            // Keep log clean (remove old entries if too many)
+            while (logElement.children.length > 12) {
+                logElement.removeChild(logElement.children[0]);
+            }
+        }
+
+        function updateAgentStatus(agentId, status) {
+            const statusIndicator = document.getElementById(`status-${agentId}`);
+            const statusText = document.getElementById(`status-text-${agentId}`);
+            const agentCard = document.getElementById(`agent-${agentId}`);
+            
+            // Remove all status classes
+            statusIndicator.classList.remove('idle', 'processing', 'communicating');
+            agentCard.classList.remove('active');
+            
+            // Add new status
+            statusIndicator.classList.add(status.toLowerCase());
+            statusText.textContent = status;
+            
+            if (status !== 'Idle') {
+                agentCard.classList.add('active');
+            }
+        }
+
+        function showCommunicationIndicator(agentId) {
+            const indicator = document.getElementById(`comm-${agentId}`);
+            indicator.style.animation = 'none';
+            setTimeout(() => {
+                indicator.style.animation = 'communicationPulse 1s ease-in-out';
+            }, 10);
+        }
+
+        function updateBoardroom() {
+            for (const agentId in agents) {
+                const agent = agents[agentId];
+                
+                // Simulate status change
+                const statuses = ['Idle', 'Processing', 'Communicating', 'Awaiting Input'];
+                const weights = [0.4, 0.3, 0.2, 0.1]; // Weighted probability
+                const randomValue = Math.random();
+                let cumulativeWeight = 0;
+                let selectedStatus = 'Idle';
+                
+                for (let i = 0; i < statuses.length; i++) {
+                    cumulativeWeight += weights[i];
+                    if (randomValue <= cumulativeWeight) {
+                        selectedStatus = statuses[i];
+                        break;
+                    }
+                }
+                
+                updateAgentStatus(agentId, selectedStatus);
+
+                // Simulate new log entry (task or message)
+                const randomType = Math.random() < 0.65 ? 'task' : 'message'; // More tasks than messages
+                let entryText;
+
+                if (randomType === 'task') {
+                    entryText = agent.tasks[Math.floor(Math.random() * agent.tasks.length)];
+                    addLogEntry(agentId, 'task', entryText);
+                } else {
+                    entryText = agent.messages[Math.floor(Math.random() * agent.messages.length)];
+                    addLogEntry(agentId, 'message', entryText);
+                    showCommunicationIndicator(agentId);
+                }
+            }
+        }
+
+        // Update boardroom every 3-7 seconds (random interval)
+        function scheduleNextUpdate() {
+            const interval = 3000 + Math.random() * 4000; // 3-7 seconds
+            setTimeout(() => {
+                updateBoardroom();
+                scheduleNextUpdate();
+            }, interval);
+        }
+
+        // Start the boardroom simulation
+        scheduleNextUpdate();
+
+        // Simulate inter-agent communication
+        function simulateInterAgentCommunication() {
+            const agentIds = Object.keys(agents);
+            const fromAgent = agentIds[Math.floor(Math.random() * agentIds.length)];
+            const toAgent = agentIds.filter(id => id !== fromAgent)[Math.floor(Math.random() * 3)];
+            
+            const communicationMessages = [
+                `[Message] Coordinating with ${agents[toAgent].name}...`,
+                `[Message] Sharing data with ${agents[toAgent].name}...`,
+                `[Message] Requesting input from ${agents[toAgent].name}...`,
+                `[Message] Collaborating with ${agents[toAgent].name}...`
+            ];
+            
+            const message = communicationMessages[Math.floor(Math.random() * communicationMessages.length)];
+            addLogEntry(fromAgent, 'message', message);
+            showCommunicationIndicator(fromAgent);
+            
+            // Response from the other agent
+            setTimeout(() => {
+                const responseMessages = [
+                    `[Message] Responding to ${agents[fromAgent].name}...`,
+                    `[Message] Providing requested data to ${agents[fromAgent].name}...`,
+                    `[Message] Acknowledging request from ${agents[fromAgent].name}...`
+                ];
+                const response = responseMessages[Math.floor(Math.random() * responseMessages.length)];
+                addLogEntry(toAgent, 'message', response);
+                showCommunicationIndicator(toAgent);
+            }, 1000 + Math.random() * 2000);
+        }
+
+        // Simulate inter-agent communication every 10-20 seconds
+        setInterval(simulateInterAgentCommunication, 10000 + Math.random() * 10000);
+
     </script>
 </body>
 </html>
