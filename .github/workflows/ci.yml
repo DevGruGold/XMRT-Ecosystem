@@ -20,16 +20,15 @@ jobs:
           node-version: 18
 
       - name: Install Dependencies
-        working-directory: frontend # ← change this if your frontend lives elsewhere!
+        working-directory: .
         run: npm install
 
       - name: Run Lint
-        working-directory: frontend
+        working-directory: .
         run: npm run lint || true
 
       - name: Run Tests (optional)
-        working-directory: frontend
+        working-directory: .
         run: npm test || echo "No tests found"
-
 
 
