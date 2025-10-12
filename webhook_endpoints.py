@@ -248,5 +248,5 @@ def create_test_app():
 
 if __name__ == "__main__":
     app = create_test_app()
-    app.run(debug=True, host='0.0.0.0', port=5001)
+    app.run(host='0.0.0.0', port=5001)
 
