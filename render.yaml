@@ -3,7 +3,7 @@ services:
     name: xmrt-ecosystem
     runtime: python3
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn -w 2 -k gevent -b 0.0.0.0:$PORT main:app
+    startCommand: python app.py
     plan: free
     region: oregon
     branch: main
