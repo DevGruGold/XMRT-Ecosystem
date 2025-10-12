@@ -1,213 +1,359 @@
-# XMRT Ecosystem Deployment-Ready Requirements
-# Optimized for production deployment with compatibility fixes
+# XMRT Ecosystem Enhanced Requirements - Auto-Versioned
+# Python will automatically select the best compatible versions
 
-# Core Flask and Web Framework - Stable Production Versions
-Flask==3.0.0
-gunicorn==21.2.0
-psutil>=5.9.6
-apscheduler>=3.10.4
+# Core Flask and Web Framework
+Flask
+gunicorn
+psutil
+apscheduler
 
-# Real-time Communication - Production Ready
-flask-socketio>=5.3.6
-python-socketio>=5.10.0
-eventlet>=0.34.0
-gevent>=23.9.0
-gevent-websocket>=0.10.1
-flask-cors>=4.0.0
+# Real-time Communication
+flask-socketio
+python-socketio
+eventlet
+gevent
+gevent-websocket
+flask-cors
 
-# AI and ML Dependencies - Compatible Versions
-openai>=1.3.0
-google-generativeai>=0.3.0
-anthropic>=0.5.0
-sentence-transformers>=2.2.0
-transformers>=4.35.0
-torch>=2.0.0
-numpy>=1.24.0
-scikit-learn>=1.3.0
-datasets>=2.14.0
-huggingface-hub>=0.19.0
+# AI and ML Dependencies - Latest Compatible
+openai
+google-generativeai
+anthropic
+sentence-transformers
+transformers
+torch
+numpy
+scikit-learn
+datasets
+huggingface-hub
 
 # Enhanced Language Models and AI Frameworks
-langchain>=0.1.0
-langchain-community>=0.0.10
-langchain-experimental>=0.0.50
-langchain-openai>=0.0.5
-langchain-anthropic>=0.1.0
-pydantic>=2.5.0
-pydantic-settings>=2.1.0
+langchain
+langchain-community
+langchain-experimental
+langchain-openai
+langchain-anthropic
+pydantic
+pydantic-settings
 
-# GitHub Integration - Stable Versions
-PyGithub>=1.59.0
-gitpython>=3.1.30
+# GitHub Integration
+PyGithub
+gitpython
 
-# Database and Storage - Production Ready
-supabase>=1.0.0
-psycopg2-binary>=2.9.5
-redis>=4.5.0
-asyncpg>=0.28.0
-sqlalchemy>=2.0.0
-alembic>=1.12.0
+# Database and Storage
+supabase
+psycopg2-binary
+redis
+asyncpg
+sqlalchemy
+alembic
 
-# Web3 and Blockchain - Compatible Versions (Brownie-eth removed)
-web3>=6.11.0
-eth-account>=0.9.0
-eth-utils>=2.3.0
-py-solc-x>=1.12.0
-# brownie-eth removed due to Python 3.13 incompatibility
+# Web3 and Blockchain Dependencies
+web3
+eth-account
+eth-utils
+py-solc-x
+# brownie-eth  # Commented out due to compatibility issues
 
-# Smart Contract Development - Compatible Only
-# vyper>=0.3.0  # Commented out for deployment stability
-# solcx>=1.12.0  # May cause issues
-# mythril>=0.23.0  # Heavy dependency
-# slither-analyzer>=0.9.0  # Complex setup
+# Enhanced Smart Contract Development
+vyper
+solcx
+# mythril  # Heavy dependency, may cause issues
+# slither-analyzer  # Complex setup
 
-# DeFi Integration - Lightweight
-uniswap-python>=0.7.0
-# web3-multicall>=0.7.0  # May have conflicts
-# ethereum-etl>=1.7.0  # Heavy dependency
-dune-client>=1.2.0
-etherscan-python>=2.2.0
-# moralis>=0.1.0  # May have API issues
+# DeFi and Protocol Integration
+uniswap-python
+web3-multicall
+ethereum-etl
+dune-client
+etherscan-python
+moralis
 
-# IPFS - Basic Integration
-ipfshttpclient>=0.8.0
+# IPFS and Decentralized Storage
+ipfshttpclient
+multihash
 
 # Enhanced Web Scraping and Data Collection
-aiohttp>=3.8.0
-httpx>=0.25.0
-beautifulsoup4>=4.12.0
-selenium>=4.15.0
-requests>=2.31.0
-urllib3>=2.0.0
+aiohttp
+httpx
+beautifulsoup4
+selenium
+requests
+urllib3
+scrapy
 
-# Enhanced Async and Data Processing
-asyncio-throttle>=1.0.0
-cachetools>=5.3.0
+# BrightData MCP Integration
+asyncio-throttle
+cachetools
 
-# Data Processing and Analytics
-pandas>=2.1.0
-plotly>=5.17.0
-matplotlib>=3.7.0
-seaborn>=0.12.0
-scipy>=1.11.0
+# Data Processing and Analytics Enhancement
+pandas
+plotly
+dash
+streamlit
+matplotlib
+seaborn
+scipy
 
 # Enhanced Cryptography and Security
-cryptography>=41.0.0
-PyNaCl>=1.5.0
-keyring>=24.0.0
-python-jose>=3.3.0
-passlib>=1.7.4
-bcrypt>=4.1.0
+cryptography
+PyNaCl
+keyring
+python-jose
+passlib
+bcrypt
 
 # Enhanced Monitoring and Logging
-prometheus-client>=0.19.0
-structlog>=23.2.0
-sentry-sdk>=1.35.0
+prometheus-client
+structlog
+sentry-sdk
+datadog
+newrelic
 
 # API Framework and Documentation
-fastapi>=0.104.0
-uvicorn>=0.24.0
-starlette>=0.27.0
+fastapi
+uvicorn
+swagger-ui-py
+starlette
+fastapi-users
 
-# Development and Testing - Essential Only
-pytest>=7.4.0
-pytest-asyncio>=0.21.0
-black>=23.11.0
-flake8>=6.1.0
+# Development and Testing
+pytest
+pytest-asyncio
+pytest-cov
+pytest-mock
+black
+flake8
+mypy
+isort
+pre-commit
 
-# Enhanced File Processing
-Pillow>=10.0.0
-python-magic>=0.4.0
-python-docx>=1.0.0
-PyPDF2>=3.0.0
+# Enhanced File and Media Processing
+Pillow
+python-magic
+python-docx
+PyPDF2
+python-pptx
+openpyxl
 
 # Enhanced Networking and Communication
-pika>=1.3.0
-celery>=5.3.0
-kombu>=5.3.0
+pika
+celery
+kombu
+rabbitmq
 
 # Enhanced Time and Date Handling
-python-dateutil>=2.8.0
-pytz>=2023.3
-arrow>=1.3.0
+python-dateutil
+pytz
+arrow
+pendulum
 
 # Enhanced Environment and Configuration
-python-dotenv>=1.0.0
-dynaconf>=3.2.0
+python-dotenv
+configparser
+dynaconf
 
 # Enhanced JSON and Data Serialization
-orjson>=3.9.0
-msgpack>=1.0.0
+orjson
+msgpack
+pickle5
+ujson
 
-# Enhanced HTTP and Networking
-httptools>=0.6.0
-h11>=0.14.0
-websockets>=12.0
-uvloop>=0.19.0; sys_platform != "win32"
+# Enhanced HTTP Clients and Servers
+httptools
+h11
+websockets
+uvloop
 
-# Enhanced Async Support
-aiodns>=3.1.0
-aiofiles>=23.2.0
+# Enhanced Async and Concurrency
+aiodns
+aiofiles
+asyncinotify
 
 # Enhanced CLI and Terminal
-click>=8.1.0
-rich>=13.7.0
-colorama>=0.4.6
-tqdm>=4.66.0
+click
+rich
+typer
+colorama
+tqdm
 
-# Database Drivers - Essential
-pymongo>=4.5.0
-# motor>=3.3.0  # May conflict with other async libs
+# Enhanced System Monitoring and DevOps
+docker
+kubernetes
+python-kubernetes
 
-# Enhanced Authentication
-PyJWT>=2.8.0
-authlib>=1.2.0
+# Database Drivers and ORMs
+pymongo
+motor
+elasticsearch
+neo4j
 
-# Enhanced Caching
-pymemcache>=4.0.0
-diskcache>=5.6.0
+# Enhanced Machine Learning and AI Tools
+scikit-optimize
+xgboost
+lightgbm
+catboost
+
+# Enhanced Data Validation and Processing
+marshmallow
+cerberus
+schema
+
+# Enhanced Authentication and Authorization
+PyJWT
+authlib
+oauthlib
+
+# Enhanced Email and Notifications
+sendgrid
+twilio
+slack-sdk
+
+# Enhanced Caching and Performance
+memcached
+pymemcache
+diskcache
 
 # Enhanced Template Engines
-jinja2>=3.1.0
+jinja2
+mako
 
-# Enhanced Natural Language Processing - Lightweight
-# spacy>=3.7.0  # Large download, comment out for faster deployment
-nltk>=3.8.0
-textblob>=0.17.0
+# Enhanced Image and Video Processing
+opencv-python
+imageio
+moviepy
 
-# Enhanced Time Series Analysis - Optional
-# prophet>=1.1.0  # Heavy dependency, comment out
-statsmodels>=0.14.0
+# Enhanced Audio Processing
+librosa
+soundfile
+pydub
 
-# Enhanced Network Security - Essential
-# python-nmap>=0.7.0  # May require system packages
-# scapy>=2.5.0  # Complex dependencies
+# Enhanced Natural Language Processing
+spacy
+nltk
+textblob
 
-# Enhanced Geographic - Basic
-geopy>=2.4.0
+# Enhanced Time Series Analysis
+prophet
+statsmodels
 
-# Enhanced Cloud Services - Basic
-boto3>=1.34.0
-# azure-storage-blob>=12.19.0  # Heavy dependency
-# google-cloud-storage>=2.10.0  # Heavy dependency
+# Enhanced Workflow and Task Management
+prefect
+# airflow  # Heavy dependency
+luigi
 
-# Enhanced Documentation
-# sphinx>=7.2.0  # Development only
-# mkdocs>=1.5.0  # Development only
+# Enhanced Blockchain Analytics and Monitoring
+ethereum-dasm
+py-evm
 
-# Enhanced Code Quality - Essential
-bandit>=1.7.5
-safety>=2.3.0
+# Enhanced API Rate Limiting and Throttling
+flask-limiter
+slowapi
 
-# Production WSGI Servers
-waitress>=2.1.2
+# Enhanced Configuration and Secrets Management
+hvac
+azure-keyvault-secrets
+aws-secretsmanager
+
+# Enhanced Logging and Observability
+opentelemetry-api
+opentelemetry-sdk
+jaeger-client
+
+# Enhanced Data Science and Visualization
+bokeh
+altair
+folium
+
+# Enhanced Network Security
+python-nmap
+scapy
+
+# Enhanced System Administration
+fabric
+paramiko
+invoke
+
+# Enhanced Performance Monitoring
+py-spy
+memory-profiler
+line-profiler
+
+# Enhanced Geographic and Mapping
+geopy
+shapely
+geopandas
+
+# Enhanced Financial and Economic Data
+yfinance
+pandas-datareader
+quantlib
+
+# Enhanced Scientific Computing
+numba
+cython
+sympy
+
+# Enhanced Cloud Services Integration
+boto3
+azure-storage-blob
+google-cloud-storage
+
+# Enhanced Container and Orchestration
+docker-compose
+podman
+
+# Enhanced Streaming and Real-time Processing
+kafka-python
+pulsarpy
+
+# Enhanced Graph Processing
+networkx
+graph-tool
+
+# Enhanced Optimization
+cvxpy
+pulp
+
+# Enhanced Bioinformatics
+biopython
+
+# Enhanced Quantum Computing
+qiskit
+
+# Enhanced DevOps and CI/CD
+github3.py
+jenkins
+
+# Enhanced Load Testing and Performance
+locust
 
 # Enhanced Configuration Management
-configparser>=5.3.0
+ansible
 
-# Basic scientific computing
-# numba>=0.58.0  # May have compilation issues
-# cython>=3.0.0  # Requires C compiler
+# Production WSGI Server Options
+waitress
+uwsgi
 
-# Deployment essentials
-supervisor>=4.2.5
+# Enhanced Monitoring and Alerting
+influxdb-client
+
+# Enhanced Search and Indexing
+whoosh
+
+# Enhanced Documentation Generation
+sphinx
+mkdocs
+
+# Enhanced Code Quality and Linting
+bandit
+safety
+vulture
+
+# Enhanced Dependency Management
+pip-tools
+pipdeptree
+
+# Enhanced Environment Management
+virtualenv
+pipenv
