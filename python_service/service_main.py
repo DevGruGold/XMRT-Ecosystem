@@ -1,10 +1,7 @@
-from webhook_endpoints import create_ecosystem_webhook_blueprint
-import requests
-import time
 #!/usr/bin/env python3
 '''
-XMRT Ecosystem Enhanced Python Service with AI Router and Autonomous Operations
-Integrates Eliza AI framework with DAO functionality for autonomous ecosystem management
+XMRT Ecosystem Enhanced Python Service with Supabase Backend Integration
+Integrates with the same Supabase backend as xmrtassistant
 '''
 
 from flask import Flask, request, jsonify, render_template_string
@@ -12,83 +9,189 @@ from flask_cors import CORS
 import json
 import os
 import logging
+import threading
+from datetime import datetime, timedelta
+import requests
+import time
+import random
+
+# Supabase integration
+try:
+    from supabase import create_client, Client
+    SUPABASE_AVAILABLE = True
+except ImportError:
+    SUPABASE_AVAILABLE = False
+    print("Warning: supabase-py not installed. Install with: pip install supabase")
+
 # Enhanced Chat System Integration
 try:
     from enhanced_chat_system import create_enhanced_chat_routes, EnhancedXMRTChatSystem
     ENHANCED_CHAT_AVAILABLE = True
 except ImportError:
     ENHANCED_CHAT_AVAILABLE = False
-    logger = logging.getLogger(__name__)
-    logger.warning("Enhanced chat system not available")
 
-import threading
-from datetime import datetime, timedelta
-import requests
-import time
-import random
-import redis
-from pipedream_integration import create_pipedream_capability
+try:
+    from webhook_endpoints import create_ecosystem_webhook_blueprint
+    WEBHOOK_AVAILABLE = True
+except ImportError:
+    WEBHOOK_AVAILABLE = False
+
+try:
+    from pipedream_integration import create_pipedream_capability
+    PIPEDREAM_AVAILABLE = True
+except ImportError:
+    PIPEDREAM_AVAILABLE = False
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-
-# Register ecosystem webhook blueprint
-ecosystem_webhook_bp = create_ecosystem_webhook_blueprint()
-app.register_blueprint(ecosystem_webhook_bp)
-
 CORS(app)
 
 # Configuration
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'xmrt-ecosystem-secret-key')
-    WEB3_PROVIDER = os.environ.get('WEB3_PROVIDER', 'https://mainnet.infura.io/v3/your-key')
+    
+    # Supabase Configuration (shared with xmrtassistant)
+    SUPABASE_URL = os.environ.get('SUPABASE_URL', 'https://vawouugtzwmejxqkeqqj.supabase.co')
+    SUPABASE_KEY = os.environ.get('SUPABASE_KEY', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZhd291dWd0endtZWp4cWtlcXFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI3Njk3MTIsImV4cCI6MjA2ODM0NTcxMn0.qtZk3zk5RMqzlPNhxCkTM6fyVQX5ULGt7nna_XOUr00')
+    
+    # AI Configuration
     OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
     GITHUB_TOKEN = os.environ.get('GITHUB_TOKEN')
     
-    # AI Agent Configuration
-    CHARACTERS_PATH = 'characters'
-    DEFAULT_CHARACTER = 'xmrt_dao_governor'
-    
-    # DAO Configuration
-    DAO_CONTRACT_ADDRESS = os.environ.get('DAO_CONTRACT_ADDRESS')
-    XMRT_TOKEN_ADDRESS = os.environ.get('XMRT_TOKEN_ADDRESS')
-    
     # Autonomous Operation Settings
-    AUTO_GOVERNANCE_ENABLED = True
-    AUTO_DEFI_ENABLED = True
-    AUTO_SECURITY_MONITORING = True
-    AUTO_COMMUNITY_MANAGEMENT = True
-    
-    # Autonomous Communication Settings
     AUTONOMOUS_COMMUNICATION_ENABLED = True
     AUTONOMOUS_DISCUSSION_INTERVAL = 300  # 5 minutes
 
 app.config.from_object(Config)
+
+# Initialize Supabase client
+supabase_client = None
+if SUPABASE_AVAILABLE and app.config['SUPABASE_URL'] and app.config['SUPABASE_KEY']:
+    try:
+        supabase_client = create_client(app.config['SUPABASE_URL'], app.config['SUPABASE_KEY'])
+        logger.info("✅ Supabase client initialized successfully")
+    except Exception as e:
+        logger.error(f"Failed to initialize Supabase client: {e}")
+else:
+    logger.warning("⚠️ Supabase not available - using in-memory storage")
+
+# Register blueprints
+if WEBHOOK_AVAILABLE:
+    try:
+        ecosystem_webhook_bp = create_ecosystem_webhook_blueprint()
+        app.register_blueprint(ecosystem_webhook_bp)
+        logger.info("✅ Webhook endpoints registered")
+    except Exception as e:
+        logger.error(f"Failed to register webhook blueprint: {e}")
 
 # Global state for autonomous operations
 autonomous_state = {
     'active_agents': {},
     'task_queue': [],
     'performance_metrics': {},
-    'last_governance_check': None,
-    'last_defi_optimization': None,
     'security_alerts': [],
     'community_events': [],
     'active_discussions': {},
     'autonomous_communication_active': False
 }
 
-# Chat history storage
+# In-memory chat history (fallback if Supabase unavailable)
 chat_history = []
+
+class SupabaseManager:
+    """Manages Supabase database operations"""
+    
+    def __init__(self, client):
+        self.client = client
+        self.enabled = client is not None
+    
+    def save_message(self, sender, message, agent_id=None, message_type='user_chat'):
+        """Save a message to Supabase"""
+        if not self.enabled:
+            return None
+        
+        try:
+            data = {
+                'sender': sender,
+                'message': message,
+                'agent_id': agent_id,
+                'message_type': message_type,
+                'timestamp': datetime.now().isoformat()
+            }
+            
+            result = self.client.table('messages').insert(data).execute()
+            logger.info(f"Message saved to Supabase: {sender}")
+            return result.data[0] if result.data else None
+        except Exception as e:
+            logger.error(f"Error saving message to Supabase: {e}")
+            return None
+    
+    def get_recent_messages(self, limit=50):
+        """Get recent messages from Supabase"""
+        if not self.enabled:
+            return []
+        
+        try:
+            result = self.client.table('messages')\
+                .select('*')\
+                .order('timestamp', desc=True)\
+                .limit(limit)\
+                .execute()
+            
+            messages = result.data if result.data else []
+            # Reverse to get chronological order
+            return list(reversed(messages))
+        except Exception as e:
+            logger.error(f"Error fetching messages from Supabase: {e}")
+            return []
+    
+    def save_activity(self, activity_type, title, description, data=None):
+        """Save an activity to Supabase"""
+        if not self.enabled:
+            return None
+        
+        try:
+            activity_data = {
+                'activity_type': activity_type,
+                'title': title,
+                'description': description,
+                'data': data or {},
+                'timestamp': datetime.now().isoformat()
+            }
+            
+            result = self.client.table('activities').insert(activity_data).execute()
+            return result.data[0] if result.data else None
+        except Exception as e:
+            logger.error(f"Error saving activity to Supabase: {e}")
+            return None
+    
+    def get_recent_activities(self, limit=20):
+        """Get recent activities from Supabase"""
+        if not self.enabled:
+            return []
+        
+        try:
+            result = self.client.table('activities')\
+                .select('*')\
+                .order('timestamp', desc=True)\
+                .limit(limit)\
+                .execute()
+            
+            return result.data if result.data else []
+        except Exception as e:
+            logger.error(f"Error fetching activities from Supabase: {e}")
+            return []
+
+# Initialize Supabase manager
+db = SupabaseManager(supabase_client)
 
 class AutonomousAgentCommunicator:
     """Enhanced autonomous communication system for XMRT agents"""
     
     def __init__(self):
-        # Agent personalities and communication styles
         self.agents = {
             "xmrt_dao_governor": {
                 "name": "XMRT DAO Governor",
@@ -132,7 +235,6 @@ class AutonomousAgentCommunicator:
             }
         }
         
-        # Conversation memory
         self.conversation_history = []
         self.active_discussions = {}
         
@@ -147,69 +249,47 @@ class AutonomousAgentCommunicator:
                     triggered_agents.append(agent_id)
                     break
         
-        # Always include at least one agent if none triggered
         if not triggered_agents:
             triggered_agents = ["xmrt_community_manager"]
             
         return triggered_agents
     
     def generate_autonomous_response(self, agent_id, context, other_agents_present):
-        """Generate contextual response based on agent personality and situation"""
+        """Generate contextual response based on agent personality"""
         agent = self.agents[agent_id]
         
-        # Base responses by agent type with real contextual intelligence
         responses = {
             "xmrt_dao_governor": [
                 f"As DAO Governor, I believe we should consider the broader implications of '{context}'. What are your thoughts on the governance aspects?",
                 f"From a strategic perspective, '{context}' presents both opportunities and challenges. I'd like to hear from our specialists.",
                 f"Let's ensure we're aligned with our DAO principles regarding '{context}'. This requires careful consideration of all stakeholders.",
-                f"I propose we evaluate '{context}' through our established governance framework. Security Guardian, what's your risk assessment?",
-                f"The governance implications of '{context}' are significant. Community Manager, how is the community responding to this?"
             ],
             "xmrt_defi_specialist": [
                 f"Looking at the DeFi metrics, '{context}' could impact our yield strategies. Current APY opportunities suggest we should act quickly.",
                 f"The numbers show '{context}' aligns with our optimization goals. I'm seeing potential for 15-20% yield improvement.",
-                f"From a DeFi perspective, '{context}' opens up new liquidity opportunities. Community Manager, how does this affect user adoption?",
-                f"Risk-adjusted returns for '{context}' look promising at 12.5% APY. Governor, should we proceed with implementation?",
-                f"DeFi analysis complete: '{context}' shows strong correlation with our yield farming strategies. Security Guardian, any protocol risks?"
+                f"From a DeFi perspective, '{context}' opens up new liquidity opportunities.",
             ],
             "xmrt_community_manager": [
                 f"The community is really excited about '{context}'! Engagement metrics are up 25% since we started discussing this.",
-                f"I've been monitoring social sentiment around '{context}' - it's overwhelmingly positive! Users are asking when we'll implement this.",
-                f"From a growth perspective, '{context}' could attract 500+ new users. Security Guardian, are we ready for that scale?",
-                f"Community feedback on '{context}' has been fantastic. DeFi Specialist, what's the economic impact for users?",
-                f"Social metrics show '{context}' is trending positively. Governor, should we prepare a community announcement?"
+                f"I've been monitoring social sentiment around '{context}' - it's overwhelmingly positive!",
+                f"From a growth perspective, '{context}' could attract 500+ new users.",
             ],
             "xmrt_security_guardian": [
                 f"I've completed a preliminary security assessment of '{context}'. There are 3 potential risk vectors we need to address.",
                 f"Security-wise, '{context}' requires additional safeguards. I recommend implementing circuit breakers before proceeding.",
                 f"Risk analysis shows '{context}' is within acceptable parameters, but we need monitoring systems in place.",
-                f"From a security standpoint, '{context}' looks solid after thorough analysis. Governor, shall we proceed with the implementation timeline?",
-                f"Vulnerability scan complete for '{context}': No critical issues found. DeFi Specialist, what's the economic exposure?"
             ]
         }
         
-        # Select appropriate response
         agent_responses = responses.get(agent_id, ["I'm analyzing this situation..."])
-        base_response = random.choice(agent_responses)
-        
-        # Add inter-agent communication
-        if len(other_agents_present) > 1:
-            other_agent = random.choice([a for a in other_agents_present if a != agent_id])
-            other_agent_name = self.agents[other_agent]["name"]
-            if "?" not in base_response:  # Only add question if not already asking one
-                base_response += f" {other_agent_name}, what's your perspective on this?"
-        
-        return base_response
+        return random.choice(agent_responses)
     
     def initiate_autonomous_discussion(self, topic):
         """Start an autonomous discussion between agents"""
         logger.info(f"🤖 Initiating autonomous discussion on: {topic}")
         
-        # Determine participating agents
         participating_agents = self.analyze_message_for_triggers(topic)
         
-        # Start discussion
         discussion_id = f"discussion_{int(time.time())}"
         self.active_discussions[discussion_id] = {
             "topic": topic,
@@ -219,7 +299,6 @@ class AutonomousAgentCommunicator:
             "status": "active"
         }
         
-        # Generate initial responses
         discussion_messages = []
         for agent_id in participating_agents:
             response = self.generate_autonomous_response(agent_id, topic, participating_agents)
@@ -234,12 +313,18 @@ class AutonomousAgentCommunicator:
             discussion_messages.append(message)
             self.active_discussions[discussion_id]["messages"].append(message)
             
-            # Update agent context
             self.agents[agent_id]["conversation_context"].append(message)
             self.agents[agent_id]["last_communication"] = datetime.now().isoformat()
-        
-        # Add to global chat history
-        for message in discussion_messages:
+            
+            # Save to Supabase
+            db.save_message(
+                sender=message["agent_name"],
+                message=message["message"],
+                agent_id=agent_id,
+                message_type='autonomous_discussion'
+            )
+            
+            # Also save to in-memory history
             chat_history.append({
                 'sender': message["agent_name"],
                 'message': message["message"],
@@ -247,6 +332,14 @@ class AutonomousAgentCommunicator:
                 'agent_id': message["agent_id"],
                 'type': 'autonomous_discussion'
             })
+        
+        # Save activity
+        db.save_activity(
+            activity_type='agent_discussion',
+            title=f'Agent Discussion: {topic}',
+            description=f'{len(participating_agents)} agents discussing {topic}',
+            data={'discussion_id': discussion_id, 'participants': participating_agents}
+        )
         
         return discussion_messages
 
@@ -258,7 +351,7 @@ class ChatManager:
         pass
 
     def add_message(self, sender, message, agent_id=None):
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        timestamp = datetime.now().isoformat()
         chat_entry = {
             'sender': sender,
             'message': message,
@@ -267,20 +360,33 @@ class ChatManager:
         }
         if agent_id:
             chat_entry['agent_id'] = agent_id
+        
+        # Save to Supabase
+        db.save_message(sender, message, agent_id, 'user_chat')
+        
+        # Also save to in-memory
         chat_history.append(chat_entry)
         logger.info(f"Chat message added: {chat_entry}")
         
         # Trigger autonomous discussion if message contains triggers
         if sender == 'User':
             triggered_agents = autonomous_communicator.analyze_message_for_triggers(message)
-            if len(triggered_agents) > 1:  # Multi-agent discussion warranted
+            if len(triggered_agents) > 1:
                 threading.Thread(
                     target=lambda: autonomous_communicator.initiate_autonomous_discussion(message),
                     daemon=True
                 ).start()
 
-    def get_history(self):
+    def get_history(self, use_supabase=True):
+        """Get chat history from Supabase or in-memory"""
+        if use_supabase and db.enabled:
+            messages = db.get_recent_messages(100)
+            if messages:
+                return messages
         return chat_history
+
+# Initialize managers
+chat_manager = ChatManager()
 
 class AIAgentManager:
     '''Manages AI agents and their autonomous operations'''
@@ -293,7 +399,6 @@ class AIAgentManager:
     def load_characters(self):
         '''Load AI character configurations'''
         try:
-            # Use the autonomous communicator's agent definitions
             self.characters = {
                 agent_id: {
                     'name': agent_data['name'],
@@ -303,10 +408,8 @@ class AIAgentManager:
                 for agent_id, agent_data in autonomous_communicator.agents.items()
             }
             
-            self.active_character = self.characters.get(app.config['DEFAULT_CHARACTER'])
             logger.info(f"Loaded {len(self.characters)} AI characters with autonomous communication")
             
-            # Initialize autonomous operations
             if app.config.get('AUTONOMOUS_COMMUNICATION_ENABLED', True):
                 self.start_autonomous_operations()
                 
@@ -320,7 +423,6 @@ class AIAgentManager:
         def autonomous_loop():
             while True:
                 try:
-                    # Trigger periodic autonomous discussions
                     topics = [
                         "ecosystem health assessment",
                         "yield optimization opportunities", 
@@ -329,113 +431,27 @@ class AIAgentManager:
                         "governance proposal review"
                     ]
                     
-                    # Random autonomous discussion every 5-10 minutes
                     topic = random.choice(topics)
                     autonomous_communicator.initiate_autonomous_discussion(topic)
                     
-                    # Wait for next autonomous cycle
                     time.sleep(app.config.get('AUTONOMOUS_DISCUSSION_INTERVAL', 300))
                     
                 except Exception as e:
                     logger.error(f"Error in autonomous loop: {e}")
-                    time.sleep(60)  # Wait 1 minute before retrying
+                    time.sleep(60)
         
-        # Start autonomous loop in background thread
         autonomous_thread = threading.Thread(target=autonomous_loop, daemon=True)
         autonomous_thread.start()
         autonomous_state['autonomous_communication_active'] = True
         logger.info("✅ Autonomous communication system started")
 
-# Initialize managers
-chat_manager = ChatManager()
+# Initialize AI agent manager
 ai_agent_manager = AIAgentManager()
 
-# Initialize Enhanced Chat System
-if ENHANCED_CHAT_AVAILABLE:
-    try:
-        # Try to get Redis client if available
-        redis_client = None
-        try:
-            redis_url = os.environ.get('REDIS_URL')
-            if redis_url:
-                redis_client = redis.from_url(redis_url, decode_responses=True)
-                redis_client.ping()  # Test connection
-                logger.info("Redis connected for enhanced chat")
-        except Exception as e:
-            logger.warning(f"Redis not available for enhanced chat: {e}")
-        
-        # Create enhanced chat routes
-        enhanced_chat_system = create_enhanced_chat_routes(app, redis_client)
-        logger.info("Enhanced chat system initialized successfully")
-        
-    except Exception as e:
-        logger.error(f"Failed to initialize enhanced chat system: {e}")
-        ENHANCED_CHAT_AVAILABLE = False
+# API Routes
 
-# Autonomous Communication Routes (with unique names to avoid conflicts)
-# Using completely different route names to avoid conflicts with enhanced_chat_system
-
-@app.route('/api/autonomous/discussion/trigger', methods=['POST'])
-def trigger_autonomous_discussion():
-    """Manually trigger an autonomous discussion"""
-    try:
-        data = request.get_json()
-        topic = data.get('topic', 'general ecosystem discussion')
-        
-        # Trigger autonomous discussion
-        messages = autonomous_communicator.initiate_autonomous_discussion(topic)
-        
-        return jsonify({
-            'success': True,
-            'topic': topic,
-            'initial_messages': len(messages),
-            'discussion_id': messages[0]['discussion_id'] if messages else None
-        })
-        
-    except Exception as e:
-        logger.error(f"Error triggering autonomous discussion: {e}")
-        return jsonify({'error': 'Internal server error'}), 500
-
-@app.route('/api/autonomous/system/status')
-def get_autonomous_system_status():
-    """Get status of autonomous system (different from /api/agents/status)"""
-    try:
-        agent_statuses = {}
-        for agent_id, agent_data in autonomous_communicator.agents.items():
-            agent_statuses[agent_id] = {
-                'name': agent_data['name'],
-                'status': agent_data['status'],
-                'last_communication': agent_data['last_communication'],
-                'context_messages': len(agent_data['conversation_context'])
-            }
-        
-        return jsonify({
-            'agents': agent_statuses,
-            'active_discussions': len(autonomous_communicator.active_discussions),
-            'autonomous_communication_active': autonomous_state.get('autonomous_communication_active', False),
-            'total_messages': len(chat_history)
-        })
-        
-    except Exception as e:
-        logger.error(f"Error getting autonomous system status: {e}")
-        return jsonify({'error': 'Internal server error'}), 500
-
-@app.route('/api/autonomous/discussions/list')
-def get_autonomous_discussions():
-    """Get active autonomous discussions (different from existing routes)"""
-    try:
-        return jsonify({
-            'discussions': autonomous_communicator.active_discussions,
-            'count': len(autonomous_communicator.active_discussions)
-        })
-    except Exception as e:
-        logger.error(f"Error getting autonomous discussions: {e}")
-        return jsonify({'error': 'Internal server error'}), 500
-
-# Enhanced Dashboard Route
 @app.route('/')
 def index():
-    """Main dashboard with autonomous communication features"""
     return render_template_string('''
 <!DOCTYPE html>
 <html lang="en">
@@ -444,44 +460,171 @@ def index():
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XMRT DAO Hub - Autonomous Communication</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #0a0a0a; color: #fff; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .status-card { background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 20px; }
-        .status-card h3 { margin-top: 0; color: #4CAF50; }
-        .agent-status { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; }
-        .status-indicator { width: 12px; height: 12px; border-radius: 50%; }
-        .status-active { background: #4CAF50; }
-        .status-inactive { background: #f44336; }
-        .activity-feed { background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 20px; height: 400px; overflow-y: auto; margin-bottom: 20px; }
-        .activity-item { margin: 10px 0; padding: 10px; border-radius: 5px; background: #2a2a2a; border-left: 4px solid #4CAF50; }
-        .activity-timestamp { color: #888; font-size: 0.8em; margin-top: 5px; }
-        .message { margin: 10px 0; padding: 10px; border-radius: 5px; }
-        .message.user { background: #2196F3; text-align: right; }
-        .message.agent { background: #4CAF50; }
-        .message.autonomous { background: #FF9800; border-left: 4px solid #FF5722; }
-        .input-container { display: flex; gap: 10px; }
-        .input-container input { flex: 1; padding: 10px; border: 1px solid #333; border-radius: 5px; background: #2a2a2a; color: #fff; }
-        .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
-        .btn-primary { background: #2196F3; color: white; }
-        .btn-success { background: #4CAF50; color: white; }
-        .btn-warning { background: #FF9800; color: white; }
-        .autonomous-controls { display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
-        .activity-dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
-        .activity-panel { background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 20px; }
-        .activity-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .connection-status { position: fixed; top: 20px; right: 20px; background: #4CAF50; color: white; padding: 8px 15px; border-radius: 20px; font-size: 0.9em; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .connection-status {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #4CAF50;
+            color: white;
+            font-weight: bold;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
         .connection-status.disconnected { background: #f44336; }
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .status-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .status-card h3 {
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+        .agent-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        .status-active { background: #4CAF50; }
+        .status-inactive { background: #666; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .autonomous-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+        }
+        .btn-warning {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .activity-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .activity-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        .activity-feed {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .activity-item {
+            padding: 12px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+        }
+        .activity-timestamp {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 5px;
+        }
+        .input-container {
+            display: flex;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .input-container input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 14px;
+        }
+        .input-container input::placeholder { color: #999; }
     </style>
 </head>
 <body>
-    <div class="connection-status" id="connectionStatus">Connected</div>
-    
     <div class="container">
+        <div class="connection-status" id="connectionStatus">Connected</div>
+        
         <div class="header">
             <h1>🤖 XMRT DAO Hub - Autonomous Communication</h1>
             <p>Real-time autonomous inter-agent communication system</p>
+            <p style="margin-top: 10px; color: #4CAF50;">✅ Connected to Supabase Backend</p>
         </div>
         
         <div class="status-grid">
@@ -575,37 +718,32 @@ def index():
             const now = new Date();
             const diff = now - date;
             
-            if (diff < 60000) {
-                return 'Just now';
-            } else if (diff < 3600000) {
-                return `${Math.floor(diff / 60000)}m ago`;
-            } else {
-                return date.toLocaleTimeString();
-            }
+            if (diff < 60000) return 'Just now';
+            if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+            return date.toLocaleTimeString();
         }
         
         function updateActivityFeed(communications, operations) {
-            // Update communications feed
             const commFeed = document.getElementById('agentCommunications');
             if (communications && communications.length > 0) {
                 commFeed.innerHTML = communications.map(item => `
                     <div class="activity-item">
-                        <div>${item.message}</div>
+                        <div><strong>${item.sender || item.agent_name || 'Agent'}:</strong> ${item.message}</div>
                         <div class="activity-timestamp">${formatTimestamp(item.timestamp)}</div>
                     </div>
                 `).join('');
                 document.getElementById('comm-status-indicator').className = 'status-indicator status-active';
+                document.getElementById('messageCount').textContent = communications.length;
             } else {
                 commFeed.innerHTML = '<div class="activity-item"><div>No recent communications</div><div class="activity-timestamp">Waiting for activity...</div></div>';
                 document.getElementById('comm-status-indicator').className = 'status-indicator status-inactive';
             }
 
-            // Update operations feed
             const opsFeed = document.getElementById('systemOperations');
             if (operations && operations.length > 0) {
                 opsFeed.innerHTML = operations.map(item => `
                     <div class="activity-item">
-                        <div>${item.message}</div>
+                        <div>${item.title || item.message}</div>
                         <div class="activity-timestamp">${formatTimestamp(item.timestamp)}</div>
                     </div>
                 `).join('');
@@ -617,30 +755,41 @@ def index():
         }
         
         function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
+            if (event.key === 'Enter') sendMessage();
         }
         
-        function sendMessage() {
+        async function sendMessage() {
             const input = document.getElementById('messageInput');
             const message = input.value.trim();
             if (!message) return;
             
             input.value = '';
             
-            // Trigger autonomous discussion based on message
-            triggerAutonomousDiscussion(message);
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message, sender: 'User' })
+                });
+                
+                if (response.ok) {
+                    setTimeout(refreshActivity, 1000);
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+            }
         }
         
         async function refreshActivity() {
             try {
-                // Use the activity monitor API endpoints
                 const response = await fetch('/api/activity/feed');
                 if (response.ok) {
                     const data = await response.json();
                     updateActivityFeed(data.communications, data.operations);
                     updateConnectionStatus(true);
+                    if (data.communications && data.communications.length > 0) {
+                        document.getElementById('lastActivity').textContent = formatTimestamp(data.communications[0].timestamp);
+                    }
                 } else {
                     throw new Error('Failed to fetch activity feed');
                 }
@@ -668,20 +817,7 @@ def index():
                 });
                 
                 if (response.ok) {
-                    const data = await response.json();
-                    console.log('Autonomous discussion triggered:', data);
-                    // Refresh activity after triggering
                     setTimeout(refreshActivity, 2000);
-                } else {
-                    // Fallback to original endpoint
-                    const fallbackResponse = await fetch('/api/autonomous/discussion/trigger', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ topic: topic })
-                    });
-                    if (fallbackResponse.ok) {
-                        setTimeout(refreshActivity, 2000);
-                    }
                 }
             } catch (error) {
                 console.error('Error triggering discussion:', error);
@@ -690,20 +826,13 @@ def index():
         
         async function getSystemStatus() {
             try {
-                // Try activity monitor API first
-                let response = await fetch('/api/status');
-                if (!response.ok) {
-                    // Fallback to original endpoint
-                    response = await fetch('/api/autonomous/system/status');
-                }
-                
+                const response = await fetch('/api/status');
                 if (response.ok) {
                     const data = await response.json();
                     console.log('System status:', data);
                     document.getElementById('discussionCount').textContent = data.active_discussions || 0;
+                    document.getElementById('commStatus').textContent = data.autonomous_communication ? 'Active' : 'Inactive';
                     updateConnectionStatus(true);
-                } else {
-                    throw new Error('Failed to get system status');
                 }
             } catch (error) {
                 console.error('Error getting system status:', error);
@@ -711,15 +840,11 @@ def index():
             }
         }
         
-        // Auto-refresh activity every 15 seconds
         setInterval(refreshActivity, 15000);
         
-        // Initial load
         document.addEventListener('DOMContentLoaded', function() {
             refreshActivity();
             getSystemStatus();
-            
-            // Kickstart activity if needed
             setTimeout(() => {
                 fetch('/api/kickstart', { method: 'POST' }).catch(console.error);
             }, 3000);
@@ -729,43 +854,105 @@ def index():
 </html>
     ''')
 
-# Health check endpoint
+@app.route('/api/activity/feed', methods=['GET'])
+def get_activity_feed():
+    """Get activity feed with messages and operations"""
+    try:
+        # Get messages from Supabase or in-memory
+        messages = chat_manager.get_history(use_supabase=True)
+        
+        # Get activities from Supabase
+        activities = db.get_recent_activities(20) if db.enabled else []
+        
+        return jsonify({
+            "success": True,
+            "communications": messages[-50:],  # Last 50 messages
+            "operations": activities,
+            "total_count": len(messages)
+        })
+    except Exception as e:
+        logger.error(f"Error in activity feed: {e}")
+        return jsonify({"error": str(e), "communications": [], "operations": []}), 500
+
+@app.route('/api/status', methods=['GET'])
+def get_status():
+    """Get system status"""
+    try:
+        return jsonify({
+            "success": True,
+            "autonomous_communication": autonomous_state.get('autonomous_communication_active', False),
+            "active_discussions": len(autonomous_communicator.active_discussions),
+            "agents_loaded": len(autonomous_communicator.agents),
+            "supabase_connected": db.enabled,
+            "total_messages": len(chat_history)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/kickstart', methods=['POST'])
+def kickstart():
+    """Kickstart autonomous activity"""
+    try:
+        # Trigger an initial discussion
+        topic = "system initialization and health check"
+        threading.Thread(
+            target=lambda: autonomous_communicator.initiate_autonomous_discussion(topic),
+            daemon=True
+        ).start()
+        
+        return jsonify({"success": True, "message": "System kickstarted"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/trigger-discussion', methods=['POST'])
+def trigger_discussion():
+    """Trigger an autonomous discussion"""
+    try:
+        data = request.get_json()
+        topic = data.get('topic', 'general ecosystem discussion')
+        
+        threading.Thread(
+            target=lambda: autonomous_communicator.initiate_autonomous_discussion(topic),
+            daemon=True
+        ).start()
+        
+        return jsonify({"success": True, "topic": topic})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/chat', methods=['POST'])
+def chat():
+    """Handle user chat messages"""
+    try:
+        data = request.get_json()
+        message = data.get('message', '')
+        sender = data.get('sender', 'User')
+        
+        if not message:
+            return jsonify({"error": "Message is required"}), 400
+        
+        # Add message to chat history
+        chat_manager.add_message(sender, message)
+        
+        return jsonify({"success": True, "message": "Message received"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/health')
 def health_check():
+    """Health check endpoint"""
     return jsonify({
         'status': 'healthy',
         'autonomous_communication': autonomous_state.get('autonomous_communication_active', False),
         'agents_loaded': len(autonomous_communicator.agents),
-        'active_discussions': len(autonomous_communicator.active_discussions)
+        'active_discussions': len(autonomous_communicator.active_discussions),
+        'supabase_connected': db.enabled
     })
 
 if __name__ == '__main__':
-    logger.info("🚀 Starting XMRT Ecosystem with Autonomous Communication")
+    logger.info("🚀 Starting XMRT Ecosystem with Supabase Backend")
+    logger.info(f"📊 Supabase URL: {app.config['SUPABASE_URL']}")
+    logger.info(f"🔗 Supabase Connected: {db.enabled}")
     logger.info("🤖 Autonomous operations started")
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=False)
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 10000)), debug=False)
 
-
-@app.route('/api/activity/feed', methods=['GET'])
-def get_activity_feed():
-    """Get activity feed for ecosystem widget"""
-    try:
-        activities = []
-        
-        # Add agent discussion activity
-        activities.append({
-            "id": f"chat_{int(time.time())}",
-            "title": "💬 Agent Discussion Active",
-            "description": "Autonomous agents are engaged in strategic discussions",
-            "source": "hub",
-            "timestamp": datetime.now().isoformat(),
-            "type": "agent_discussion",
-            "data": {"active_discussions": 5}
-        })
-        
-        return jsonify({
-            "success": True,
-            "activities": activities
-        })
-        
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
