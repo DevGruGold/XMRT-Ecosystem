@@ -1,13 +1,18 @@
 services:
   - type: web
-    name: xmrt-ecosystem
-    runtime: python3
-    buildCommand: pip install -r requirements.txt
-    startCommand: python app.py
-    plan: free
+    name: xmrt-ecosystem-1
+    env: python
     region: oregon
-    branch: main
-    rootDir: ./
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --timeout 120
+    healthCheckPath: /health
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.11
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_APP
+        value: app.py
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: WEB_CONCURRENCY
+        value: "1"
