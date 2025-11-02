@@ -1,16 +1,6 @@
 {
   "version": 2,
   "name": "xmrt-ecosystem",
-  "builds": [
-    {
-      "src": "api/**/*.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "index.html",
-      "use": "@vercel/static"
-    }
-  ],
   "routes": [
     {
       "src": "^/$",
@@ -22,7 +12,7 @@
     },
     {
       "src": "/api/agents/([^/]+)",
-      "dest": "/api/agents.py?agent_id=$1"
+      "dest": "/api/agents.py"
     },
     {
       "src": "/api/agents",
@@ -45,11 +35,5 @@
     "SUPABASE_KEY": "@supabase_key",
     "UPSTASH_REDIS_URL": "@upstash_redis_url",
     "UPSTASH_REDIS_TOKEN": "@upstash_redis_token"
-  },
-  "functions": {
-    "api/**/*.py": {
-      "memory": 1024,
-      "maxDuration": 60
-    }
   }
 }
