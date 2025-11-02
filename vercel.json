@@ -9,12 +9,28 @@
   ],
   "routes": [
     {
+      "src": "/health",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "/api/agents",
+      "dest": "/api/agents.py"
+    },
+    {
+      "src": "/api/agents/(.*)",
+      "dest": "/api/agents.py"
+    },
+    {
+      "src": "/api/tick",
+      "dest": "/api/tick.py"
+    },
+    {
       "src": "/api/(.*)",
-      "dest": "api/$1"
+      "dest": "/api/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "api/index.py"
+      "dest": "/$1"
     }
   ],
   "env": {
