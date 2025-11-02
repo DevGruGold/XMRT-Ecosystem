@@ -5,19 +5,27 @@
     {
       "src": "api/**/*.py",
       "use": "@vercel/python"
+    },
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
+    {
+      "src": "^/$",
+      "dest": "/index.html"
+    },
     {
       "src": "/health",
       "dest": "/api/index.py"
     },
     {
-      "src": "/api/agents",
-      "dest": "/api/agents.py"
+      "src": "/api/agents/([^/]+)",
+      "dest": "/api/agents.py?agent_id=$1"
     },
     {
-      "src": "/api/agents/(.*)",
+      "src": "/api/agents",
       "dest": "/api/agents.py"
     },
     {
@@ -27,10 +35,6 @@
     {
       "src": "/api/(.*)",
       "dest": "/api/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
     }
   ],
   "env": {
