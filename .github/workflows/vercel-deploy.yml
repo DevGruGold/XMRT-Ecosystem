@@ -1,0 +1,59 @@
+name: 🚀 Deploy to Vercel
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: 🔧 Install Vercel CLI
+      run: npm install --global vercel@latest
+    
+    - name: 🔗 Pull Vercel Environment Information
+      run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+    
+    - name: 🏗️ Build Project Artifacts
+      run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+    
+    - name: 🚀 Deploy to Vercel
+      id: deploy
+      run: |
+        DEPLOY_URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+        echo "deployment_url=$DEPLOY_URL" >> $GITHUB_OUTPUT
+        echo "Deployed to: $DEPLOY_URL"
+    
+    - name: ✅ Verify Deployment
+      run: |
+        sleep 10
+        curl -f ${{ steps.deploy.outputs.deployment_url }}/health || exit 1
+        echo "Deployment verified successfully!"
+    
+    - name: 📊 Create Deployment Summary
+      run: |
+        echo "## 🚀 Vercel Deployment Complete" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Status:** ✅ Success" >> $GITHUB_STEP_SUMMARY
+        echo "**URL:** ${{ steps.deploy.outputs.deployment_url }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Timestamp:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 🔍 Quick Links" >> $GITHUB_STEP_SUMMARY
+        echo "- [Application](${{ steps.deploy.outputs.deployment_url }})" >> $GITHUB_STEP_SUMMARY
+        echo "- [Health Check](${{ steps.deploy.outputs.deployment_url }}/health)" >> $GITHUB_STEP_SUMMARY
+        echo "- [Agents API](${{ steps.deploy.outputs.deployment_url }}/agents)" >> $GITHUB_STEP_SUMMARY

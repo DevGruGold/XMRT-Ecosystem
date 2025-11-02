@@ -1,24 +1,36 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "installCommand": "npm install",
-  "framework": "vite",
-  "rewrites": [
+  "name": "xmrt-ecosystem",
+  "projectId": "prj_cCRNlFUwqVJpDYN2ROctnVEdlyWs",
+  "builds": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "api/**/*.py",
+      "use": "@vercel/python"
     }
   ],
-  "headers": [
+  "routes": [
     {
-      "source": "/assets/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
+      "src": "/api/(.*)",
+      "dest": "api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "api/index.py"
     }
-  ]
+  ],
+  "env": {
+    "GITHUB_TOKEN": "@github_token",
+    "GITHUB_ORG": "@github_org",
+    "OPENAI_API_KEY": "@openai_api_key",
+    "SUPABASE_URL": "@supabase_url",
+    "SUPABASE_KEY": "@supabase_key",
+    "UPSTASH_REDIS_URL": "@upstash_redis_url",
+    "UPSTASH_REDIS_TOKEN": "@upstash_redis_token"
+  },
+  "functions": {
+    "api/**/*.py": {
+      "memory": 1024,
+      "maxDuration": 60
+    }
+  }
 }

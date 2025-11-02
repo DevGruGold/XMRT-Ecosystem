@@ -1,0 +1,208 @@
+name: 🏥 Repository Health Check
+
+on:
+  schedule:
+    # Run every 12 hours
+    - cron: '0 */12 * * *'
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+env:
+  HEALTH_DIR: 'health_checks'
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+    - name: 📥 Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: 🐍 Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: 📦 Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests PyGithub python-dotenv
+    
+    - name: 🏥 Run repository health check
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        python3 << 'EOF'
+        import os
+        import json
+        from datetime import datetime
+        from github import Github, Auth
+        
+        # Authenticate with GitHub
+        auth = Auth.Token(os.environ['GITHUB_TOKEN'])
+        g = Github(auth=auth)
+        
+        # Get repository
+        repo = g.get_repo('DevGruGold/XMRT-Ecosystem')
+        
+        # Create health directory
+        health_dir = '${{ env.HEALTH_DIR }}'
+        os.makedirs(health_dir, exist_ok=True)
+        
+        # Collect metrics
+        health_data = {
+            "timestamp": datetime.utcnow().isoformat() + 'Z',
+            "repository": {
+                "name": repo.full_name,
+                "stars": repo.stargazers_count,
+                "forks": repo.forks_count,
+                "watchers": repo.watchers_count,
+                "open_issues": repo.open_issues_count,
+                "size_kb": repo.size,
+                "default_branch": repo.default_branch
+            },
+            "commits": {
+                "total": repo.get_commits().totalCount,
+                "this_week": len(list(repo.get_commits(since=datetime.utcnow().replace(day=datetime.utcnow().day-7))))
+            },
+            "pull_requests": {
+                "open": repo.get_pulls(state='open').totalCount,
+                "closed": repo.get_pulls(state='closed').totalCount
+            },
+            "issues": {
+                "open": repo.get_issues(state='open').totalCount,
+                "closed": repo.get_issues(state='closed').totalCount
+            },
+            "contributors": repo.get_contributors().totalCount,
+            "languages": repo.get_languages()
+        }
+        
+        # Save JSON report
+        with open(f'{health_dir}/health_metrics.json', 'w') as f:
+            json.dump(health_data, f, indent=2)
+        
+        # Generate markdown report
+        report_date = datetime.now().strftime('%Y%m%d')
+        report_file = f'{health_dir}/HEALTH_CHECK_{report_date}.md'
+        
+        with open(report_file, 'w') as f:
+            f.write(f'# 🏥 Repository Health Check Report\n\n')
+            f.write(f'**Repository:** {health_data["repository"]["name"]}\n')
+            f.write(f'**Timestamp:** {health_data["timestamp"]}\n')
+            f.write(f'**Agent:** Eliza (Health Monitor)\n\n')
+            
+            f.write('## 📊 Key Metrics\n\n')
+            f.write('| Metric | Value |\n')
+            f.write('|--------|-------|\n')
+            f.write(f'| ⭐ Stars | {health_data["repository"]["stars"]} |\n')
+            f.write(f'| 🍴 Forks | {health_data["repository"]["forks"]} |\n')
+            f.write(f'| 👀 Watchers | {health_data["repository"]["watchers"]} |\n')
+            f.write(f'| 📝 Open Issues | {health_data["issues"]["open"]} |\n')
+            f.write(f'| ✅ Closed Issues | {health_data["issues"]["closed"]} |\n')
+            f.write(f'| 🔄 Open PRs | {health_data["pull_requests"]["open"]} |\n')
+            f.write(f'| 💚 Commits (7 days) | {health_data["commits"]["this_week"]} |\n')
+            f.write(f'| 👥 Contributors | {health_data["contributors"]} |\n\n')
+            
+            f.write('## 💻 Language Distribution\n\n')
+            total_bytes = sum(health_data["languages"].values())
+            for lang, bytes_count in sorted(health_data["languages"].items(), key=lambda x: x[1], reverse=True):
+                percentage = (bytes_count / total_bytes * 100) if total_bytes > 0 else 0
+                f.write(f'- **{lang}**: {percentage:.1f}%\n')
+            
+            f.write('\n## 🎯 Health Score\n\n')
+            # Calculate simple health score
+            score = 0
+            if health_data["commits"]["this_week"] > 0:
+                score += 25
+            if health_data["issues"]["open"] < 10:
+                score += 25
+            if health_data["pull_requests"]["open"] < 5:
+                score += 25
+            if health_data["contributors"] > 1:
+                score += 25
+            
+            if score >= 75:
+                status = '🟢 Excellent'
+            elif score >= 50:
+                status = '🟡 Good'
+            else:
+                status = '🔴 Needs Attention'
+            
+            f.write(f'**Overall Health:** {status} ({score}/100)\n\n')
+            
+            f.write('## ✅ Recommendations\n\n')
+            if health_data["commits"]["this_week"] == 0:
+                f.write('- ⚠️ No commits this week - consider regular updates\n')
+            if health_data["issues"]["open"] > 10:
+                f.write('- ⚠️ High number of open issues - prioritize triage\n')
+            if health_data["pull_requests"]["open"] > 5:
+                f.write('- ⚠️ Multiple pending PRs - review and merge\n')
+            if score == 100:
+                f.write('- ✅ Repository is in excellent health!\n')
+            
+            f.write('\n---\n')
+            f.write('*Automated health check by Eliza Agent*\n')
+        
+        print(f'✅ Health check report created: {report_file}')
+        print(f'Health Score: {score}/100')
+        EOF
+    
+    - name: 📊 Check for changes
+      id: check_changes
+      run: |
+        git add .
+        if git diff --staged --quiet; then
+          echo "changes=false" >> $GITHUB_OUTPUT
+        else
+          echo "changes=true" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: 💾 Commit health check
+      if: steps.check_changes.outputs.changes == 'true'
+      run: |
+        git config user.name "Eliza Health Monitor"
+        git config user.email "health@xmrt-ecosystem.io"
+        CHECK_DATE=$(date -u '+%Y%m%d')
+        git add ${{ env.HEALTH_DIR }}
+        git commit -m "🏥 Repository Health Check #$CHECK_DATE [automated]
+
+        ✅ Repository metrics collected
+        📊 Health score calculated
+        💡 Recommendations generated
+        
+        Agent: Eliza (Health Monitor)
+        Generated by: XMRT Autonomous Health System"
+        git push
+    
+    - name: 📈 Create workflow summary
+      if: always()
+      run: |
+        CHECK_DATE=$(date -u '+%Y%m%d')
+        echo "## 🏥 Repository Health Check Complete" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Check Date:** $CHECK_DATE" >> $GITHUB_STEP_SUMMARY
+        echo "**Status:** ✅ Complete" >> $GITHUB_STEP_SUMMARY
+        echo "**Timestamp:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ -f "${{ env.HEALTH_DIR }}/health_metrics.json" ]; then
+          echo "### 📊 Quick Stats" >> $GITHUB_STEP_SUMMARY
+          python3 << 'PYEOF'
+        import json
+        with open('${{ env.HEALTH_DIR }}/health_metrics.json', 'r') as f:
+            data = json.load(f)
+            print(f"- ⭐ Stars: {data['repository']['stars']}")
+            print(f"- 🍴 Forks: {data['repository']['forks']}")
+            print(f"- 📝 Open Issues: {data['issues']['open']}")
+            print(f"- 💚 Commits (7d): {data['commits']['this_week']}")
+        PYEOF
+        fi
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Next Check:** In 12 hours (automatic)" >> $GITHUB_STEP_SUMMARY
