@@ -1,30 +1,9 @@
 {
   "version": 2,
-  "name": "xmrt-ecosystem",
-  "routes": [
-    {
-      "src": "^/$",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/health",
-      "dest": "/api/index.py"
-    },
-    {
-      "src": "/api/agents/([^/]+)",
-      "dest": "/api/agents.py"
-    },
-    {
-      "src": "/api/agents",
-      "dest": "/api/agents.py"
-    },
-    {
-      "src": "/api/tick",
-      "dest": "/api/tick.py"
-    },
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    }
+  "rewrites": [
+    { "source": "/health", "destination": "/api/index.py" },
+    { "source": "/api/agents", "destination": "/api/agents.py" },
+    { "source": "/api/agents/:agent", "destination": "/api/agents.py?agent_id=:agent" },
+    { "source": "/api/tick", "destination": "/api/tick.py" }
   ]
 }
