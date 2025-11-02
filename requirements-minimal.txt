@@ -3,10 +3,10 @@
 
 # Core Flask Framework
 Flask==2.3.3
-gunicorn==21.2.0
+gunicorn==22.0.0
 python-dotenv==1.0.0
 requests==2.31.0
-flask-cors==4.0.0
+flask-cors==6.0.0
 
 # Essential ML/Data Libraries
 numpy==1.24.3
