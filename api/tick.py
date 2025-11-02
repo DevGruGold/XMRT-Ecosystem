@@ -1,58 +1,49 @@
 """
-XMRT Ecosystem - Agent Coordination Tick API
-Serverless endpoint for triggering agent coordination cycles
+XMRT Ecosystem - Agent Coordination Trigger API
+Vercel Serverless Function
 """
 
-from flask import Flask, jsonify, request
+from http.server import BaseHTTPRequestHandler
+import json
 from datetime import datetime
-import os
-import sys
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-app = Flask(__name__)
-
-@app.route('/api/tick', methods=['POST', 'GET'])
-def tick():
-    """
-    Trigger a coordination cycle
-    This endpoint can be called by GitHub Actions or external services
-    """
-    try:
-        # Get request data
-        data = request.get_json() if request.is_json else {}
+class handler(BaseHTTPRequestHandler):
+    def do_POST(self):
+        """Handle POST request to trigger agent coordination"""
         
-        # Record the tick
-        tick_info = {
-            "status": "success",
-            "message": "Coordination cycle initiated",
+        # Read request body
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length).decode('utf-8') if content_length > 0 else '{}'
+        
+        try:
+            data = json.loads(body)
+            trigger = data.get('trigger', 'unknown')
+        except:
+            trigger = 'unknown'
+        
+        response_data = {
+            "ok": True,
+            "message": "Agent coordination cycle triggered",
+            "trigger": trigger,
             "timestamp": datetime.utcnow().isoformat() + "Z",
-            "trigger": data.get("trigger", "manual"),
-            "cycle_type": data.get("cycle_type", "standard"),
-            "agents": {
-                "eliza": {"status": "coordinating", "weight": 1.2},
-                "security_guardian": {"status": "analyzing", "weight": 1.1},
-                "defi_specialist": {"status": "calculating", "weight": 1.05},
-                "community_manager": {"status": "engaging", "weight": 1.0}
-            },
-            "operations": {
-                "repository_scan": "queued",
-                "consensus_building": "in_progress",
-                "decision_making": "pending",
-                "report_generation": "scheduled"
-            }
+            "note": "Coordination will be executed by GitHub Actions workflow"
         }
         
-        return jsonify(tick_info), 200
+        self.send_response(200)
+        self.send_header('Content-type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.end_headers()
         
-    except Exception as e:
-        return jsonify({
-            "status": "error",
-            "message": str(e),
-            "timestamp": datetime.utcnow().isoformat() + "Z"
-        }), 500
-
-def handler(request):
-    """Vercel serverless function handler"""
-    with app.request_context(request.environ):
-        return app.full_dispatch_request()
+        self.wfile.write(json.dumps(response_data).encode())
+        return
+    
+    def do_OPTIONS(self):
+        """Handle OPTIONS request for CORS"""
+        self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.end_headers()
+        return
