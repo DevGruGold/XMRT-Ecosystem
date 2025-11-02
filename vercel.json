@@ -1,7 +1,6 @@
 {
   "version": 2,
   "name": "xmrt-ecosystem",
-  "projectId": "prj_cCRNlFUwqVJpDYN2ROctnVEdlyWs",
   "builds": [
     {
       "src": "api/**/*.py",
