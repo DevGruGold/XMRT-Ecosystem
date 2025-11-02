@@ -1,0 +1,23 @@
+# Ignore old Flask app - use serverless functions in api/ instead
+app.py
+main.py
+wsgi.py
+
+# Ignore old templates
+templates/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Environment
+.env
+.env.local
+venv/
+env/
+
+# Node
+node_modules/
