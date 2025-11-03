@@ -7,13 +7,13 @@ gunicorn==22.0.0
 python-dotenv==1.0.0
 
 # API and Web Services
-requests==2.31.0
+requests==2.32.4
 flask-cors==6.0.0
 flask-socketio==5.3.6
-python-socketio==5.10.0
+python-socketio==5.14.0
 
 # Async and WebSocket Support
-eventlet==0.33.3
+eventlet==0.40.3
 gevent==23.9.1
 gevent-websocket==0.10.1
 
@@ -38,10 +38,10 @@ pytz==2023.3
 
 # Monitoring and Logging
 structlog==23.2.0
-sentry-sdk==1.38.0
+sentry-sdk==1.45.1
 
 # Security
-cryptography==41.0.7
+cryptography==44.0.1
 PyJWT==2.8.0
 
 # Development/Testing (minimal)
