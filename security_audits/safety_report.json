@@ -16,12 +16,12 @@ We highly encourage switching to the new `scan` command which is easier to use, 
     "report_meta": {
         "scan_target": "environment",
         "scanned": [
-            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/setuptools/_vendor",
             "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/lib-dynload",
-            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages",
             "/opt/hostedtoolcache/Python/3.11.14/x64/bin",
+            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11",
+            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/setuptools/_vendor",
             "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python311.zip",
-            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11"
+            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages"
         ],
         "scanned_full_path": [
             "/opt/hostedtoolcache/Python/3.11.14/x64/bin",
@@ -41,7 +41,7 @@ We highly encourage switching to the new `scan` command which is easier to use, 
         "account": "",
         "local_database_path": null,
         "safety_version": "3.6.2",
-        "timestamp": "2025-11-02 16:38:46",
+        "timestamp": "2025-11-03 03:11:34",
         "packages_found": 76,
         "vulnerabilities_found": 0,
         "vulnerabilities_ignored": 0,
@@ -63,7 +63,7 @@ We highly encourage switching to the new `scan` command which is easier to use, 
         "git": {
             "branch": "main",
             "tag": "",
-            "commit": "5ff11a1100614c5fa8a9ffe2ae8069102509e2da",
+            "commit": "4db78e035b10406a96f877ddb03ffeaa4f68796a",
             "dirty": "True",
             "origin": "https://github.com/DevGruGold/XMRT-Ecosystem"
         },
