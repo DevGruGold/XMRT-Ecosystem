@@ -16,11 +16,11 @@ We highly encourage switching to the new `scan` command which is easier to use, 
     "report_meta": {
         "scan_target": "environment",
         "scanned": [
+            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages",
+            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/setuptools/_vendor",
+            "/opt/hostedtoolcache/Python/3.11.14/x64/bin",
             "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11",
             "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python311.zip",
-            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/setuptools/_vendor",
-            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages",
-            "/opt/hostedtoolcache/Python/3.11.14/x64/bin",
             "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/lib-dynload"
         ],
         "scanned_full_path": [
@@ -41,7 +41,7 @@ We highly encourage switching to the new `scan` command which is easier to use, 
         "account": "",
         "local_database_path": null,
         "safety_version": "3.6.2",
-        "timestamp": "2025-11-03 04:26:51",
+        "timestamp": "2025-11-04 03:05:12",
         "packages_found": 76,
         "vulnerabilities_found": 0,
         "vulnerabilities_ignored": 0,
@@ -63,7 +63,7 @@ We highly encourage switching to the new `scan` command which is easier to use, 
         "git": {
             "branch": "main",
             "tag": "",
-            "commit": "cef13b076523c1989c2a95a6bc54b4dbd237f5ee",
+            "commit": "e3cba0436955f50d3485bfb0a8b0aba078f1e8c4",
             "dirty": "True",
             "origin": "https://github.com/DevGruGold/XMRT-Ecosystem"
         },
@@ -721,14 +721,14 @@ We highly encourage switching to the new `scan` command which is easier to use, 
         },
         "regex": {
             "name": "regex",
-            "version": "2025.10.23",
+            "version": "2025.11.3",
             "requirements": [
                 {
-                    "raw": "regex==2025.10.23",
+                    "raw": "regex==2025.11.3",
                     "extras": [],
                     "marker": null,
                     "name": "regex",
-                    "specifier": "==2025.10.23",
+                    "specifier": "==2025.11.3",
                     "url": null,
                     "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages"
                 }
