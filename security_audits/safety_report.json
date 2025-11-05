@@ -16,12 +16,12 @@ We highly encourage switching to the new `scan` command which is easier to use, 
     "report_meta": {
         "scan_target": "environment",
         "scanned": [
-            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages",
-            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/setuptools/_vendor",
             "/opt/hostedtoolcache/Python/3.11.14/x64/bin",
-            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11",
             "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python311.zip",
-            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/lib-dynload"
+            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11",
+            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages",
+            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/lib-dynload",
+            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/setuptools/_vendor"
         ],
         "scanned_full_path": [
             "/opt/hostedtoolcache/Python/3.11.14/x64/bin",
@@ -41,7 +41,7 @@ We highly encourage switching to the new `scan` command which is easier to use, 
         "account": "",
         "local_database_path": null,
         "safety_version": "3.6.2",
-        "timestamp": "2025-11-04 03:05:12",
+        "timestamp": "2025-11-05 03:06:12",
         "packages_found": 76,
         "vulnerabilities_found": 0,
         "vulnerabilities_ignored": 0,
@@ -63,7 +63,7 @@ We highly encourage switching to the new `scan` command which is easier to use, 
         "git": {
             "branch": "main",
             "tag": "",
-            "commit": "e3cba0436955f50d3485bfb0a8b0aba078f1e8c4",
+            "commit": "6b21dfb894e9a87616df06bc5b8e59ce60506334",
             "dirty": "True",
             "origin": "https://github.com/DevGruGold/XMRT-Ecosystem"
         },
