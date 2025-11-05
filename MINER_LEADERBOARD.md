@@ -1,35 +1,35 @@
 # 🏆 XMRT Miner Contribution Leaderboard
 
 **Period**: Last 7 days
-**Generated**: 2025-11-04 02:00:23 UTC
+**Generated**: 2025-11-05 02:01:56 UTC
 **Total Miners**: 2
-**Total Contributions**: 27
+**Total Contributions**: 48
 
 ## 🥇 Top Contributors
 
 | Rank | Miner | Score | Estimated XMRT | Contributions |
 |------|-------|-------|----------------|---------------|
-| 🥇 | **Joseph Andrew Lee** (@DevGruGold) | 350 | 350.00 | 10 commits, 3 bug_fixes, 1 pull_requests, 9 issues |
+| 🥇 | **Joseph Andrew Lee** (@DevGruGold) | 660 | 660.00 | 11 commits, 3 bug_fixes, 1 pull_requests, 29 issues |
 | 🥈 | **dependabot[bot]** (@dependabot[bot]) | 70 | 70.00 | 2 commits, 2 pull_requests |
 
 ## 📊 Contribution Breakdown
 
 | Contribution Type | Count | Weight | Total Score |
 |-------------------|-------|--------|-------------|
-| Commits | 12 | 10 | 120 |
-| Issues | 9 | 15 | 135 |
+| Issues | 29 | 15 | 435 |
+| Commits | 13 | 10 | 130 |
 | Bug Fixes | 3 | 0 | 0 |
 | Pull Requests | 3 | 25 | 75 |
 
 ## 💰 Reward Distribution
 
 - **Base Multiplier**: 100x
-- **Total Score Pool**: 420
-- **Estimated Total XMRT**: 420.00
+- **Total Score Pool**: 730
+- **Estimated Total XMRT**: 730.00
 
 ### 🎯 Top Reward Recipients
-1. **Joseph Andrew Lee**: 350.00 XMRT (83.3% of pool)
-2. **dependabot[bot]**: 70.00 XMRT (16.7% of pool)
+1. **Joseph Andrew Lee**: 660.00 XMRT (90.4% of pool)
+2. **dependabot[bot]**: 70.00 XMRT (9.6% of pool)
 
 ---
 *Rewards are estimated based on contribution scores and may be subject to final review and adjustment.*
