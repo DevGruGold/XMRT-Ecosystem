@@ -16,12 +16,12 @@ We highly encourage switching to the new `scan` command which is easier to use, 
     "report_meta": {
         "scan_target": "environment",
         "scanned": [
-            "/opt/hostedtoolcache/Python/3.11.14/x64/bin",
-            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python311.zip",
-            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11",
+            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/setuptools/_vendor",
             "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages",
-            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/lib-dynload",
-            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/setuptools/_vendor"
+            "/opt/hostedtoolcache/Python/3.11.14/x64/bin",
+            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11",
+            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python311.zip",
+            "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/lib-dynload"
         ],
         "scanned_full_path": [
             "/opt/hostedtoolcache/Python/3.11.14/x64/bin",
@@ -41,7 +41,7 @@ We highly encourage switching to the new `scan` command which is easier to use, 
         "account": "",
         "local_database_path": null,
         "safety_version": "3.6.2",
-        "timestamp": "2025-11-05 03:06:12",
+        "timestamp": "2025-11-06 03:08:14",
         "packages_found": 76,
         "vulnerabilities_found": 0,
         "vulnerabilities_ignored": 0,
@@ -63,7 +63,7 @@ We highly encourage switching to the new `scan` command which is easier to use, 
         "git": {
             "branch": "main",
             "tag": "",
-            "commit": "6b21dfb894e9a87616df06bc5b8e59ce60506334",
+            "commit": "a6b56c73d0630ff6ca49d17a0e88f4ff6bd5f205",
             "dirty": "True",
             "origin": "https://github.com/DevGruGold/XMRT-Ecosystem"
         },
@@ -646,14 +646,14 @@ We highly encourage switching to the new `scan` command which is easier to use, 
         },
         "pydantic": {
             "name": "pydantic",
-            "version": "2.12.3",
+            "version": "2.12.4",
             "requirements": [
                 {
-                    "raw": "pydantic==2.12.3",
+                    "raw": "pydantic==2.12.4",
                     "extras": [],
                     "marker": null,
                     "name": "pydantic",
-                    "specifier": "==2.12.3",
+                    "specifier": "==2.12.4",
                     "url": null,
                     "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages"
                 }
@@ -661,14 +661,14 @@ We highly encourage switching to the new `scan` command which is easier to use, 
         },
         "pydantic-core": {
             "name": "pydantic-core",
-            "version": "2.41.4",
+            "version": "2.41.5",
             "requirements": [
                 {
-                    "raw": "pydantic-core==2.41.4",
+                    "raw": "pydantic-core==2.41.5",
                     "extras": [],
                     "marker": null,
                     "name": "pydantic-core",
-                    "specifier": "==2.41.4",
+                    "specifier": "==2.41.5",
                     "url": null,
                     "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages"
                 }
