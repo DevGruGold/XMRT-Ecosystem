@@ -1,0 +1,33 @@
+{
+  "timestamp": "2025-11-08T01:17:07.556539Z",
+  "repository": {
+    "name": "DevGruGold/XMRT-Ecosystem",
+    "stars": 7,
+    "forks": 5,
+    "watchers": 7,
+    "open_issues": 596,
+    "size_kb": 4395,
+    "default_branch": "main"
+  },
+  "commits": {
+    "total": 3153,
+    "this_week": 59
+  },
+  "pull_requests": {
+    "open": 0,
+    "closed": 73
+  },
+  "issues": {
+    "open": 0,
+    "closed": 0
+  },
+  "contributors": 4,
+  "languages": {
+    "Python": 1492239,
+    "Solidity": 221762,
+    "HTML": 73008,
+    "JavaScript": 54328,
+    "Dockerfile": 1194,
+    "Procfile": 123
+  }
+}
