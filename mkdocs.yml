@@ -1,0 +1,6 @@
+
+site_name: XMRT Ecosystem Documentation
+nav:
+    - Home: index.md
+theme:
+    name: material
