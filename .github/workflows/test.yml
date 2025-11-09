@@ -60,7 +60,7 @@ jobs:
       if: matrix.test-suite == 'unit' || github.event.inputs.test_type == 'full'
       run: |
         echo "🧪 Running Unit Tests..."
-        python -m pytest tests/unit/ -v --cov=main --cov-report=xml --cov-report=term
+        python -m pytest tests/ -v --cov=main --cov-report=xml --cov-report=term
         
     - name: 🔗 Run Integration Tests
       if: matrix.test-suite == 'integration' || github.event.inputs.test_type == 'full'
