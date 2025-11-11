@@ -44,7 +44,7 @@ This project is licensed under the Apache License 2.0 - see individual repositor
 
 - **Issues**: [GitHub Issues](https://github.com/DevGruGold/XMRT-Ecosystem/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/DevGruGold/XMRT-Ecosystem/discussions)
-- **Live System**: [https://xmrt-ecosystem-iofw.onrender.com/](https://xmrt-ecosystem.vercel.app/)
+- **Live System**: [https://xmrt-ecosystem.vercel.app/](https://xmrt-ecosystem.vercel.app/)
 
 ### 👨‍💻 Contributors & Agents
 
