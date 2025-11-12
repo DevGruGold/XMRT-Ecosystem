@@ -31,7 +31,7 @@ We highly encourage switching to the new `scan` command which is easier to use, 
         "account": "",
         "local_database_path": null,
         "safety_version": "3.7.0",
-        "timestamp": "2025-11-11 03:08:12",
+        "timestamp": "2025-11-12 03:06:55",
         "packages_found": 62,
         "vulnerabilities_found": 0,
         "vulnerabilities_ignored": 0,
@@ -53,7 +53,7 @@ We highly encourage switching to the new `scan` command which is easier to use, 
         "git": {
             "branch": "main",
             "tag": "",
-            "commit": "0534a17cc86018a7e360990f6acaaa8cac3d2ed8",
+            "commit": "cdf7c0ba81d94be9989666bd4ac13c650a41f07a",
             "dirty": "True",
             "origin": "https://github.com/DevGruGold/XMRT-Ecosystem"
         },
@@ -574,6 +574,21 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                 }
             ]
         },
+        "certifi": {
+            "name": "certifi",
+            "version": "2025.11.12",
+            "requirements": [
+                {
+                    "raw": "certifi==2025.11.12",
+                    "extras": [],
+                    "marker": null,
+                    "name": "certifi",
+                    "specifier": "==2025.11.12",
+                    "url": null,
+                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/certifi-2025.11.12.dist-info"
+                }
+            ]
+        },
         "pip": {
             "name": "pip",
             "version": "25.3",
@@ -751,21 +766,6 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                     "specifier": "==2.0.0",
                     "url": null,
                     "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/cffi-2.0.0.dist-info"
-                }
-            ]
-        },
-        "certifi": {
-            "name": "certifi",
-            "version": "2025.10.5",
-            "requirements": [
-                {
-                    "raw": "certifi==2025.10.5",
-                    "extras": [],
-                    "marker": null,
-                    "name": "certifi",
-                    "specifier": "==2025.10.5",
-                    "url": null,
-                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/certifi-2025.10.5.dist-info"
                 }
             ]
         },
