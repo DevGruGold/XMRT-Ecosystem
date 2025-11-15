@@ -31,7 +31,7 @@ We highly encourage switching to the new `scan` command which is easier to use, 
         "account": "",
         "local_database_path": null,
         "safety_version": "3.7.0",
-        "timestamp": "2025-11-14 03:07:32",
+        "timestamp": "2025-11-15 03:01:32",
         "packages_found": 62,
         "vulnerabilities_found": 0,
         "vulnerabilities_ignored": 0,
@@ -53,7 +53,7 @@ We highly encourage switching to the new `scan` command which is easier to use, 
         "git": {
             "branch": "main",
             "tag": "",
-            "commit": "d397a2e42f13003c16d7397b6462bf0829df7755",
+            "commit": "e6b2ff88c5e8cfb0b901d69b61ea2b868f48e582",
             "dirty": "True",
             "origin": "https://github.com/DevGruGold/XMRT-Ecosystem"
         },
@@ -709,21 +709,6 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                 }
             ]
         },
-        "CacheControl": {
-            "name": "CacheControl",
-            "version": "0.14.3",
-            "requirements": [
-                {
-                    "raw": "CacheControl==0.14.3",
-                    "extras": [],
-                    "marker": null,
-                    "name": "CacheControl",
-                    "specifier": "==0.14.3",
-                    "url": null,
-                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/cachecontrol-0.14.3.dist-info"
-                }
-            ]
-        },
         "setuptools": {
             "name": "setuptools",
             "version": "79.0.1",
@@ -901,6 +886,21 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                     "specifier": "==1.5.4",
                     "url": null,
                     "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/shellingham-1.5.4.dist-info"
+                }
+            ]
+        },
+        "CacheControl": {
+            "name": "CacheControl",
+            "version": "0.14.4",
+            "requirements": [
+                {
+                    "raw": "CacheControl==0.14.4",
+                    "extras": [],
+                    "marker": null,
+                    "name": "CacheControl",
+                    "specifier": "==0.14.4",
+                    "url": null,
+                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/cachecontrol-0.14.4.dist-info"
                 }
             ]
         },
