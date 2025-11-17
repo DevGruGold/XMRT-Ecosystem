@@ -1,32 +1,32 @@
 # 🏆 XMRT Miner Contribution Leaderboard
 
 **Period**: Last 7 days
-**Generated**: 2025-11-16 02:08:42 UTC
+**Generated**: 2025-11-17 02:04:02 UTC
 **Total Miners**: 1
-**Total Contributions**: 79
+**Total Contributions**: 90
 
 ## 🥇 Top Contributors
 
 | Rank | Miner | Score | Estimated XMRT | Contributions |
 |------|-------|-------|----------------|---------------|
-| 🥇 | **Joseph Andrew Lee** (@DevGruGold) | 1170 | 1170.00 | 12 commits, 3 bug_fixes, 64 issues |
+| 🥇 | **Joseph Andrew Lee** (@DevGruGold) | 1320 | 1320.00 | 12 commits, 2 bug_fixes, 76 issues |
 
 ## 📊 Contribution Breakdown
 
 | Contribution Type | Count | Weight | Total Score |
 |-------------------|-------|--------|-------------|
-| Issues | 64 | 15 | 960 |
+| Issues | 76 | 15 | 1140 |
 | Commits | 12 | 10 | 120 |
-| Bug Fixes | 3 | 0 | 0 |
+| Bug Fixes | 2 | 0 | 0 |
 
 ## 💰 Reward Distribution
 
 - **Base Multiplier**: 100x
-- **Total Score Pool**: 1170
-- **Estimated Total XMRT**: 1170.00
+- **Total Score Pool**: 1320
+- **Estimated Total XMRT**: 1320.00
 
 ### 🎯 Top Reward Recipients
-1. **Joseph Andrew Lee**: 1170.00 XMRT (100.0% of pool)
+1. **Joseph Andrew Lee**: 1320.00 XMRT (100.0% of pool)
 
 ---
 *Rewards are estimated based on contribution scores and may be subject to final review and adjustment.*
