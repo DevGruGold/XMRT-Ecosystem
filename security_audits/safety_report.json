@@ -31,7 +31,7 @@ We highly encourage switching to the new `scan` command which is easier to use, 
         "account": "",
         "local_database_path": null,
         "safety_version": "3.7.0",
-        "timestamp": "2025-11-17 03:10:07",
+        "timestamp": "2025-11-18 03:07:00",
         "packages_found": 62,
         "vulnerabilities_found": 0,
         "vulnerabilities_ignored": 0,
@@ -53,7 +53,7 @@ We highly encourage switching to the new `scan` command which is easier to use, 
         "git": {
             "branch": "main",
             "tag": "",
-            "commit": "4ae232a00a887516fc423ee72dfd9335af9644f3",
+            "commit": "0a39497c1e2d1ad20d8186bc05f275f3b21c2565",
             "dirty": "True",
             "origin": "https://github.com/DevGruGold/XMRT-Ecosystem"
         },
@@ -379,6 +379,21 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                 }
             ]
         },
+        "bandit": {
+            "name": "bandit",
+            "version": "1.9.1",
+            "requirements": [
+                {
+                    "raw": "bandit==1.9.1",
+                    "extras": [],
+                    "marker": null,
+                    "name": "bandit",
+                    "specifier": "==1.9.1",
+                    "url": null,
+                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/bandit-1.9.1.dist-info"
+                }
+            ]
+        },
         "toml": {
             "name": "toml",
             "version": "0.10.2",
@@ -526,21 +541,6 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                     "specifier": "==3.0.3",
                     "url": null,
                     "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/markupsafe-3.0.3.dist-info"
-                }
-            ]
-        },
-        "bandit": {
-            "name": "bandit",
-            "version": "1.8.6",
-            "requirements": [
-                {
-                    "raw": "bandit==1.8.6",
-                    "extras": [],
-                    "marker": null,
-                    "name": "bandit",
-                    "specifier": "==1.8.6",
-                    "url": null,
-                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/bandit-1.8.6.dist-info"
                 }
             ]
         },
