@@ -1,226 +1,168 @@
 name: 🤖 Multi-Agent Coordination Cycle
-
-on:
+true:
   schedule:
-    # Run every 6 hours
-    - cron: '0 */6 * * *'
+  - cron: 0 */6 * * *
   workflow_dispatch:
     inputs:
       cycle_type:
-        description: 'Type of coordination cycle'
+        description: Type of coordination cycle
         required: false
-        default: 'standard'
+        default: standard
         type: choice
         options:
-          - standard
-          - emergency
-          - analysis
+        - standard
+        - emergency
+        - analysis
   push:
     branches:
-      - main
+    - main
     paths:
-      - 'api/**'
-      - '.github/workflows/agent-coordination-cycle.yml'
-
+    - api/**
+    - .github/workflows/agent-coordination-cycle.yml
 env:
-  AGENT_CYCLE_DIR: 'agent_cycles'
+  AGENT_CYCLE_DIR: agent_cycles
   PYTHON_VERSION: '3.11'
-  VERCEL_URL: 'https://xmrt-ecosystem.vercel.app'
-
+  VERCEL_URL: https://xmrt-ecosystem.vercel.app
 jobs:
   coordination-cycle:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    
     steps:
     - name: 📥 Checkout repository
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
         token: ${{ secrets.GITHUB_TOKEN }}
-    
     - name: 🐍 Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-        cache: 'pip'
-    
+        cache: pip
     - name: 📦 Install dependencies
-      run: |
-        python -m pip install --upgrade pip
+      run: 'python -m pip install --upgrade pip
+
         pip install requests python-dotenv
-    
+
+        '
     - name: 🔍 Verify Vercel deployment health
       id: health_check
-      run: |
-        python3 << 'EOF'
-        import requests
-        import sys
-        
-        vercel_url = 'https://xmrt-ecosystem.vercel.app'
-        
-        try:
-            response = requests.get(f'{vercel_url}/health', timeout=10)
-            if response.status_code == 200:
-                print(f"✅ Vercel deployment is healthy")
-                print(f"   URL: {vercel_url}")
-                sys.exit(0)
-            else:
-                print(f"⚠️  Health check returned status {response.status_code}")
-                sys.exit(1)
-        except Exception as e:
-            print(f"❌ Health check failed: {e}")
-            sys.exit(1)
-        EOF
+      run: "python3 << 'EOF'\nimport requests\nimport sys\n\nvercel_url = 'https://xmrt-ecosystem.vercel.app'\n\
+        \ntry:\n    response = requests.get(f'{vercel_url}/health', timeout=10)\n\
+        \    if response.status_code == 200:\n        print(f\"✅ Vercel deployment\
+        \ is healthy\")\n        print(f\"   URL: {vercel_url}\")\n        sys.exit(0)\n\
+        \    else:\n        print(f\"⚠️  Health check returned status {response.status_code}\"\
+        )\n        sys.exit(1)\nexcept Exception as e:\n    print(f\"❌ Health check\
+        \ failed: {e}\")\n    sys.exit(1)\nEOF\n"
       continue-on-error: true
-    
     - name: 🤖 Trigger Multi-Agent Coordination
       id: coordination
-      run: |
-        python3 << 'EOF'
-        import requests
-        import json
-        import os
-        from datetime import datetime
-        
-        vercel_url = 'https://xmrt-ecosystem.vercel.app'
-        cycle_type = "${{ github.event.inputs.cycle_type || 'standard' }}"
-        
-        # Create cycle directory
-        os.makedirs('${{ env.AGENT_CYCLE_DIR }}', exist_ok=True)
-        
-        # Trigger coordination
-        cycle_data = {
-            "status": "completed",
-            "trigger": "github_actions",
-            "cycle_type": cycle_type
-        }
-        
-        try:
-            response = requests.post(
-                f'{vercel_url}/api/tick',
-                json={"trigger": "github_actions", "cycle_type": cycle_type},
-                timeout=30
-            )
-            if response.status_code == 200:
-                cycle_data = response.json()
-                print("✅ Coordination API call successful")
-            else:
-                print(f"⚠️  API returned status {response.status_code}")
-        except Exception as e:
-            print(f"⚠️  API call failed: {e}")
-            print("   Continuing with local cycle generation...")
-        
-        # Generate cycle report
-        cycle_num = datetime.now().strftime('%Y%m%d%H%M')
-        report_file = f'${{ env.AGENT_CYCLE_DIR }}/AGENT_CYCLE_{cycle_num}.md'
-        
-        with open(report_file, 'w') as f:
-            f.write(f'# 🤖 Multi-Agent Coordination Cycle #{cycle_num}\n\n')
-            f.write(f'**Timestamp:** {datetime.utcnow().isoformat()}Z\n')
-            f.write(f'**Cycle Type:** {cycle_type}\n')
-            f.write(f'**Trigger:** GitHub Actions (Automated)\n')
-            f.write(f'**Platform:** Vercel Serverless\n')
-            f.write(f'**URL:** https://xmrt-ecosystem.vercel.app\n\n')
-            
-            f.write('## 👥 Agent Participation\n\n')
-            f.write('| Agent | Role | Weight | Status |\n')
-            f.write('|-------|------|--------|--------|\n')
-            f.write('| 🎯 Eliza | Coordinator & Governor | 1.2 | ✅ Active |\n')
-            f.write('| 🔒 Security Guardian | Security & Privacy | 1.1 | ✅ Active |\n')
-            f.write('| 💰 DeFi Specialist | Mining & Tokenomics | 1.05 | ✅ Active |\n')
-            f.write('| 👥 Community Manager | Adoption & UX | 1.0 | ✅ Active |\n\n')
-            
-            f.write('## 📊 Coordination Results\n\n')
-            f.write(f'```json\n{json.dumps(cycle_data, indent=2)}\n```\n\n')
-            
-            f.write('## ✅ Operations Completed\n\n')
-            f.write('- ✅ Health check performed\n')
-            f.write('- ✅ Agent coordination triggered\n')
-            f.write('- ✅ Consensus process initiated\n')
-            f.write('- ✅ Report generated\n\n')
-            
-            f.write('## 🔄 Next Steps\n\n')
-            f.write('- Next cycle scheduled in 6 hours\n')
-            f.write('- Monitoring agent performance\n')
-            f.write('- Awaiting consensus results\n\n')
-            
-            f.write(f'---\n*Generated by XMRT Autonomous Agent System on Vercel*\n')
-        
-        print(f'✅ Cycle report created: {report_file}')
-        
-        # Set output
-        with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
-            f.write(f'cycle_file={report_file}\n')
-            f.write(f'cycle_num={cycle_num}\n')
-        EOF
-    
+      run: "python3 << 'EOF'\nimport requests\nimport json\nimport os\nfrom datetime\
+        \ import datetime\n\nvercel_url = 'https://xmrt-ecosystem.vercel.app'\ncycle_type\
+        \ = \"${{ github.event.inputs.cycle_type || 'standard' }}\"\n\n# Create cycle\
+        \ directory\nos.makedirs('${{ env.AGENT_CYCLE_DIR }}', exist_ok=True)\n\n\
+        # Trigger coordination\ncycle_data = {\n    \"status\": \"completed\",\n \
+        \   \"trigger\": \"github_actions\",\n    \"cycle_type\": cycle_type\n}\n\n\
+        try:\n    response = requests.post(\n        f'{vercel_url}/api/tick',\n \
+        \       json={\"trigger\": \"github_actions\", \"cycle_type\": cycle_type},\n\
+        \        timeout=30\n    )\n    if response.status_code == 200:\n        cycle_data\
+        \ = response.json()\n        print(\"✅ Coordination API call successful\"\
+        )\n    else:\n        print(f\"⚠️  API returned status {response.status_code}\"\
+        )\nexcept Exception as e:\n    print(f\"⚠️  API call failed: {e}\")\n    print(\"\
+        \   Continuing with local cycle generation...\")\n\n# Generate cycle report\n\
+        cycle_num = datetime.now().strftime('%Y%m%d%H%M')\nreport_file = f'${{ env.AGENT_CYCLE_DIR\
+        \ }}/AGENT_CYCLE_{cycle_num}.md'\n\nwith open(report_file, 'w') as f:\n  \
+        \  f.write(f'# \U0001F916 Multi-Agent Coordination Cycle #{cycle_num}\\n\\\
+        n')\n    f.write(f'**Timestamp:** {datetime.utcnow().isoformat()}Z\\n')\n\
+        \    f.write(f'**Cycle Type:** {cycle_type}\\n')\n    f.write(f'**Trigger:**\
+        \ GitHub Actions (Automated)\\n')\n    f.write(f'**Platform:** Vercel Serverless\\\
+        n')\n    f.write(f'**URL:** https://xmrt-ecosystem.vercel.app\\n\\n')\n  \
+        \  \n    f.write('## \U0001F465 Agent Participation\\n\\n')\n    f.write('|\
+        \ Agent | Role | Weight | Status |\\n')\n    f.write('|-------|------|--------|--------|\\\
+        n')\n    f.write('| \U0001F3AF Eliza | Coordinator & Governor | 1.2 | ✅ Active\
+        \ |\\n')\n    f.write('| \U0001F512 Security Guardian | Security & Privacy\
+        \ | 1.1 | ✅ Active |\\n')\n    f.write('| \U0001F4B0 DeFi Specialist | Mining\
+        \ & Tokenomics | 1.05 | ✅ Active |\\n')\n    f.write('| \U0001F465 Community\
+        \ Manager | Adoption & UX | 1.0 | ✅ Active |\\n\\n')\n    \n    f.write('##\
+        \ \U0001F4CA Coordination Results\\n\\n')\n    f.write(f'```json\\n{json.dumps(cycle_data,\
+        \ indent=2)}\\n```\\n\\n')\n    \n    f.write('## ✅ Operations Completed\\\
+        n\\n')\n    f.write('- ✅ Health check performed\\n')\n    f.write('- ✅ Agent\
+        \ coordination triggered\\n')\n    f.write('- ✅ Consensus process initiated\\\
+        n')\n    f.write('- ✅ Report generated\\n\\n')\n    \n    f.write('## \U0001F504\
+        \ Next Steps\\n\\n')\n    f.write('- Next cycle scheduled in 6 hours\\n')\n\
+        \    f.write('- Monitoring agent performance\\n')\n    f.write('- Awaiting\
+        \ consensus results\\n\\n')\n    \n    f.write(f'---\\n*Generated by XMRT\
+        \ Autonomous Agent System on Vercel*\\n')\n\nprint(f'✅ Cycle report created:\
+        \ {report_file}')\n\n# Set output\nwith open(os.environ['GITHUB_OUTPUT'],\
+        \ 'a') as f:\n    f.write(f'cycle_file={report_file}\\n')\n    f.write(f'cycle_num={cycle_num}\\\
+        n')\nEOF\n"
     - name: 📊 Check for changes
       id: check_changes
-      run: |
-        git add .
-        if git diff --staged --quiet; then
-          echo "changes=false" >> $GITHUB_OUTPUT
-        else
-          echo "changes=true" >> $GITHUB_OUTPUT
-        fi
-    
+      run: "git add .\nif git diff --staged --quiet; then\n  echo \"changes=false\"\
+        \ >> $GITHUB_OUTPUT\nelse\n  echo \"changes=true\" >> $GITHUB_OUTPUT\nfi\n"
     - name: 💾 Commit coordination results
       if: steps.check_changes.outputs.changes == 'true'
-      run: |
-        git config user.name "Eliza Coordinator"
+      run: 'git config user.name "Eliza Coordinator"
+
         git config user.email "eliza@xmrt-ecosystem.io"
+
         CYCLE_NUM="${{ steps.coordination.outputs.cycle_num }}"
+
         git add ${{ env.AGENT_CYCLE_DIR }}
+
         git commit -m "🤖 Agent Coordination Cycle #$CYCLE_NUM [automated]
 
+
         ✅ Multi-agent consensus achieved
+
         🎯 Eliza coordinated all agents
+
         📊 Decision matrix generated
+
         💡 Strategic recommendations provided
+
         🚀 Vercel serverless execution
-        
+
+
         Agents: Eliza, Security Guardian, DeFi Specialist, Community Manager
+
         Platform: Vercel Serverless (xmrt-ecosystem.vercel.app)
+
         Generated by: XMRT Autonomous Agent System"
+
         git push
-    
+
+        '
     - name: 📈 Create workflow summary
       if: always()
-      run: |
-        CYCLE_NUM="${{ steps.coordination.outputs.cycle_num }}"
-        echo "## 🤖 Multi-Agent Coordination Complete" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "**Cycle Number:** #$CYCLE_NUM" >> $GITHUB_STEP_SUMMARY
-        echo "**Status:** ${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}" >> $GITHUB_STEP_SUMMARY
-        echo "**Cycle Type:** ${{ github.event.inputs.cycle_type || 'standard' }}" >> $GITHUB_STEP_SUMMARY
-        echo "**Timestamp:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
-        echo "**Platform:** Vercel Serverless" >> $GITHUB_STEP_SUMMARY
-        echo "**Deployment:** https://xmrt-ecosystem.vercel.app" >> $GITHUB_STEP_SUMMARY
-        echo "**Health Status:** ${{ steps.health_check.outcome == 'success' && '✅ Healthy' || '⚠️ Check Required' }}" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        
-        echo "### 🤖 Agent Status" >> $GITHUB_STEP_SUMMARY
-        echo "| Agent | Status | Weight |" >> $GITHUB_STEP_SUMMARY
-        echo "|-------|--------|--------|" >> $GITHUB_STEP_SUMMARY
-        echo "| 🎯 Eliza (Coordinator) | Active | 1.2 |" >> $GITHUB_STEP_SUMMARY
-        echo "| 🔒 Security Guardian | Active | 1.1 |" >> $GITHUB_STEP_SUMMARY
-        echo "| 💰 DeFi Specialist | Active | 1.05 |" >> $GITHUB_STEP_SUMMARY
-        echo "| 👥 Community Manager | Active | 1.0 |" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        
-        echo "### 📊 Operations Completed" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ Vercel health check" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ Agent coordination triggered" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ Consensus process executed" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ Cycle report generated" >> $GITHUB_STEP_SUMMARY
-        
-        if [ "${{ steps.check_changes.outputs.changes }}" = "true" ]; then
-          echo "- ✅ Results committed to repository" >> $GITHUB_STEP_SUMMARY
-        else
-          echo "- ℹ️ No changes to commit" >> $GITHUB_STEP_SUMMARY
-        fi
-        
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "**Next Cycle:** In 6 hours (automatic)" >> $GITHUB_STEP_SUMMARY
-        echo "**API Endpoint:** https://xmrt-ecosystem.vercel.app/api/tick" >> $GITHUB_STEP_SUMMARY
+      run: "CYCLE_NUM=\"${{ steps.coordination.outputs.cycle_num }}\"\necho \"## \U0001F916\
+        \ Multi-Agent Coordination Complete\" >> $GITHUB_STEP_SUMMARY\necho \"\" >>\
+        \ $GITHUB_STEP_SUMMARY\necho \"**Cycle Number:** #$CYCLE_NUM\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"**Status:** ${{ job.status == 'success' && '✅ Success' || '❌ Failed'\
+        \ }}\" >> $GITHUB_STEP_SUMMARY\necho \"**Cycle Type:** ${{ github.event.inputs.cycle_type\
+        \ || 'standard' }}\" >> $GITHUB_STEP_SUMMARY\necho \"**Timestamp:** $(date\
+        \ -u '+%Y-%m-%d %H:%M:%S UTC')\" >> $GITHUB_STEP_SUMMARY\necho \"**Platform:**\
+        \ Vercel Serverless\" >> $GITHUB_STEP_SUMMARY\necho \"**Deployment:** https://xmrt-ecosystem.vercel.app\"\
+        \ >> $GITHUB_STEP_SUMMARY\necho \"**Health Status:** ${{ steps.health_check.outcome\
+        \ == 'success' && '✅ Healthy' || '⚠️ Check Required' }}\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"\" >> $GITHUB_STEP_SUMMARY\n\necho \"### \U0001F916 Agent Status\"\
+        \ >> $GITHUB_STEP_SUMMARY\necho \"| Agent | Status | Weight |\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"|-------|--------|--------|\" >> $GITHUB_STEP_SUMMARY\necho \"| \U0001F3AF\
+        \ Eliza (Coordinator) | Active | 1.2 |\" >> $GITHUB_STEP_SUMMARY\necho \"\
+        | \U0001F512 Security Guardian | Active | 1.1 |\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"| \U0001F4B0 DeFi Specialist | Active | 1.05 |\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"| \U0001F465 Community Manager | Active | 1.0 |\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"\" >> $GITHUB_STEP_SUMMARY\n\necho \"### \U0001F4CA Operations Completed\"\
+        \ >> $GITHUB_STEP_SUMMARY\necho \"- ✅ Vercel health check\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"- ✅ Agent coordination triggered\" >> $GITHUB_STEP_SUMMARY\necho \"\
+        - ✅ Consensus process executed\" >> $GITHUB_STEP_SUMMARY\necho \"- ✅ Cycle\
+        \ report generated\" >> $GITHUB_STEP_SUMMARY\n\nif [ \"${{ steps.check_changes.outputs.changes\
+        \ }}\" = \"true\" ]; then\n  echo \"- ✅ Results committed to repository\"\
+        \ >> $GITHUB_STEP_SUMMARY\nelse\n  echo \"- ℹ️ No changes to commit\" >> $GITHUB_STEP_SUMMARY\n\
+        fi\n\necho \"\" >> $GITHUB_STEP_SUMMARY\necho \"**Next Cycle:** In 6 hours\
+        \ (automatic)\" >> $GITHUB_STEP_SUMMARY\necho \"**API Endpoint:** https://xmrt-ecosystem.vercel.app/api/tick\"\
+        \ >> $GITHUB_STEP_SUMMARY\n"
+permissions:
+  contents: read
+  actions: read
+  checks: write
+  pull-requests: read
