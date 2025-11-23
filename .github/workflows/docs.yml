@@ -1,0 +1,96 @@
+name: Documentation
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'docs/**'
+      - '*.md'
+      - 'README*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-docs:
+    name: Build Documentation
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        
+    - name: Generate documentation index
+      run: |
+        echo "📚 Generating documentation index..."
+        
+        # Create a simple docs index
+        mkdir -p docs
+        cat > docs/index.html << 'EOF'
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>XMRT Ecosystem Documentation</title>
+            <style>
+                body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+                h1 { color: #333; }
+                .file-list { list-style-type: none; padding: 0; }
+                .file-list li { margin: 10px 0; }
+                .file-list a { text-decoration: none; color: #0066cc; }
+                .file-list a:hover { text-decoration: underline; }
+            </style>
+        </head>
+        <body>
+            <h1>🚀 XMRT Ecosystem Documentation</h1>
+            <p>Welcome to the XMRT Ecosystem documentation.</p>
+            
+            <h2>📋 Available Documentation</h2>
+            <ul class="file-list">
+        EOF
+        
+        # Find and list markdown files
+        find . -name "*.md" -not -path "./.git/*" | sort | while read file; do
+          filename=$(basename "$file")
+          echo "        <li><a href="$file">$filename</a></li>" >> docs/index.html
+        done
+        
+        cat >> docs/index.html << 'EOF'
+            </ul>
+            
+            <h2>🔧 Project Structure</h2>
+            <pre>
+        EOF
+        
+        tree -I 'node_modules|.git' -L 2 >> docs/index.html 2>/dev/null || ls -la >> docs/index.html
+        
+        cat >> docs/index.html << 'EOF'
+            </pre>
+            
+            <p><em>Documentation generated on $(date)</em></p>
+        </body>
+        </html>
+        EOF
+        
+        echo "✅ Documentation index generated"
+        
+    - name: Upload documentation artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: documentation
+        path: docs/
+        retention-days: 30
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
