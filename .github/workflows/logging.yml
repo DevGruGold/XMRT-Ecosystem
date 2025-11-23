@@ -28,9 +28,6 @@ on:
 permissions:
   contents: read
   issues: write
-  pull-requests: write
-  actions: read
-
 env:
   LOG_RETENTION_DAYS: 30
 
@@ -53,57 +50,13 @@ jobs:
     - name: 🔧 Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install requests PyGithub python-dotenv
-
-    - name: 📊 Log System Status (Safe Mode)
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        python -c "
-import json
-import requests
-from datetime import datetime, timezone
-import os
-
-# Initialize logging data
-log_data = {
-    'timestamp': datetime.now(timezone.utc).isoformat(),
-    'event_type': '${{ github.event_name }}',
-    'repository': '${{ github.repository }}',
-    'branch': '${{ github.ref_name }}',
-    'commit': '${{ github.sha }}',
-    'actor': '${{ github.actor }}',
-    'workflow': 'logging',
-    'system_status': {'status': 'unknown'},
-    'github_activity': {'status': 'logged'}
-}
-
-# Safe system status check (optional external service)
 try:
     # Only check if RENDER_API_KEY is available
     render_key = os.environ.get('RENDER_API_KEY')
     if render_key:
         dashboard_url = 'https://xmrt-ecosystem-xx5w.onrender.com/health'
-        response = requests.get(dashboard_url, timeout=5)
-        if response.status_code == 200:
-            health_data = response.json()
-            log_data['system_status'] = {
-                'status': 'healthy',
-                'uptime': health_data.get('uptime', 0),
-                'version': health_data.get('version', 'unknown')
-            }
-            print('✅ System status logged successfully')
-        else:
-            log_data['system_status'] = {'status': 'service_unavailable'}
-    else:
-        log_data['system_status'] = {'status': 'external_check_skipped'}
-        print('ℹ️ External service check skipped (no API key)')
 except Exception as e:
     log_data['system_status'] = {'status': 'check_failed', 'error': str(e)[:100]}
     print(f'⚠️ System status check failed (non-critical): {e}')
 
 # Log the activity (this always succeeds)
-print('📊 Activity logged:', json.dumps(log_data, indent=2))
-print('✅ Logging workflow completed successfully')
-"
-      continue-on-error: true
