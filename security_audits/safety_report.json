@@ -31,7 +31,7 @@ We highly encourage switching to the new `scan` command which is easier to use, 
         "account": "",
         "local_database_path": null,
         "safety_version": "3.7.0",
-        "timestamp": "2025-11-23 03:21:12",
+        "timestamp": "2025-11-23 23:06:27",
         "packages_found": 62,
         "vulnerabilities_found": 0,
         "vulnerabilities_ignored": 0,
@@ -53,7 +53,7 @@ We highly encourage switching to the new `scan` command which is easier to use, 
         "git": {
             "branch": "main",
             "tag": "",
-            "commit": "a68924007f7323d97b2abeeb983c74f69cf6dcc9",
+            "commit": "9028702fa7576b18ea8c21b330d1b7e4b1f5dc72",
             "dirty": "True",
             "origin": "https://github.com/DevGruGold/XMRT-Ecosystem"
         },
@@ -376,21 +376,6 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                     "specifier": "==46.0.3",
                     "url": null,
                     "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/cryptography-46.0.3.dist-info"
-                }
-            ]
-        },
-        "bandit": {
-            "name": "bandit",
-            "version": "1.9.1",
-            "requirements": [
-                {
-                    "raw": "bandit==1.9.1",
-                    "extras": [],
-                    "marker": null,
-                    "name": "bandit",
-                    "specifier": "==1.9.1",
-                    "url": null,
-                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/bandit-1.9.1.dist-info"
                 }
             ]
         },
@@ -946,6 +931,21 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                     "specifier": "==1.5.2",
                     "url": null,
                     "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/joblib-1.5.2.dist-info"
+                }
+            ]
+        },
+        "bandit": {
+            "name": "bandit",
+            "version": "1.9.2",
+            "requirements": [
+                {
+                    "raw": "bandit==1.9.2",
+                    "extras": [],
+                    "marker": null,
+                    "name": "bandit",
+                    "specifier": "==1.9.2",
+                    "url": null,
+                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/bandit-1.9.2.dist-info"
                 }
             ]
         },
