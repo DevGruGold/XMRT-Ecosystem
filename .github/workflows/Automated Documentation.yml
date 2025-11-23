@@ -1,36 +1,35 @@
-
 name: Automated Documentation
-
-on:
+true:
   push:
     branches:
-      - main
+    - main
     paths:
-      - 'docs/**' # Trigger when any file in the docs folder changes
-  workflow_dispatch: # Allows manual trigger
-
+    - docs/**
+  workflow_dispatch: null
 jobs:
   build_and_deploy_docs:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python # Or Node.js, depending on doc tool
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
-      - name: Install documentation dependencies # Example for MkDocs
-        run: pip install mkdocs mkdocs-material
-
-      - name: Build Documentation
-        run: mkdocs build # Placeholder: Replace with actual command for your doc tool (e.g., sphinx-build, javadoc, etc.)
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3 # This action uses a token to push to gh-pages branch
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site # The directory where your documentation tool outputs
-          publish_branch: gh-pages # The branch to publish to
-          commit_message: "Automated docs build: ${{ github.event.head_commit.message }}"
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.x
+    - name: Install documentation dependencies
+      run: pip install mkdocs mkdocs-material
+    - name: Build Documentation
+      run: mkdocs build
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./site
+        publish_branch: gh-pages
+        commit_message: 'Automated docs build: ${{ github.event.head_commit.message
+          }}'
+    timeout-minutes: 30
+permissions:
+  contents: read
+  actions: read
+  checks: write
