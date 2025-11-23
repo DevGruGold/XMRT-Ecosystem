@@ -1,51 +1,40 @@
 name: Build & Test Frontend
-
-on:
+true:
   push:
-    branches: [ main ]
+    branches:
+    - main
   pull_request:
-    branches: [ main ]
-
+    branches:
+    - main
 jobs:
   test-frontend:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
-      - name: Check for package.json
-        run: |
-          if [ ! -f package.json ]; then
-            echo "No package.json found, creating minimal one for testing"
-            echo '{"name": "xmrt-ecosystem", "version": "1.0.0", "scripts": {"lint": "echo "No linter configured"", "test": "echo "No tests configured""}}' > package.json
-          fi
-
-      - name: Install Frontend Dependencies
-        run: |
-          if [ -f package.json ]; then
-            npm install || echo "npm install failed, continuing..."
-          fi
-
-      - name: Run Frontend Linting
-        run: |
-          if [ -f package.json ] && npm run lint --if-present; then
-            echo "Linting completed"
-          else
-            echo "No linting configured or available"
-          fi
-        continue-on-error: true
-
-      - name: Run Frontend Tests
-        run: |
-          if [ -f package.json ] && npm test --if-present; then
-            echo "Tests completed"
-          else
-            echo "No tests configured or available"
-          fi
-        continue-on-error: true
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18
+    - name: Check for package.json
+      run: "if [ ! -f package.json ]; then\n  echo \"No package.json found, creating\
+        \ minimal one for testing\"\n  echo '{\"name\": \"xmrt-ecosystem\", \"version\"\
+        : \"1.0.0\", \"scripts\": {\"lint\": \"echo \"No linter configured\"\", \"\
+        test\": \"echo \"No tests configured\"\"}}' > package.json\nfi\n"
+    - name: Install Frontend Dependencies
+      run: "if [ -f package.json ]; then\n  npm install || echo \"npm install failed,\
+        \ continuing...\"\nfi\n"
+    - name: Run Frontend Linting
+      run: "if [ -f package.json ] && npm run lint --if-present; then\n  echo \"Linting\
+        \ completed\"\nelse\n  echo \"No linting configured or available\"\nfi\n"
+      continue-on-error: true
+    - name: Run Frontend Tests
+      run: "if [ -f package.json ] && npm test --if-present; then\n  echo \"Tests\
+        \ completed\"\nelse\n  echo \"No tests configured or available\"\nfi\n"
+      continue-on-error: true
+    timeout-minutes: 30
+permissions:
+  contents: read
+  actions: read
+  checks: write
+  pull-requests: read
