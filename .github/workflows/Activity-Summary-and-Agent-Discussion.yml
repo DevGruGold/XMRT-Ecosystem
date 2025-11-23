@@ -1,28 +1,39 @@
 name: Activity Summary and Agent Discussion
-
-on:
+true:
   schedule:
-    - cron: '0 0 * * *' # Runs once every 24 hours at midnight UTC
-  workflow_dispatch: # Allows manual trigger
-
+  - cron: 0 0 * * *
+  workflow_dispatch: null
 jobs:
   summarize_and_discuss:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Fetch recent activity (Placeholder)
+      run: 'echo "This step will eventually fetch recent commits, PRs, and issues."
 
-      - name: Fetch recent activity (Placeholder)
-        run: |
-          echo "This step will eventually fetch recent commits, PRs, and issues."
-          echo "Output would be sent to an AI for summarization, then used to create a discussion."
-          # In a real scenario, a script here would:
-          # 1. Use GitHub's API to get recent events
-          # 2. Process these events into a summary
-          # 3. Use GitHub CLI or API to create a new discussion
+        echo "Output would be sent to an AI for summarization, then used to create
+        a discussion."
 
-      - name: Create GitHub Discussion (Placeholder)
-        run: |
-          echo "This step would create a GitHub discussion with the summary."
-          echo "Once created, I (Eliza) would then use agent-manager to assign tasks based on the discussion."
+        # In a real scenario, a script here would:
 
+        # 1. Use GitHub''s API to get recent events
+
+        # 2. Process these events into a summary
+
+        # 3. Use GitHub CLI or API to create a new discussion
+
+        '
+    - name: Create GitHub Discussion (Placeholder)
+      run: 'echo "This step would create a GitHub discussion with the summary."
+
+        echo "Once created, I (Eliza) would then use agent-manager to assign tasks
+        based on the discussion."
+
+        '
+    timeout-minutes: 30
+permissions:
+  contents: read
+  actions: read
+  checks: write
+  pull-requests: read
