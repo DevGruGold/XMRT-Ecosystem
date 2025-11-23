@@ -1,21 +1,27 @@
 name: ⛏️ XMRT Miner Contribution Tracker
-
-on:
+true:
   push:
-    branches: [ main, develop ]
+    branches:
+    - main
+    - develop
   pull_request:
-    types: [opened, closed, merged]
+    types:
+    - opened
+    - closed
+    - merged
   issues:
-    types: [opened, closed]
+    types:
+    - opened
+    - closed
   release:
-    types: [published]
+    types:
+    - published
   schedule:
-    # Track contributions daily at midnight UTC
-    - cron: '0 0 * * *'
+  - cron: 0 0 * * *
   workflow_dispatch:
     inputs:
       tracking_period:
-        description: 'Period to track contributions'
+        description: Period to track contributions
         required: true
         default: '7'
         type: choice
@@ -25,584 +31,308 @@ on:
         - '30'
         - '90'
       reward_calculation:
-        description: 'Calculate rewards for contributions'
+        description: Calculate rewards for contributions
         required: true
         default: 'true'
         type: boolean
-
 env:
-  XMRT_TOKEN_SYMBOL: 'XMRT'
+  XMRT_TOKEN_SYMBOL: XMRT
   BASE_REWARD_MULTIPLIER: 100
-  CONTRIBUTION_WEIGHTS: |
-    {
-      "commit": 10,
-      "pull_request": 25,
-      "issue": 15,
-      "review": 20,
-      "release": 50,
-      "documentation": 30,
-      "bug_fix": 40,
-      "feature": 35,
-      "security": 60
-    }
-
+  CONTRIBUTION_WEIGHTS: "{\n  \"commit\": 10,\n  \"pull_request\": 25,\n  \"issue\"\
+    : 15,\n  \"review\": 20,\n  \"release\": 50,\n  \"documentation\": 30,\n  \"bug_fix\"\
+    : 40,\n  \"feature\": 35,\n  \"security\": 60\n}\n"
 jobs:
   track-contributions:
     name: ⛏️ Track Miner Contributions
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    
     steps:
     - name: 📥 Checkout Repository
       uses: actions/checkout@v4
-      
     - name: 🐍 Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
-        
     - name: 🔧 Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
+      run: 'python -m pip install --upgrade pip
+
         pip install PyGithub python-dotenv requests pandas matplotlib seaborn
-        
+
+        '
     - name: ⛏️ Analyze Miner Contributions
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         TRACKING_DAYS: ${{ github.event.inputs.tracking_period || '7' }}
-      run: |
-        python -c "
-        import json
-        import os
-        from datetime import datetime, timezone, timedelta
-        from github import Github, Auth
-        from collections import defaultdict
-        import requests
-        
-        # Initialize GitHub
-        auth = Auth.Token(os.environ['GITHUB_TOKEN'])
-        github = Github(auth=auth)
-        repo = github.get_repo('${{ github.repository }}')
-        
-        # Configuration
-        tracking_days = int(os.environ.get('TRACKING_DAYS', 7))
-        cutoff_date = datetime.now(timezone.utc) - timedelta(days=tracking_days)
-        
-        # Contribution weights
-        weights = {
-            'commit': 10,
-            'pull_request': 25,
-            'issue': 15,
-            'review': 20,
-            'release': 50,
-            'documentation': 30,
-            'bug_fix': 40,
-            'feature': 35,
-            'security': 60
-        }
-        
-        print(f'⛏️ Tracking contributions for the last {tracking_days} days...')
-        print(f'📅 Cutoff date: {cutoff_date.strftime(\"%Y-%m-%d %H:%M:%S\")} UTC')
-        
-        # Initialize contribution tracking
-        miners = defaultdict(lambda: {
-            'contributions': defaultdict(int),
-            'total_score': 0,
-            'details': [],
-            'profile': {}
-        })
-        
-        # Track commits
-        print('📝 Analyzing commits...')
-        commits = repo.get_commits(since=cutoff_date)
-        for commit in commits:
-            if commit.author:
-                author = commit.author.login
-                miners[author]['contributions']['commits'] += 1
-                miners[author]['total_score'] += weights['commit']
-                
-                # Analyze commit for special categories
-                commit_message = commit.commit.message.lower()
-                if 'fix' in commit_message or 'bug' in commit_message:
-                    miners[author]['contributions']['bug_fixes'] += 1
-                    miners[author]['total_score'] += weights['bug_fix'] - weights['commit']
-                elif 'feat' in commit_message or 'feature' in commit_message:
-                    miners[author]['contributions']['features'] += 1
-                    miners[author]['total_score'] += weights['feature'] - weights['commit']
-                elif 'docs' in commit_message or 'documentation' in commit_message:
-                    miners[author]['contributions']['documentation'] += 1
-                    miners[author]['total_score'] += weights['documentation'] - weights['commit']
-                elif 'security' in commit_message or 'sec' in commit_message:
-                    miners[author]['contributions']['security'] += 1
-                    miners[author]['total_score'] += weights['security'] - weights['commit']
-                
-                miners[author]['details'].append({
-                    'type': 'commit',
-                    'sha': commit.sha[:8],
-                    'message': commit.commit.message.split('\\n')[0][:100],
-                    'date': commit.commit.author.date.isoformat(),
-                    'score': weights['commit']
-                })
-        
-        print(f'✅ Analyzed {sum(1 for _ in commits)} commits')
-        
-        # Track pull requests
-        print('🔄 Analyzing pull requests...')
-        prs = repo.get_pulls(state='all', sort='updated', direction='desc')
-        pr_count = 0
-        for pr in prs:
-            if pr.updated_at < cutoff_date:
-                break
-            pr_count += 1
-            
-            if pr.user:
-                author = pr.user.login
-                miners[author]['contributions']['pull_requests'] += 1
-                miners[author]['total_score'] += weights['pull_request']
-                
-                miners[author]['details'].append({
-                    'type': 'pull_request',
-                    'number': pr.number,
-                    'title': pr.title[:100],
-                    'state': pr.state,
-                    'date': pr.created_at.isoformat(),
-                    'score': weights['pull_request']
-                })
-        
-        print(f'✅ Analyzed {pr_count} pull requests')
-        
-        # Track issues
-        print('🐛 Analyzing issues...')
-        issues = repo.get_issues(state='all', sort='updated', direction='desc')
-        issue_count = 0
-        for issue in issues:
-            if issue.updated_at < cutoff_date:
-                break
-            if issue.pull_request:  # Skip PRs (already counted)
-                continue
-            issue_count += 1
-            
-            if issue.user:
-                author = issue.user.login
-                miners[author]['contributions']['issues'] += 1
-                miners[author]['total_score'] += weights['issue']
-                
-                miners[author]['details'].append({
-                    'type': 'issue',
-                    'number': issue.number,
-                    'title': issue.title[:100],
-                    'state': issue.state,
-                    'date': issue.created_at.isoformat(),
-                    'score': weights['issue']
-                })
-        
-        print(f'✅ Analyzed {issue_count} issues')
-        
-        # Track reviews
-        print('👀 Analyzing reviews...')
-        review_count = 0
-        for pr in repo.get_pulls(state='all', sort='updated', direction='desc'):
-            if pr.updated_at < cutoff_date:
-                break
-            
-            reviews = pr.get_reviews()
-            for review in reviews:
-                if review.submitted_at and review.submitted_at >= cutoff_date:
-                    review_count += 1
-                    if review.user:
-                        author = review.user.login
-                        miners[author]['contributions']['reviews'] += 1
-                        miners[author]['total_score'] += weights['review']
-                        
-                        miners[author]['details'].append({
-                            'type': 'review',
-                            'pr_number': pr.number,
-                            'state': review.state,
-                            'date': review.submitted_at.isoformat(),
-                            'score': weights['review']
-                        })
-        
-        print(f'✅ Analyzed {review_count} reviews')
-        
-        # Get user profiles
-        print('👤 Fetching user profiles...')
-        for username in miners.keys():
-            try:
-                user = github.get_user(username)
-                miners[username]['profile'] = {
-                    'name': user.name or username,
-                    'avatar_url': user.avatar_url,
-                    'public_repos': user.public_repos,
-                    'followers': user.followers,
-                    'created_at': user.created_at.isoformat() if user.created_at else None
-                }
-            except Exception as e:
-                print(f'⚠️ Could not fetch profile for {username}: {e}')
-                miners[username]['profile'] = {'name': username}
-        
-        # Calculate rewards
-        base_multiplier = int(os.environ.get('BASE_REWARD_MULTIPLIER', 100))
-        total_score = sum(miner['total_score'] for miner in miners.values())
-        
-        for username, data in miners.items():
-            if total_score > 0:
-                reward_percentage = (data['total_score'] / total_score) * 100
-                estimated_tokens = (data['total_score'] * base_multiplier) / 100
-            else:
-                reward_percentage = 0
-                estimated_tokens = 0
-            
-            miners[username]['rewards'] = {
-                'score_percentage': reward_percentage,
-                'estimated_tokens': estimated_tokens,
-                'rank': 0  # Will be set later
-            }
-        
-        # Rank miners by total score
-        sorted_miners = sorted(miners.items(), key=lambda x: x[1]['total_score'], reverse=True)
-        for rank, (username, data) in enumerate(sorted_miners, 1):
-            miners[username]['rewards']['rank'] = rank
-        
-        # Create comprehensive report
-        report_data = {
-            'timestamp': datetime.now(timezone.utc).isoformat(),
-            'tracking_period_days': tracking_days,
-            'cutoff_date': cutoff_date.isoformat(),
-            'total_miners': len(miners),
-            'total_contributions': sum(sum(miner['contributions'].values()) for miner in miners.values()),
-            'total_score': total_score,
-            'contribution_weights': weights,
-            'miners': dict(miners)
-        }
-        
-        # Save detailed report
-        os.makedirs('mining-reports', exist_ok=True)
-        report_filename = f'mining-reports/contributions-{datetime.now().strftime(\"%Y%m%d-%H%M%S\")}.json'
-        
-        with open(report_filename, 'w') as f:
-            json.dump(report_data, f, indent=2, default=str)
-        
-        print(f'\\n⛏️ MINING CONTRIBUTION SUMMARY:')
-        print(f'📅 Period: Last {tracking_days} days')
-        print(f'👥 Total Miners: {len(miners)}')
-        print(f'📊 Total Contributions: {sum(sum(miner[\"contributions\"].values()) for miner in miners.values())}')
-        print(f'🏆 Total Score: {total_score}')
-        print(f'💰 Base Reward Multiplier: {base_multiplier}x')
-        
-        print('\\n🏆 TOP MINERS:')
-        for i, (username, data) in enumerate(sorted_miners[:10]):
-            name = data['profile'].get('name', username)
-            score = data['total_score']
-            tokens = data['rewards']['estimated_tokens']
-            print(f'   #{i+1} {name} ({username}): {score} points → {tokens:.2f} XMRT')
-        
-        print(f'\\n✅ Detailed report saved to {report_filename}')
-        "
-        
+      run: "python -c \"\nimport json\nimport os\nfrom datetime import datetime, timezone,\
+        \ timedelta\nfrom github import Github, Auth\nfrom collections import defaultdict\n\
+        import requests\n\n# Initialize GitHub\nauth = Auth.Token(os.environ['GITHUB_TOKEN'])\n\
+        github = Github(auth=auth)\nrepo = github.get_repo('${{ github.repository\
+        \ }}')\n\n# Configuration\ntracking_days = int(os.environ.get('TRACKING_DAYS',\
+        \ 7))\ncutoff_date = datetime.now(timezone.utc) - timedelta(days=tracking_days)\n\
+        \n# Contribution weights\nweights = {\n    'commit': 10,\n    'pull_request':\
+        \ 25,\n    'issue': 15,\n    'review': 20,\n    'release': 50,\n    'documentation':\
+        \ 30,\n    'bug_fix': 40,\n    'feature': 35,\n    'security': 60\n}\n\nprint(f'⛏️\
+        \ Tracking contributions for the last {tracking_days} days...')\nprint(f'\U0001F4C5\
+        \ Cutoff date: {cutoff_date.strftime(\\\"%Y-%m-%d %H:%M:%S\\\")} UTC')\n\n\
+        # Initialize contribution tracking\nminers = defaultdict(lambda: {\n    'contributions':\
+        \ defaultdict(int),\n    'total_score': 0,\n    'details': [],\n    'profile':\
+        \ {}\n})\n\n# Track commits\nprint('\U0001F4DD Analyzing commits...')\ncommits\
+        \ = repo.get_commits(since=cutoff_date)\nfor commit in commits:\n    if commit.author:\n\
+        \        author = commit.author.login\n        miners[author]['contributions']['commits']\
+        \ += 1\n        miners[author]['total_score'] += weights['commit']\n     \
+        \   \n        # Analyze commit for special categories\n        commit_message\
+        \ = commit.commit.message.lower()\n        if 'fix' in commit_message or 'bug'\
+        \ in commit_message:\n            miners[author]['contributions']['bug_fixes']\
+        \ += 1\n            miners[author]['total_score'] += weights['bug_fix'] -\
+        \ weights['commit']\n        elif 'feat' in commit_message or 'feature' in\
+        \ commit_message:\n            miners[author]['contributions']['features']\
+        \ += 1\n            miners[author]['total_score'] += weights['feature'] -\
+        \ weights['commit']\n        elif 'docs' in commit_message or 'documentation'\
+        \ in commit_message:\n            miners[author]['contributions']['documentation']\
+        \ += 1\n            miners[author]['total_score'] += weights['documentation']\
+        \ - weights['commit']\n        elif 'security' in commit_message or 'sec'\
+        \ in commit_message:\n            miners[author]['contributions']['security']\
+        \ += 1\n            miners[author]['total_score'] += weights['security'] -\
+        \ weights['commit']\n        \n        miners[author]['details'].append({\n\
+        \            'type': 'commit',\n            'sha': commit.sha[:8],\n     \
+        \       'message': commit.commit.message.split('\\\\n')[0][:100],\n      \
+        \      'date': commit.commit.author.date.isoformat(),\n            'score':\
+        \ weights['commit']\n        })\n\nprint(f'✅ Analyzed {sum(1 for _ in commits)}\
+        \ commits')\n\n# Track pull requests\nprint('\U0001F504 Analyzing pull requests...')\n\
+        prs = repo.get_pulls(state='all', sort='updated', direction='desc')\npr_count\
+        \ = 0\nfor pr in prs:\n    if pr.updated_at < cutoff_date:\n        break\n\
+        \    pr_count += 1\n    \n    if pr.user:\n        author = pr.user.login\n\
+        \        miners[author]['contributions']['pull_requests'] += 1\n        miners[author]['total_score']\
+        \ += weights['pull_request']\n        \n        miners[author]['details'].append({\n\
+        \            'type': 'pull_request',\n            'number': pr.number,\n \
+        \           'title': pr.title[:100],\n            'state': pr.state,\n   \
+        \         'date': pr.created_at.isoformat(),\n            'score': weights['pull_request']\n\
+        \        })\n\nprint(f'✅ Analyzed {pr_count} pull requests')\n\n# Track issues\n\
+        print('\U0001F41B Analyzing issues...')\nissues = repo.get_issues(state='all',\
+        \ sort='updated', direction='desc')\nissue_count = 0\nfor issue in issues:\n\
+        \    if issue.updated_at < cutoff_date:\n        break\n    if issue.pull_request:\
+        \  # Skip PRs (already counted)\n        continue\n    issue_count += 1\n\
+        \    \n    if issue.user:\n        author = issue.user.login\n        miners[author]['contributions']['issues']\
+        \ += 1\n        miners[author]['total_score'] += weights['issue']\n      \
+        \  \n        miners[author]['details'].append({\n            'type': 'issue',\n\
+        \            'number': issue.number,\n            'title': issue.title[:100],\n\
+        \            'state': issue.state,\n            'date': issue.created_at.isoformat(),\n\
+        \            'score': weights['issue']\n        })\n\nprint(f'✅ Analyzed {issue_count}\
+        \ issues')\n\n# Track reviews\nprint('\U0001F440 Analyzing reviews...')\n\
+        review_count = 0\nfor pr in repo.get_pulls(state='all', sort='updated', direction='desc'):\n\
+        \    if pr.updated_at < cutoff_date:\n        break\n    \n    reviews = pr.get_reviews()\n\
+        \    for review in reviews:\n        if review.submitted_at and review.submitted_at\
+        \ >= cutoff_date:\n            review_count += 1\n            if review.user:\n\
+        \                author = review.user.login\n                miners[author]['contributions']['reviews']\
+        \ += 1\n                miners[author]['total_score'] += weights['review']\n\
+        \                \n                miners[author]['details'].append({\n  \
+        \                  'type': 'review',\n                    'pr_number': pr.number,\n\
+        \                    'state': review.state,\n                    'date': review.submitted_at.isoformat(),\n\
+        \                    'score': weights['review']\n                })\n\nprint(f'✅\
+        \ Analyzed {review_count} reviews')\n\n# Get user profiles\nprint('\U0001F464\
+        \ Fetching user profiles...')\nfor username in miners.keys():\n    try:\n\
+        \        user = github.get_user(username)\n        miners[username]['profile']\
+        \ = {\n            'name': user.name or username,\n            'avatar_url':\
+        \ user.avatar_url,\n            'public_repos': user.public_repos,\n     \
+        \       'followers': user.followers,\n            'created_at': user.created_at.isoformat()\
+        \ if user.created_at else None\n        }\n    except Exception as e:\n  \
+        \      print(f'⚠️ Could not fetch profile for {username}: {e}')\n        miners[username]['profile']\
+        \ = {'name': username}\n\n# Calculate rewards\nbase_multiplier = int(os.environ.get('BASE_REWARD_MULTIPLIER',\
+        \ 100))\ntotal_score = sum(miner['total_score'] for miner in miners.values())\n\
+        \nfor username, data in miners.items():\n    if total_score > 0:\n       \
+        \ reward_percentage = (data['total_score'] / total_score) * 100\n        estimated_tokens\
+        \ = (data['total_score'] * base_multiplier) / 100\n    else:\n        reward_percentage\
+        \ = 0\n        estimated_tokens = 0\n    \n    miners[username]['rewards']\
+        \ = {\n        'score_percentage': reward_percentage,\n        'estimated_tokens':\
+        \ estimated_tokens,\n        'rank': 0  # Will be set later\n    }\n\n# Rank\
+        \ miners by total score\nsorted_miners = sorted(miners.items(), key=lambda\
+        \ x: x[1]['total_score'], reverse=True)\nfor rank, (username, data) in enumerate(sorted_miners,\
+        \ 1):\n    miners[username]['rewards']['rank'] = rank\n\n# Create comprehensive\
+        \ report\nreport_data = {\n    'timestamp': datetime.now(timezone.utc).isoformat(),\n\
+        \    'tracking_period_days': tracking_days,\n    'cutoff_date': cutoff_date.isoformat(),\n\
+        \    'total_miners': len(miners),\n    'total_contributions': sum(sum(miner['contributions'].values())\
+        \ for miner in miners.values()),\n    'total_score': total_score,\n    'contribution_weights':\
+        \ weights,\n    'miners': dict(miners)\n}\n\n# Save detailed report\nos.makedirs('mining-reports',\
+        \ exist_ok=True)\nreport_filename = f'mining-reports/contributions-{datetime.now().strftime(\\\
+        \"%Y%m%d-%H%M%S\\\")}.json'\n\nwith open(report_filename, 'w') as f:\n   \
+        \ json.dump(report_data, f, indent=2, default=str)\n\nprint(f'\\\\n⛏️ MINING\
+        \ CONTRIBUTION SUMMARY:')\nprint(f'\U0001F4C5 Period: Last {tracking_days}\
+        \ days')\nprint(f'\U0001F465 Total Miners: {len(miners)}')\nprint(f'\U0001F4CA\
+        \ Total Contributions: {sum(sum(miner[\\\"contributions\\\"].values()) for\
+        \ miner in miners.values())}')\nprint(f'\U0001F3C6 Total Score: {total_score}')\n\
+        print(f'\U0001F4B0 Base Reward Multiplier: {base_multiplier}x')\n\nprint('\\\
+        \\n\U0001F3C6 TOP MINERS:')\nfor i, (username, data) in enumerate(sorted_miners[:10]):\n\
+        \    name = data['profile'].get('name', username)\n    score = data['total_score']\n\
+        \    tokens = data['rewards']['estimated_tokens']\n    print(f'   #{i+1} {name}\
+        \ ({username}): {score} points → {tokens:.2f} XMRT')\n\nprint(f'\\\\n✅ Detailed\
+        \ report saved to {report_filename}')\n\"\n"
     - name: 🏆 Generate Leaderboard
-      run: |
-        python -c "
-        import json
-        import os
-        from datetime import datetime
-        from glob import glob
-        
-        # Find latest report
-        reports = sorted(glob('mining-reports/contributions-*.json'), reverse=True)
-        if not reports:
-            print('❌ No contribution reports found')
-            exit(1)
-        
-        with open(reports[0]) as f:
-            report_data = json.load(f)
-        
-        miners = report_data['miners']
-        sorted_miners = sorted(miners.items(), key=lambda x: x[1]['total_score'], reverse=True)
-        
-        # Generate markdown leaderboard
-        leaderboard = []
-        leaderboard.append('# 🏆 XMRT Miner Contribution Leaderboard')
-        leaderboard.append('')
-        leaderboard.append(f'**Period**: Last {report_data[\"tracking_period_days\"]} days')
-        leaderboard.append(f'**Generated**: {datetime.now().strftime(\"%Y-%m-%d %H:%M:%S\")} UTC')
-        leaderboard.append(f'**Total Miners**: {report_data[\"total_miners\"]}')
-        leaderboard.append(f'**Total Contributions**: {report_data[\"total_contributions\"]}')
-        leaderboard.append('')
-        
-        leaderboard.append('## 🥇 Top Contributors')
-        leaderboard.append('')
-        leaderboard.append('| Rank | Miner | Score | Estimated XMRT | Contributions |')
-        leaderboard.append('|------|-------|-------|----------------|---------------|')
-        
-        for i, (username, data) in enumerate(sorted_miners[:20]):
-            rank = i + 1
-            name = data['profile'].get('name', username)
-            score = data['total_score']
-            tokens = data['rewards']['estimated_tokens']
-            
-            # Count contributions
-            contributions = []
-            for contrib_type, count in data['contributions'].items():
-                if count > 0:
-                    contributions.append(f'{count} {contrib_type}')
-            contrib_str = ', '.join(contributions) if contributions else 'None'
-            
-            # Rank emoji
-            if rank == 1:
-                rank_emoji = '🥇'
-            elif rank == 2:
-                rank_emoji = '🥈'
-            elif rank == 3:
-                rank_emoji = '🥉'
-            else:
-                rank_emoji = f'#{rank}'
-            
-            leaderboard.append(f'| {rank_emoji} | **{name}** (@{username}) | {score} | {tokens:.2f} | {contrib_str} |')
-        
-        leaderboard.append('')
-        leaderboard.append('## 📊 Contribution Breakdown')
-        leaderboard.append('')
-        
-        # Aggregate contribution types
-        total_contributions = {}
-        for username, data in miners.items():
-            for contrib_type, count in data['contributions'].items():
-                total_contributions[contrib_type] = total_contributions.get(contrib_type, 0) + count
-        
-        leaderboard.append('| Contribution Type | Count | Weight | Total Score |')
-        leaderboard.append('|-------------------|-------|--------|-------------|')
-        
-        weights = report_data['contribution_weights']
-        for contrib_type, count in sorted(total_contributions.items(), key=lambda x: x[1], reverse=True):
-            weight = weights.get(contrib_type, weights.get(contrib_type.rstrip('s'), 0))
-            total_score = count * weight
-            leaderboard.append(f'| {contrib_type.replace(\"_\", \" \").title()} | {count} | {weight} | {total_score} |')
-        
-        leaderboard.append('')
-        leaderboard.append('## 💰 Reward Distribution')
-        leaderboard.append('')
-        leaderboard.append(f'- **Base Multiplier**: {os.environ.get(\"BASE_REWARD_MULTIPLIER\", 100)}x')
-        leaderboard.append(f'- **Total Score Pool**: {report_data[\"total_score\"]}')
-        leaderboard.append(f'- **Estimated Total XMRT**: {sum(data[\"rewards\"][\"estimated_tokens\"] for data in miners.values()):.2f}')
-        leaderboard.append('')
-        
-        # Top 5 reward recipients
-        leaderboard.append('### 🎯 Top Reward Recipients')
-        for i, (username, data) in enumerate(sorted_miners[:5]):
-            name = data['profile'].get('name', username)
-            tokens = data['rewards']['estimated_tokens']
-            percentage = data['rewards']['score_percentage']
-            leaderboard.append(f'{i+1}. **{name}**: {tokens:.2f} XMRT ({percentage:.1f}% of pool)')
-        
-        leaderboard.append('')
-        leaderboard.append('---')
-        leaderboard.append('*Rewards are estimated based on contribution scores and may be subject to final review and adjustment.*')
-        
-        # Save leaderboard
-        leaderboard_content = '\\n'.join(leaderboard)
-        with open('MINER_LEADERBOARD.md', 'w') as f:
-            f.write(leaderboard_content)
-        
-        print('✅ Leaderboard generated')
-        print(leaderboard_content)
-        "
-        
+      run: "python -c \"\nimport json\nimport os\nfrom datetime import datetime\n\
+        from glob import glob\n\n# Find latest report\nreports = sorted(glob('mining-reports/contributions-*.json'),\
+        \ reverse=True)\nif not reports:\n    print('❌ No contribution reports found')\n\
+        \    exit(1)\n\nwith open(reports[0]) as f:\n    report_data = json.load(f)\n\
+        \nminers = report_data['miners']\nsorted_miners = sorted(miners.items(), key=lambda\
+        \ x: x[1]['total_score'], reverse=True)\n\n# Generate markdown leaderboard\n\
+        leaderboard = []\nleaderboard.append('# \U0001F3C6 XMRT Miner Contribution\
+        \ Leaderboard')\nleaderboard.append('')\nleaderboard.append(f'**Period**:\
+        \ Last {report_data[\\\"tracking_period_days\\\"]} days')\nleaderboard.append(f'**Generated**:\
+        \ {datetime.now().strftime(\\\"%Y-%m-%d %H:%M:%S\\\")} UTC')\nleaderboard.append(f'**Total\
+        \ Miners**: {report_data[\\\"total_miners\\\"]}')\nleaderboard.append(f'**Total\
+        \ Contributions**: {report_data[\\\"total_contributions\\\"]}')\nleaderboard.append('')\n\
+        \nleaderboard.append('## \U0001F947 Top Contributors')\nleaderboard.append('')\n\
+        leaderboard.append('| Rank | Miner | Score | Estimated XMRT | Contributions\
+        \ |')\nleaderboard.append('|------|-------|-------|----------------|---------------|')\n\
+        \nfor i, (username, data) in enumerate(sorted_miners[:20]):\n    rank = i\
+        \ + 1\n    name = data['profile'].get('name', username)\n    score = data['total_score']\n\
+        \    tokens = data['rewards']['estimated_tokens']\n    \n    # Count contributions\n\
+        \    contributions = []\n    for contrib_type, count in data['contributions'].items():\n\
+        \        if count > 0:\n            contributions.append(f'{count} {contrib_type}')\n\
+        \    contrib_str = ', '.join(contributions) if contributions else 'None'\n\
+        \    \n    # Rank emoji\n    if rank == 1:\n        rank_emoji = '\U0001F947\
+        '\n    elif rank == 2:\n        rank_emoji = '\U0001F948'\n    elif rank ==\
+        \ 3:\n        rank_emoji = '\U0001F949'\n    else:\n        rank_emoji = f'#{rank}'\n\
+        \    \n    leaderboard.append(f'| {rank_emoji} | **{name}** (@{username})\
+        \ | {score} | {tokens:.2f} | {contrib_str} |')\n\nleaderboard.append('')\n\
+        leaderboard.append('## \U0001F4CA Contribution Breakdown')\nleaderboard.append('')\n\
+        \n# Aggregate contribution types\ntotal_contributions = {}\nfor username,\
+        \ data in miners.items():\n    for contrib_type, count in data['contributions'].items():\n\
+        \        total_contributions[contrib_type] = total_contributions.get(contrib_type,\
+        \ 0) + count\n\nleaderboard.append('| Contribution Type | Count | Weight |\
+        \ Total Score |')\nleaderboard.append('|-------------------|-------|--------|-------------|')\n\
+        \nweights = report_data['contribution_weights']\nfor contrib_type, count in\
+        \ sorted(total_contributions.items(), key=lambda x: x[1], reverse=True):\n\
+        \    weight = weights.get(contrib_type, weights.get(contrib_type.rstrip('s'),\
+        \ 0))\n    total_score = count * weight\n    leaderboard.append(f'| {contrib_type.replace(\\\
+        \"_\\\", \\\" \\\").title()} | {count} | {weight} | {total_score} |')\n\n\
+        leaderboard.append('')\nleaderboard.append('## \U0001F4B0 Reward Distribution')\n\
+        leaderboard.append('')\nleaderboard.append(f'- **Base Multiplier**: {os.environ.get(\\\
+        \"BASE_REWARD_MULTIPLIER\\\", 100)}x')\nleaderboard.append(f'- **Total Score\
+        \ Pool**: {report_data[\\\"total_score\\\"]}')\nleaderboard.append(f'- **Estimated\
+        \ Total XMRT**: {sum(data[\\\"rewards\\\"][\\\"estimated_tokens\\\"] for data\
+        \ in miners.values()):.2f}')\nleaderboard.append('')\n\n# Top 5 reward recipients\n\
+        leaderboard.append('### \U0001F3AF Top Reward Recipients')\nfor i, (username,\
+        \ data) in enumerate(sorted_miners[:5]):\n    name = data['profile'].get('name',\
+        \ username)\n    tokens = data['rewards']['estimated_tokens']\n    percentage\
+        \ = data['rewards']['score_percentage']\n    leaderboard.append(f'{i+1}. **{name}**:\
+        \ {tokens:.2f} XMRT ({percentage:.1f}% of pool)')\n\nleaderboard.append('')\n\
+        leaderboard.append('---')\nleaderboard.append('*Rewards are estimated based\
+        \ on contribution scores and may be subject to final review and adjustment.*')\n\
+        \n# Save leaderboard\nleaderboard_content = '\\\\n'.join(leaderboard)\nwith\
+        \ open('MINER_LEADERBOARD.md', 'w') as f:\n    f.write(leaderboard_content)\n\
+        \nprint('✅ Leaderboard generated')\nprint(leaderboard_content)\n\"\n"
     - name: 💎 Calculate Reward Tokens
-      if: github.event.inputs.reward_calculation == 'true' || github.event_name == 'schedule'
-      run: |
-        python -c "
-        import json
-        import os
-        from datetime import datetime
-        from glob import glob
-        
-        # Find latest report
-        reports = sorted(glob('mining-reports/contributions-*.json'), reverse=True)
-        if not reports:
-            print('❌ No contribution reports found')
-            exit(1)
-        
-        with open(reports[0]) as f:
-            report_data = json.load(f)
-        
-        miners = report_data['miners']
-        
-        # Create reward distribution file
-        reward_distribution = {
-            'timestamp': datetime.now().isoformat(),
-            'period_days': report_data['tracking_period_days'],
-            'total_miners': len(miners),
-            'total_score': report_data['total_score'],
-            'base_multiplier': int(os.environ.get('BASE_REWARD_MULTIPLIER', 100)),
-            'rewards': []
-        }
-        
-        # Sort miners by score
-        sorted_miners = sorted(miners.items(), key=lambda x: x[1]['total_score'], reverse=True)
-        
-        for username, data in sorted_miners:
-            if data['total_score'] > 0:  # Only include miners with contributions
-                reward_entry = {
-                    'username': username,
-                    'name': data['profile'].get('name', username),
-                    'rank': data['rewards']['rank'],
-                    'total_score': data['total_score'],
-                    'score_percentage': data['rewards']['score_percentage'],
-                    'estimated_tokens': data['rewards']['estimated_tokens'],
-                    'contributions': data['contributions'],
-                    'wallet_address': None  # To be filled manually or via separate process
-                }
-                reward_distribution['rewards'].append(reward_entry)
-        
-        # Save reward distribution
-        reward_filename = f'mining-reports/reward-distribution-{datetime.now().strftime(\"%Y%m%d-%H%M%S\")}.json'
-        with open(reward_filename, 'w') as f:
-            json.dump(reward_distribution, f, indent=2)
-        
-        print(f'💎 REWARD CALCULATION COMPLETE')
-        print(f'📄 Reward distribution saved to: {reward_filename}')
-        print(f'💰 Total estimated XMRT to distribute: {sum(r[\"estimated_tokens\"] for r in reward_distribution[\"rewards\"]):.2f}')
-        print(f'👥 Miners eligible for rewards: {len(reward_distribution[\"rewards\"])}')
-        
-        # Create summary for top miners
-        print('\\n🏆 TOP REWARD RECIPIENTS:')
-        for i, reward in enumerate(reward_distribution['rewards'][:10]):
-            print(f'   #{i+1} {reward[\"name\"]} (@{reward[\"username\"]}): {reward[\"estimated_tokens\"]:.2f} XMRT')
-        "
-        
+      if: github.event.inputs.reward_calculation == 'true' || github.event_name ==
+        'schedule'
+      run: "python -c \"\nimport json\nimport os\nfrom datetime import datetime\n\
+        from glob import glob\n\n# Find latest report\nreports = sorted(glob('mining-reports/contributions-*.json'),\
+        \ reverse=True)\nif not reports:\n    print('❌ No contribution reports found')\n\
+        \    exit(1)\n\nwith open(reports[0]) as f:\n    report_data = json.load(f)\n\
+        \nminers = report_data['miners']\n\n# Create reward distribution file\nreward_distribution\
+        \ = {\n    'timestamp': datetime.now().isoformat(),\n    'period_days': report_data['tracking_period_days'],\n\
+        \    'total_miners': len(miners),\n    'total_score': report_data['total_score'],\n\
+        \    'base_multiplier': int(os.environ.get('BASE_REWARD_MULTIPLIER', 100)),\n\
+        \    'rewards': []\n}\n\n# Sort miners by score\nsorted_miners = sorted(miners.items(),\
+        \ key=lambda x: x[1]['total_score'], reverse=True)\n\nfor username, data in\
+        \ sorted_miners:\n    if data['total_score'] > 0:  # Only include miners with\
+        \ contributions\n        reward_entry = {\n            'username': username,\n\
+        \            'name': data['profile'].get('name', username),\n            'rank':\
+        \ data['rewards']['rank'],\n            'total_score': data['total_score'],\n\
+        \            'score_percentage': data['rewards']['score_percentage'],\n  \
+        \          'estimated_tokens': data['rewards']['estimated_tokens'],\n    \
+        \        'contributions': data['contributions'],\n            'wallet_address':\
+        \ None  # To be filled manually or via separate process\n        }\n     \
+        \   reward_distribution['rewards'].append(reward_entry)\n\n# Save reward distribution\n\
+        reward_filename = f'mining-reports/reward-distribution-{datetime.now().strftime(\\\
+        \"%Y%m%d-%H%M%S\\\")}.json'\nwith open(reward_filename, 'w') as f:\n    json.dump(reward_distribution,\
+        \ f, indent=2)\n\nprint(f'\U0001F48E REWARD CALCULATION COMPLETE')\nprint(f'\U0001F4C4\
+        \ Reward distribution saved to: {reward_filename}')\nprint(f'\U0001F4B0 Total\
+        \ estimated XMRT to distribute: {sum(r[\\\"estimated_tokens\\\"] for r in\
+        \ reward_distribution[\\\"rewards\\\"]):.2f}')\nprint(f'\U0001F465 Miners\
+        \ eligible for rewards: {len(reward_distribution[\\\"rewards\\\"])}')\n\n\
+        # Create summary for top miners\nprint('\\\\n\U0001F3C6 TOP REWARD RECIPIENTS:')\n\
+        for i, reward in enumerate(reward_distribution['rewards'][:10]):\n    print(f'\
+        \   #{i+1} {reward[\\\"name\\\"]} (@{reward[\\\"username\\\"]}): {reward[\\\
+        \"estimated_tokens\\\"]:.2f} XMRT')\n\"\n"
     - name: 📊 Generate Contribution Chart
-      run: |
-        python -c "
-        import json
-        import matplotlib.pyplot as plt
-        import seaborn as sns
-        from datetime import datetime
-        from glob import glob
-        import pandas as pd
-        
-        # Set style
-        plt.style.use('seaborn-v0_8')
-        sns.set_palette('husl')
-        
-        # Find latest report
-        reports = sorted(glob('mining-reports/contributions-*.json'), reverse=True)
-        if not reports:
-            print('❌ No contribution reports found')
-            exit(1)
-        
-        with open(reports[0]) as f:
-            report_data = json.load(f)
-        
-        miners = report_data['miners']
-        
-        # Create contribution type chart
-        fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(16, 12))
-        fig.suptitle('XMRT Miner Contribution Analysis', fontsize=16, fontweight='bold')
-        
-        # 1. Top miners by score
-        sorted_miners = sorted(miners.items(), key=lambda x: x[1]['total_score'], reverse=True)[:10]
-        names = [data['profile'].get('name', username)[:15] for username, data in sorted_miners]
-        scores = [data['total_score'] for username, data in sorted_miners]
-        
-        ax1.barh(names, scores, color='skyblue')
-        ax1.set_title('Top 10 Miners by Score')
-        ax1.set_xlabel('Contribution Score')
-        
-        # 2. Contribution type distribution
-        contrib_totals = {}
-        for username, data in miners.items():
-            for contrib_type, count in data['contributions'].items():
-                contrib_totals[contrib_type] = contrib_totals.get(contrib_type, 0) + count
-        
-        if contrib_totals:
-            labels = list(contrib_totals.keys())
-            sizes = list(contrib_totals.values())
-            ax2.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
-            ax2.set_title('Contribution Type Distribution')
-        
-        # 3. Score distribution
-        all_scores = [data['total_score'] for data in miners.values() if data['total_score'] > 0]
-        if all_scores:
-            ax3.hist(all_scores, bins=20, color='lightgreen', alpha=0.7, edgecolor='black')
-            ax3.set_title('Score Distribution')
-            ax3.set_xlabel('Contribution Score')
-            ax3.set_ylabel('Number of Miners')
-        
-        # 4. Reward distribution
-        rewards = [data['rewards']['estimated_tokens'] for data in miners.values() if data['total_score'] > 0]
-        if rewards:
-            ax4.hist(rewards, bins=20, color='gold', alpha=0.7, edgecolor='black')
-            ax4.set_title('Estimated XMRT Reward Distribution')
-            ax4.set_xlabel('Estimated XMRT Tokens')
-            ax4.set_ylabel('Number of Miners')
-        
-        plt.tight_layout()
-        
-        # Save chart
-        chart_filename = f'mining-reports/contribution-chart-{datetime.now().strftime(\"%Y%m%d-%H%M%S\")}.png'
-        plt.savefig(chart_filename, dpi=300, bbox_inches='tight')
-        plt.close()
-        
-        print(f'📊 Contribution chart saved to: {chart_filename}')
-        "
-        
+      run: "python -c \"\nimport json\nimport matplotlib.pyplot as plt\nimport seaborn\
+        \ as sns\nfrom datetime import datetime\nfrom glob import glob\nimport pandas\
+        \ as pd\n\n# Set style\nplt.style.use('seaborn-v0_8')\nsns.set_palette('husl')\n\
+        \n# Find latest report\nreports = sorted(glob('mining-reports/contributions-*.json'),\
+        \ reverse=True)\nif not reports:\n    print('❌ No contribution reports found')\n\
+        \    exit(1)\n\nwith open(reports[0]) as f:\n    report_data = json.load(f)\n\
+        \nminers = report_data['miners']\n\n# Create contribution type chart\nfig,\
+        \ ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(16, 12))\nfig.suptitle('XMRT\
+        \ Miner Contribution Analysis', fontsize=16, fontweight='bold')\n\n# 1. Top\
+        \ miners by score\nsorted_miners = sorted(miners.items(), key=lambda x: x[1]['total_score'],\
+        \ reverse=True)[:10]\nnames = [data['profile'].get('name', username)[:15]\
+        \ for username, data in sorted_miners]\nscores = [data['total_score'] for\
+        \ username, data in sorted_miners]\n\nax1.barh(names, scores, color='skyblue')\n\
+        ax1.set_title('Top 10 Miners by Score')\nax1.set_xlabel('Contribution Score')\n\
+        \n# 2. Contribution type distribution\ncontrib_totals = {}\nfor username,\
+        \ data in miners.items():\n    for contrib_type, count in data['contributions'].items():\n\
+        \        contrib_totals[contrib_type] = contrib_totals.get(contrib_type, 0)\
+        \ + count\n\nif contrib_totals:\n    labels = list(contrib_totals.keys())\n\
+        \    sizes = list(contrib_totals.values())\n    ax2.pie(sizes, labels=labels,\
+        \ autopct='%1.1f%%', startangle=90)\n    ax2.set_title('Contribution Type\
+        \ Distribution')\n\n# 3. Score distribution\nall_scores = [data['total_score']\
+        \ for data in miners.values() if data['total_score'] > 0]\nif all_scores:\n\
+        \    ax3.hist(all_scores, bins=20, color='lightgreen', alpha=0.7, edgecolor='black')\n\
+        \    ax3.set_title('Score Distribution')\n    ax3.set_xlabel('Contribution\
+        \ Score')\n    ax3.set_ylabel('Number of Miners')\n\n# 4. Reward distribution\n\
+        rewards = [data['rewards']['estimated_tokens'] for data in miners.values()\
+        \ if data['total_score'] > 0]\nif rewards:\n    ax4.hist(rewards, bins=20,\
+        \ color='gold', alpha=0.7, edgecolor='black')\n    ax4.set_title('Estimated\
+        \ XMRT Reward Distribution')\n    ax4.set_xlabel('Estimated XMRT Tokens')\n\
+        \    ax4.set_ylabel('Number of Miners')\n\nplt.tight_layout()\n\n# Save chart\n\
+        chart_filename = f'mining-reports/contribution-chart-{datetime.now().strftime(\\\
+        \"%Y%m%d-%H%M%S\\\")}.png'\nplt.savefig(chart_filename, dpi=300, bbox_inches='tight')\n\
+        plt.close()\n\nprint(f'\U0001F4CA Contribution chart saved to: {chart_filename}')\n\
+        \"\n"
     - name: 📤 Upload Mining Reports
       uses: actions/upload-artifact@v4
       with:
         name: xmrt-mining-reports-${{ github.run_number }}
-        path: |
-          mining-reports/
-          MINER_LEADERBOARD.md
-        retention-days: 90
-        
-    - name: 📋 Add Mining Summary to Step Summary
-      run: |
-        if [ -f MINER_LEADERBOARD.md ]; then
-          cat MINER_LEADERBOARD.md >> $GITHUB_STEP_SUMMARY
-        fi
+        path: 'mining-reports/
 
+          MINER_LEADERBOARD.md
+
+          '
+        retention-days: 90
+    - name: 📋 Add Mining Summary to Step Summary
+      run: "if [ -f MINER_LEADERBOARD.md ]; then\n  cat MINER_LEADERBOARD.md >> $GITHUB_STEP_SUMMARY\n\
+        fi\n"
   update-readme-leaderboard:
     name: 📝 Update README with Leaderboard
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: track-contributions
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-    
     steps:
     - name: 📥 Checkout Repository
       uses: actions/checkout@v4
-      
     - name: 📥 Download Mining Reports
       uses: actions/download-artifact@v4
       with:
         name: xmrt-mining-reports-${{ github.run_number }}
-        
     - name: 📝 Update README with Leaderboard
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        # Check if leaderboard exists
-        if [ ! -f MINER_LEADERBOARD.md ]; then
-          echo '❌ Leaderboard file not found'
-          exit 1
-        fi
-        
-        # Create updated README section
-        cat > leaderboard_section.md << 'EOF'
-        
-        ## 🏆 XMRT Miner Contribution Leaderboard
-        
-        EOF
-        
-        # Add leaderboard content (skip the title)
-        tail -n +3 MINER_LEADERBOARD.md >> leaderboard_section.md
-        
-        echo '✅ Leaderboard section prepared for README update'
-        
+      run: "# Check if leaderboard exists\nif [ ! -f MINER_LEADERBOARD.md ]; then\n\
+        \  echo '❌ Leaderboard file not found'\n  exit 1\nfi\n\n# Create updated README\
+        \ section\ncat > leaderboard_section.md << 'EOF'\n\n## \U0001F3C6 XMRT Miner\
+        \ Contribution Leaderboard\n\nEOF\n\n# Add leaderboard content (skip the title)\n\
+        tail -n +3 MINER_LEADERBOARD.md >> leaderboard_section.md\n\necho '✅ Leaderboard\
+        \ section prepared for README update'\n"
     - name: 🚀 Commit Updated Leaderboard
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        commit_message: '🏆 Update miner contribution leaderboard - ${{ github.run_number }}'
-        file_pattern: 'README.md MINER_LEADERBOARD.md'
-        commit_user_name: 'XMRT Miner Tracker'
-        commit_user_email: 'miner-tracker@xmrt-ecosystem.com'
+        commit_message: 🏆 Update miner contribution leaderboard - ${{ github.run_number
+          }}
+        file_pattern: README.md MINER_LEADERBOARD.md
+        commit_user_name: XMRT Miner Tracker
+        commit_user_email: miner-tracker@xmrt-ecosystem.com
+permissions:
+  contents: read
+  actions: read
+  checks: write
+  pull-requests: read
