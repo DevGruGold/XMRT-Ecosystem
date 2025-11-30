@@ -33,6 +33,12 @@ The XMRT-Ecosystem leverages a comprehensive suite of Supabase Edge Functions, a
 *   **Infrastructure & Deployment**: `vercel-ecosystem-api`, `redis-cache`, `check-frontend-health`
 *   **Revenue Generation**: `service-monetization-engine`, `workflow-template-manager`
 
+## 🤖 C-Suite Autonomous Workflows
+
+The XMRT-Ecosystem now includes a set of powerful n8n workflows that grant Eliza C-suite level autonomous capabilities. These workflows enable advanced data analysis, strategic memory, and multi-agent orchestration, elevating Eliza from an assistant to a fully autonomous executive.
+
+For more details, see the [n8n_workflows/README.md](n8n_workflows/README.md).
+
 ## 🚀 Getting Started & Interaction
 
 To interact with the XMRT-Ecosystem and leverage its capabilities:
