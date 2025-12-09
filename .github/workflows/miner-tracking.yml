@@ -1,5 +1,5 @@
 name: ⛏️ XMRT Miner Contribution Tracker
-true:
+on:
   push:
     branches:
     - main
