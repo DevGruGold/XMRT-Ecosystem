@@ -1,5 +1,5 @@
 name: XMRT Ecosystem CI/CD
-true:
+on:
   push:
     branches:
     - main
