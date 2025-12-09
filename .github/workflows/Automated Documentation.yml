@@ -1,5 +1,5 @@
 name: Automated Documentation
-true:
+on:
   push:
     branches:
     - main
