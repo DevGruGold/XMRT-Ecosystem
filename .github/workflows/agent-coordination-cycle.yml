@@ -1,5 +1,5 @@
 name: 🤖 Multi-Agent Coordination Cycle
-true:
+on:
   schedule:
   - cron: 0 */6 * * *
   workflow_dispatch:
