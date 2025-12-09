@@ -1,5 +1,5 @@
 name: 🧪 XMRT Ecosystem Testing Suite
-true:
+on:
   push:
     branches:
     - main
