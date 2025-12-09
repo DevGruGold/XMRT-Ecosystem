@@ -31,7 +31,7 @@ We highly encourage switching to the new `scan` command which is easier to use, 
         "account": "",
         "local_database_path": null,
         "safety_version": "3.7.0",
-        "timestamp": "2025-11-23 23:06:27",
+        "timestamp": "2025-12-09 19:58:50",
         "packages_found": 62,
         "vulnerabilities_found": 0,
         "vulnerabilities_ignored": 0,
@@ -53,7 +53,7 @@ We highly encourage switching to the new `scan` command which is easier to use, 
         "git": {
             "branch": "main",
             "tag": "",
-            "commit": "9028702fa7576b18ea8c21b330d1b7e4b1f5dc72",
+            "commit": "5733f6d2170d54b74ad64808d4e50809f03797d3",
             "dirty": "True",
             "origin": "https://github.com/DevGruGold/XMRT-Ecosystem"
         },
@@ -79,33 +79,18 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                 }
             ]
         },
-        "anyio": {
-            "name": "anyio",
-            "version": "4.11.0",
+        "tomli_w": {
+            "name": "tomli_w",
+            "version": "1.2.0",
             "requirements": [
                 {
-                    "raw": "anyio==4.11.0",
+                    "raw": "tomli_w==1.2.0",
                     "extras": [],
                     "marker": null,
-                    "name": "anyio",
-                    "specifier": "==4.11.0",
+                    "name": "tomli_w",
+                    "specifier": "==1.2.0",
                     "url": null,
-                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/anyio-4.11.0.dist-info"
-                }
-            ]
-        },
-        "packageurl-python": {
-            "name": "packageurl-python",
-            "version": "0.17.5",
-            "requirements": [
-                {
-                    "raw": "packageurl-python==0.17.5",
-                    "extras": [],
-                    "marker": null,
-                    "name": "packageurl-python",
-                    "specifier": "==0.17.5",
-                    "url": null,
-                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/packageurl_python-0.17.5.dist-info"
+                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/tomli_w-1.2.0.dist-info"
                 }
             ]
         },
@@ -199,6 +184,21 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                 }
             ]
         },
+        "platformdirs": {
+            "name": "platformdirs",
+            "version": "4.5.1",
+            "requirements": [
+                {
+                    "raw": "platformdirs==4.5.1",
+                    "extras": [],
+                    "marker": null,
+                    "name": "platformdirs",
+                    "specifier": "==4.5.1",
+                    "url": null,
+                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/platformdirs-4.5.1.dist-info"
+                }
+            ]
+        },
         "ruamel.yaml": {
             "name": "ruamel.yaml",
             "version": "0.18.16",
@@ -211,21 +211,6 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                     "specifier": "==0.18.16",
                     "url": null,
                     "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/ruamel.yaml-0.18.16.dist-info"
-                }
-            ]
-        },
-        "cyclonedx-python-lib": {
-            "name": "cyclonedx-python-lib",
-            "version": "9.1.0",
-            "requirements": [
-                {
-                    "raw": "cyclonedx-python-lib==9.1.0",
-                    "extras": [],
-                    "marker": null,
-                    "name": "cyclonedx-python-lib",
-                    "specifier": "==9.1.0",
-                    "url": null,
-                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/cyclonedx_python_lib-9.1.0.dist-info"
                 }
             ]
         },
@@ -259,21 +244,6 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                 }
             ]
         },
-        "platformdirs": {
-            "name": "platformdirs",
-            "version": "4.5.0",
-            "requirements": [
-                {
-                    "raw": "platformdirs==4.5.0",
-                    "extras": [],
-                    "marker": null,
-                    "name": "platformdirs",
-                    "specifier": "==4.5.0",
-                    "url": null,
-                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/platformdirs-4.5.0.dist-info"
-                }
-            ]
-        },
         "ruamel.yaml.clib": {
             "name": "ruamel.yaml.clib",
             "version": "0.2.15",
@@ -301,6 +271,21 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                     "specifier": "==0.4.2",
                     "url": null,
                     "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/typing_inspection-0.4.2.dist-info"
+                }
+            ]
+        },
+        "pydantic": {
+            "name": "pydantic",
+            "version": "2.12.5",
+            "requirements": [
+                {
+                    "raw": "pydantic==2.12.5",
+                    "extras": [],
+                    "marker": null,
+                    "name": "pydantic",
+                    "specifier": "==2.12.5",
+                    "url": null,
+                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/pydantic-2.12.5.dist-info"
                 }
             ]
         },
@@ -349,6 +334,21 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                 }
             ]
         },
+        "urllib3": {
+            "name": "urllib3",
+            "version": "2.6.1",
+            "requirements": [
+                {
+                    "raw": "urllib3==2.6.1",
+                    "extras": [],
+                    "marker": null,
+                    "name": "urllib3",
+                    "specifier": "==2.6.1",
+                    "url": null,
+                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/urllib3-2.6.1.dist-info"
+                }
+            ]
+        },
         "packaging": {
             "name": "packaging",
             "version": "25.0",
@@ -379,18 +379,18 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                 }
             ]
         },
-        "toml": {
-            "name": "toml",
-            "version": "0.10.2",
+        "packageurl-python": {
+            "name": "packageurl-python",
+            "version": "0.17.6",
             "requirements": [
                 {
-                    "raw": "toml==0.10.2",
+                    "raw": "packageurl-python==0.17.6",
                     "extras": [],
                     "marker": null,
-                    "name": "toml",
-                    "specifier": "==0.10.2",
+                    "name": "packageurl-python",
+                    "specifier": "==0.17.6",
                     "url": null,
-                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/toml-0.10.2.dist-info"
+                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/packageurl_python-0.17.6.dist-info"
                 }
             ]
         },
@@ -454,6 +454,21 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                 }
             ]
         },
+        "marshmallow": {
+            "name": "marshmallow",
+            "version": "4.1.1",
+            "requirements": [
+                {
+                    "raw": "marshmallow==4.1.1",
+                    "extras": [],
+                    "marker": null,
+                    "name": "marshmallow",
+                    "specifier": "==4.1.1",
+                    "url": null,
+                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/marshmallow-4.1.1.dist-info"
+                }
+            ]
+        },
         "PyYAML": {
             "name": "PyYAML",
             "version": "6.0.3",
@@ -481,6 +496,21 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                     "specifier": "==3.1.6",
                     "url": null,
                     "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/jinja2-3.1.6.dist-info"
+                }
+            ]
+        },
+        "anyio": {
+            "name": "anyio",
+            "version": "4.12.0",
+            "requirements": [
+                {
+                    "raw": "anyio==4.12.0",
+                    "extras": [],
+                    "marker": null,
+                    "name": "anyio",
+                    "specifier": "==4.12.0",
+                    "url": null,
+                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/anyio-4.12.0.dist-info"
                 }
             ]
         },
@@ -514,18 +544,18 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                 }
             ]
         },
-        "pip_audit": {
-            "name": "pip_audit",
-            "version": "2.9.0",
+        "tomli": {
+            "name": "tomli",
+            "version": "2.3.0",
             "requirements": [
                 {
-                    "raw": "pip_audit==2.9.0",
+                    "raw": "tomli==2.3.0",
                     "extras": [],
                     "marker": null,
-                    "name": "pip_audit",
-                    "specifier": "==2.9.0",
+                    "name": "tomli",
+                    "specifier": "==2.3.0",
                     "url": null,
-                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/pip_audit-2.9.0.dist-info"
+                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/tomli-2.3.0.dist-info"
                 }
             ]
         },
@@ -664,21 +694,6 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                 }
             ]
         },
-        "pydantic": {
-            "name": "pydantic",
-            "version": "2.12.4",
-            "requirements": [
-                {
-                    "raw": "pydantic==2.12.4",
-                    "extras": [],
-                    "marker": null,
-                    "name": "pydantic",
-                    "specifier": "==2.12.4",
-                    "url": null,
-                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/pydantic-2.12.4.dist-info"
-                }
-            ]
-        },
         "setuptools": {
             "name": "setuptools",
             "version": "79.0.1",
@@ -691,21 +706,6 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                     "specifier": "==79.0.1",
                     "url": null,
                     "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/setuptools-79.0.1.dist-info"
-                }
-            ]
-        },
-        "urllib3": {
-            "name": "urllib3",
-            "version": "2.5.0",
-            "requirements": [
-                {
-                    "raw": "urllib3==2.5.0",
-                    "extras": [],
-                    "marker": null,
-                    "name": "urllib3",
-                    "specifier": "==2.5.0",
-                    "url": null,
-                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/urllib3-2.5.0.dist-info"
                 }
             ]
         },
@@ -739,21 +739,6 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                 }
             ]
         },
-        "marshmallow": {
-            "name": "marshmallow",
-            "version": "4.1.0",
-            "requirements": [
-                {
-                    "raw": "marshmallow==4.1.0",
-                    "extras": [],
-                    "marker": null,
-                    "name": "marshmallow",
-                    "specifier": "==4.1.0",
-                    "url": null,
-                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/marshmallow-4.1.0.dist-info"
-                }
-            ]
-        },
         "pycparser": {
             "name": "pycparser",
             "version": "2.23",
@@ -769,6 +754,21 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                 }
             ]
         },
+        "cyclonedx-python-lib": {
+            "name": "cyclonedx-python-lib",
+            "version": "11.6.0",
+            "requirements": [
+                {
+                    "raw": "cyclonedx-python-lib==11.6.0",
+                    "extras": [],
+                    "marker": null,
+                    "name": "cyclonedx-python-lib",
+                    "specifier": "==11.6.0",
+                    "url": null,
+                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/cyclonedx_python_lib-11.6.0.dist-info"
+                }
+            ]
+        },
         "dparse": {
             "name": "dparse",
             "version": "0.6.4",
@@ -781,21 +781,6 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                     "specifier": "==0.6.4",
                     "url": null,
                     "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/dparse-0.6.4.dist-info"
-                }
-            ]
-        },
-        "sniffio": {
-            "name": "sniffio",
-            "version": "1.3.1",
-            "requirements": [
-                {
-                    "raw": "sniffio==1.3.1",
-                    "extras": [],
-                    "marker": null,
-                    "name": "sniffio",
-                    "specifier": "==1.3.1",
-                    "url": null,
-                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/sniffio-1.3.1.dist-info"
                 }
             ]
         },
@@ -826,6 +811,21 @@ We highly encourage switching to the new `scan` command which is easier to use, 
                     "specifier": "==14.2.0",
                     "url": null,
                     "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/rich-14.2.0.dist-info"
+                }
+            ]
+        },
+        "pip_audit": {
+            "name": "pip_audit",
+            "version": "2.10.0",
+            "requirements": [
+                {
+                    "raw": "pip_audit==2.10.0",
+                    "extras": [],
+                    "marker": null,
+                    "name": "pip_audit",
+                    "specifier": "==2.10.0",
+                    "url": null,
+                    "found": "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/pip_audit-2.10.0.dist-info"
                 }
             ]
         },
