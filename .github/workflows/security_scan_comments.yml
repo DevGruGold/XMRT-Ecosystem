@@ -1,5 +1,5 @@
 name: Security - Scan Comments for Malicious Content
-true:
+on:
   issue_comment:
     types:
     - created
