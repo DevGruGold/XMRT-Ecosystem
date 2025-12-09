@@ -137,7 +137,7 @@ jobs:
         echo \"\" >> $GITHUB_STEP_SUMMARY\necho \"**Next Check:** In 12 hours (automatic)\"\
         \ >> $GITHUB_STEP_SUMMARY\n"
 permissions:
-  contents: read
+  contents: write
   actions: read
   checks: write
   pull-requests: read
