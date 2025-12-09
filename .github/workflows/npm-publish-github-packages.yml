@@ -1,5 +1,5 @@
 name: Node.js Package
-true:
+on:
   release:
     types:
     - created
