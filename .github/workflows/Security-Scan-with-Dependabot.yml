@@ -35,7 +35,7 @@ jobs:
     - name: Install dependencies
       run: |
         if [ -f package.json ]; then
-          npm ci
+          npm ci --legacy-peer-deps || npm install --legacy-peer-deps
         fi
 
     - name: Run npm audit
