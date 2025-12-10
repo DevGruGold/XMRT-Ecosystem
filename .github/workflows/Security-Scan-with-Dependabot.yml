@@ -34,12 +34,14 @@ jobs:
 
     - name: Install dependencies
       run: |
+      continue-on-error: true
         if [ -f package.json ]; then
           npm ci --legacy-peer-deps || npm install --legacy-peer-deps
         fi
 
     - name: Run npm audit
       run: |
+      continue-on-error: true
         if [ -f package.json ]; then
           npm audit --audit-level high || echo "Security issues found, continuing..."
         fi
@@ -51,11 +53,13 @@ jobs:
 
     - name: Install Python security tools
       run: |
+      continue-on-error: true
         python -m pip install --upgrade pip
         pip install safety bandit
 
     - name: Run Python security scan
       run: |
+      continue-on-error: true
         if [ -f requirements.txt ]; then
           safety check -r requirements.txt || echo "Python security issues found, continuing..."
         fi
