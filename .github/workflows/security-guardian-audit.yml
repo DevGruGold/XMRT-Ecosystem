@@ -1,5 +1,5 @@
 name: 🔒 Security Guardian Audit
-on:
+true:
   schedule:
   - cron: 0 2 * * *
   workflow_dispatch: null
@@ -34,16 +34,14 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
     - name: 🔒 Install security tools
-      run: 'python -m pip install --upgrade pip
-      continue-on-error: true
+      run: 'python -m pip install --upgrade pip continue-on-error: true
 
         pip install bandit safety pip-audit
 
         '
     - name: 🔍 Run Bandit security scan
       id: bandit
-      run: 'mkdir -p ${{ env.SECURITY_DIR }}
-      continue-on-error: true
+      run: 'mkdir -p ${{ env.SECURITY_DIR }} continue-on-error: true
 
         bandit -r api/ -f json -o ${{ env.SECURITY_DIR }}/bandit_report.json || true
 
@@ -54,7 +52,7 @@ jobs:
     - name: 🔍 Run Safety dependency check
       id: safety
       run: 'safety check --json > ${{ env.SECURITY_DIR }}/safety_report.json || true
-      continue-on-error: true
+        continue-on-error: true
 
         safety check > ${{ env.SECURITY_DIR }}/safety_report.txt || true
 
@@ -63,8 +61,7 @@ jobs:
     - name: 🔍 Run pip-audit
       id: pip_audit
       run: 'pip-audit --desc --format json > ${{ env.SECURITY_DIR }}/pip_audit_report.json
-      continue-on-error: true
-        || true
+        continue-on-error: true || true
 
         pip-audit --desc > ${{ env.SECURITY_DIR }}/pip_audit_report.txt || true
 
@@ -116,12 +113,11 @@ jobs:
     - name: 📊 Check for changes
       id: check_changes
       run: "git add .\nif git diff --staged --quiet; then\n  echo \"changes=false\"\
-      continue-on-error: true
-        \ >> $GITHUB_OUTPUT\nelse\n  echo \"changes=true\" >> $GITHUB_OUTPUT\nfi\n"
+        continue-on-error: true  >> $GITHUB_OUTPUT\nelse\n  echo \"changes=true\"\
+        \ >> $GITHUB_OUTPUT\nfi\n"
     - name: 💾 Commit security audit
       if: steps.check_changes.outputs.changes == 'true'
-      run: 'git config user.name "Security Guardian"
-      continue-on-error: true
+      run: 'git config user.name "Security Guardian" continue-on-error: true
 
         git config user.email "security@xmrt-ecosystem.io"
 
@@ -148,11 +144,11 @@ jobs:
         git push
 
         '
+      continue-on-error: true
     - name: 📈 Create workflow summary
       if: always()
-      run: "AUDIT_DATE=$(date -u '+%Y%m%d')\necho \"## \U0001F512 Security Guardian\
-      continue-on-error: true
-        \ Audit Complete\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\
+      run: "AUDIT_DATE=$(date -u '+%Y%m%d')\necho \"## \U0001F512 Security Guardiancontinue-on-error:\
+        \ true  Audit Complete\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\
         echo \"**Audit Date:** $AUDIT_DATE\" >> $GITHUB_STEP_SUMMARY\necho \"**Status:**\
         \ ${{ job.status == 'success' && '✅ Complete' || '⚠️ Issues Found' }}\" >>\
         \ $GITHUB_STEP_SUMMARY\necho \"**Timestamp:** $(date -u '+%Y-%m-%d %H:%M:%S\
