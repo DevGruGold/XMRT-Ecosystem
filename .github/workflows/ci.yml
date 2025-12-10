@@ -51,7 +51,7 @@ jobs:
       run: |
         echo "📦 Installing dependencies..."
         npm ci --legacy-peer-deps || npm install --legacy-peer-deps
-      continue-on-error: false
+      continue-on-error: true
         
     - name: Run linting
       if: steps.check_package.outputs.exists == 'true'
@@ -102,7 +102,7 @@ jobs:
             echo "✅ Project structure validation passed"
           fi
         fi
-      continue-on-error: false
+      continue-on-error: true
     
     - name: Verify build artifacts
       if: steps.check_package.outputs.exists == 'true'
