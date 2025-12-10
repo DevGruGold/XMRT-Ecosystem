@@ -10,8 +10,8 @@ on:
   release:
     types: [published]
   schedule:
-    # Log system status every hour
-    - cron: '0 * * * *'
+    # Log system status every 6 hours (reduced from hourly to avoid noise)
+    - cron: '0 */6 * * *'
   workflow_dispatch:
     inputs:
       log_type:
@@ -26,10 +26,13 @@ on:
         - performance
 
 permissions:
-  contents: write  # Changed from read to write
+  contents: write
   issues: write
+  actions: read
+
 env:
   LOG_RETENTION_DAYS: 30
+  LOG_DIR: activity_logs
 
 jobs:
   log-system-activity:
@@ -41,6 +44,9 @@ jobs:
     steps:
     - name: 📥 Checkout Repository
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: 🐍 Set up Python
       uses: actions/setup-python@v5
@@ -50,13 +56,241 @@ jobs:
     - name: 🔧 Install Dependencies
       run: |
         python -m pip install --upgrade pip
-try:
-    # Only check if RENDER_API_KEY is available
-    render_key = os.environ.get('RENDER_API_KEY')
-    if render_key:
-        dashboard_url = 'https://xmrt-ecosystem-xx5w.onrender.com/health'
-except Exception as e:
-    log_data['system_status'] = {'status': 'check_failed', 'error': str(e)[:100]}
-    print(f'⚠️ System status check failed (non-critical): {e}')
+        pip install requests python-dotenv
 
-# Log the activity (this always succeeds)
+    - name: 📊 Collect System Activity
+      id: collect_logs
+      run: |
+        python3 << 'EOF'
+        import json
+        import os
+        from datetime import datetime, timedelta
+        import sys
+
+        # Create log directory
+        log_dir = os.environ.get('LOG_DIR', 'activity_logs')
+        os.makedirs(log_dir, exist_ok=True)
+
+        # Collect activity data
+        log_type = "${{ github.event.inputs.log_type || 'full' }}"
+        timestamp = datetime.utcnow()
+        log_filename = f"{log_dir}/activity_{timestamp.strftime('%Y%m%d_%H%M%S')}.json"
+
+        activity_data = {
+            "timestamp": timestamp.isoformat() + "Z",
+            "log_type": log_type,
+            "trigger": {
+                "event": "${{ github.event_name }}",
+                "actor": "${{ github.actor }}",
+                "ref": "${{ github.ref }}",
+                "sha": "${{ github.sha }}"
+            },
+            "repository": {
+                "name": "${{ github.repository }}",
+                "default_branch": "${{ github.event.repository.default_branch }}",
+                "private": "${{ github.event.repository.private }}" == "true"
+            }
+        }
+
+        # Add event-specific data
+        event_name = "${{ github.event_name }}"
+        
+        if event_name == "push":
+            activity_data["event_details"] = {
+                "type": "push",
+                "commits": "${{ github.event.commits }}",
+                "ref": "${{ github.ref }}"
+            }
+        elif event_name == "issues":
+            activity_data["event_details"] = {
+                "type": "issue",
+                "action": "${{ github.event.action }}",
+                "issue_number": "${{ github.event.issue.number }}"
+            }
+        elif event_name == "pull_request":
+            activity_data["event_details"] = {
+                "type": "pull_request",
+                "action": "${{ github.event.action }}",
+                "pr_number": "${{ github.event.pull_request.number }}"
+            }
+        elif event_name == "release":
+            activity_data["event_details"] = {
+                "type": "release",
+                "action": "${{ github.event.action }}",
+                "tag": "${{ github.event.release.tag_name }}"
+            }
+        elif event_name == "schedule":
+            activity_data["event_details"] = {
+                "type": "scheduled",
+                "schedule": "every 6 hours"
+            }
+        elif event_name == "workflow_dispatch":
+            activity_data["event_details"] = {
+                "type": "manual",
+                "log_type": log_type
+            }
+
+        # Add system health check
+        try:
+            import requests
+            
+            # Check main deployments
+            deployments = {
+                "vercel": "https://xmrt-ecosystem.vercel.app/health",
+                "render": "https://xmrt-ecosystem-0k8i.onrender.com/health"
+            }
+            
+            health_status = {}
+            for name, url in deployments.items():
+                try:
+                    response = requests.get(url, timeout=5)
+                    health_status[name] = {
+                        "status": "healthy" if response.status_code == 200 else "degraded",
+                        "status_code": response.status_code,
+                        "response_time": f"{response.elapsed.total_seconds():.2f}s"
+                    }
+                except Exception as e:
+                    health_status[name] = {
+                        "status": "unavailable",
+                        "error": str(e)[:100]
+                    }
+            
+            activity_data["system_health"] = health_status
+            
+        except Exception as e:
+            activity_data["system_health"] = {
+                "status": "check_failed",
+                "error": str(e)[:100]
+            }
+            print(f"⚠️  Health check failed (non-critical): {e}")
+
+        # Write log file
+        with open(log_filename, 'w') as f:
+            json.dump(activity_data, f, indent=2)
+
+        print(f"✅ Activity log created: {log_filename}")
+        print(f"📊 Event: {event_name}")
+        print(f"🔧 Log type: {log_type}")
+        
+        # Output for next steps
+        with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+            f.write(f'log_file={log_filename}\n')
+            f.write(f'timestamp={timestamp.strftime("%Y%m%d_%H%M%S")}\n')
+
+        sys.exit(0)
+        EOF
+
+    - name: 📊 Generate Activity Summary
+      run: |
+        python3 << 'EOF'
+        import json
+        import os
+        from datetime import datetime
+
+        log_file = "${{ steps.collect_logs.outputs.log_file }}"
+        
+        if os.path.exists(log_file):
+            with open(log_file, 'r') as f:
+                data = json.load(f)
+            
+            print("="*80)
+            print("📊 XMRT ECOSYSTEM ACTIVITY LOG")
+            print("="*80)
+            print(f"Timestamp: {data['timestamp']}")
+            print(f"Event: {data['trigger']['event']}")
+            print(f"Actor: {data['trigger']['actor']}")
+            print(f"Log Type: {data['log_type']}")
+            
+            if 'system_health' in data:
+                print("\n🏥 System Health:")
+                for service, status in data['system_health'].items():
+                    status_emoji = "✅" if status.get('status') == 'healthy' else "⚠️" if status.get('status') == 'degraded' else "❌"
+                    print(f"   {status_emoji} {service}: {status.get('status', 'unknown')}")
+                    if 'response_time' in status:
+                        print(f"      Response time: {status['response_time']}")
+            
+            print("="*80)
+        EOF
+
+    - name: 🧹 Clean Old Logs
+      run: |
+        python3 << 'EOF'
+        import os
+        from datetime import datetime, timedelta
+        from pathlib import Path
+
+        log_dir = os.environ.get('LOG_DIR', 'activity_logs')
+        retention_days = int(os.environ.get('LOG_RETENTION_DAYS', '30'))
+        
+        if os.path.exists(log_dir):
+            cutoff_date = datetime.now() - timedelta(days=retention_days)
+            deleted_count = 0
+            
+            for log_file in Path(log_dir).glob('activity_*.json'):
+                # Extract date from filename
+                try:
+                    date_str = log_file.stem.split('_')[1]  # Get YYYYMMDD part
+                    file_date = datetime.strptime(date_str, '%Y%m%d')
+                    
+                    if file_date < cutoff_date:
+                        log_file.unlink()
+                        deleted_count += 1
+                except Exception as e:
+                    print(f"⚠️  Could not process {log_file}: {e}")
+            
+            if deleted_count > 0:
+                print(f"🧹 Cleaned {deleted_count} old log file(s)")
+            else:
+                print(f"✅ No old logs to clean (retention: {retention_days} days)")
+        EOF
+
+    - name: 📊 Check for changes
+      id: check_changes
+      run: |
+        git add ${{ env.LOG_DIR }}
+        if git diff --staged --quiet; then
+          echo "changes=false" >> $GITHUB_OUTPUT
+        else
+          echo "changes=true" >> $GITHUB_OUTPUT
+        fi
+
+    - name: 💾 Commit Activity Logs
+      if: steps.check_changes.outputs.changes == 'true'
+      run: |
+        git config user.name "XMRT Activity Logger"
+        git config user.email "logger@xmrt-ecosystem.io"
+        
+        TIMESTAMP="${{ steps.collect_logs.outputs.timestamp }}"
+        EVENT="${{ github.event_name }}"
+        
+        git add ${{ env.LOG_DIR }}
+        git commit -m "📊 Activity Log: ${EVENT} at ${TIMESTAMP}
+
+        Event: ${EVENT}
+        Actor: ${{ github.actor }}
+        Ref: ${{ github.ref }}
+        
+        Automated activity logging by XMRT Ecosystem Logger"
+        
+        git push
+
+    - name: 📈 Create Workflow Summary
+      if: always()
+      run: |
+        echo "## 📊 XMRT Ecosystem Activity Log" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Event:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Actor:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Timestamp:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+        echo "**Log Type:** ${{ github.event.inputs.log_type || 'full' }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "${{ steps.check_changes.outputs.changes }}" = "true" ]; then
+          echo "✅ Activity log committed to repository" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "ℹ️  No changes to commit" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Log Directory:** \`${{ env.LOG_DIR }}\`" >> $GITHUB_STEP_SUMMARY
+        echo "**Retention Period:** ${{ env.LOG_RETENTION_DAYS }} days" >> $GITHUB_STEP_SUMMARY
