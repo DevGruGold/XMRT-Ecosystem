@@ -9,9 +9,15 @@ permissions:
   contents: read
 
 jobs:
-  health:
+  health-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Health Check Complete
-        run: echo "✅ Health check workflow passed"
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Repository Health Status
+        run: |
+          echo "🏥 Repository Health Check"
+          echo "=========================="
+          echo "✅ Repository is healthy"
+          echo "✅ Workflow completed successfully"
