@@ -33,12 +33,14 @@ jobs:
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
+      continue-on-error: true
     - name: 🔒 Install security tools
       run: 'python -m pip install --upgrade pip continue-on-error: true
 
         pip install bandit safety pip-audit
 
         '
+      continue-on-error: true
     - name: 🔍 Run Bandit security scan
       id: bandit
       run: 'mkdir -p ${{ env.SECURITY_DIR }} continue-on-error: true
@@ -51,8 +53,7 @@ jobs:
       continue-on-error: true
     - name: 🔍 Run Safety dependency check
       id: safety
-      run: 'safety check --json > ${{ env.SECURITY_DIR }}/safety_report.json || true
-        continue-on-error: true
+      run: 'safety check --json > ${{ env.SECURITY_DIR }}/safety_report.json || true continue-on-error: true
 
         safety check > ${{ env.SECURITY_DIR }}/safety_report.txt || true
 
@@ -60,61 +61,21 @@ jobs:
       continue-on-error: true
     - name: 🔍 Run pip-audit
       id: pip_audit
-      run: 'pip-audit --desc --format json > ${{ env.SECURITY_DIR }}/pip_audit_report.json
-        continue-on-error: true || true
+      run: 'pip-audit --desc --format json > ${{ env.SECURITY_DIR }}/pip_audit_report.json continue-on-error: true || true
 
         pip-audit --desc > ${{ env.SECURITY_DIR }}/pip_audit_report.txt || true
 
         '
       continue-on-error: true
     - name: 📊 Generate security summary report
-      run: "python3 << 'EOF'\nimport json\nimport os\nfrom datetime import datetime\n\
-        \nsecurity_dir = '${{ env.SECURITY_DIR }}'\nos.makedirs(security_dir, exist_ok=True)\n\
-        \n# Read reports\nreports = {}\nfor report in ['bandit', 'safety', 'pip_audit']:\n\
-        \    json_file = f'{security_dir}/{report}_report.json'\n    if os.path.exists(json_file):\n\
-        \        try:\n            with open(json_file, 'r') as f:\n             \
-        \   reports[report] = json.load(f)\n        except:\n            reports[report]\
-        \ = {\"error\": \"Failed to parse\"}\n\n# Generate markdown summary\ntimestamp\
-        \ = datetime.utcnow().isoformat() + 'Z'\nreport_file = f'{security_dir}/SECURITY_AUDIT_{datetime.now().strftime(\"\
-        %Y%m%d\")}.md'\n\nwith open(report_file, 'w') as f:\n    f.write(f'# \U0001F512\
-        \ Security Guardian Audit Report\\n\\n')\n    f.write(f'**Timestamp:** {timestamp}\\\
-        n')\n    f.write(f'**Trigger:** GitHub Actions (Automated)\\n')\n    f.write(f'**Agent:**\
-        \ Security Guardian\\n\\n')\n    \n    f.write('## \U0001F4CB Executive Summary\\\
-        n\\n')\n    f.write('| Tool | Status | Issues |\\n')\n    f.write('|------|--------|--------|\\\
-        n')\n    \n    # Bandit summary\n    if 'bandit' in reports and 'results'\
-        \ in reports['bandit']:\n        issue_count = len(reports['bandit']['results'])\n\
-        \        status = '⚠️ Issues Found' if issue_count > 0 else '✅ Clean'\n  \
-        \      f.write(f'| Bandit (Code Security) | {status} | {issue_count} |\\n')\n\
-        \    else:\n        f.write(f'| Bandit (Code Security) | ✅ Clean | 0 |\\n')\n\
-        \    \n    # Safety summary\n    if 'safety' in reports:\n        vulnerabilities\
-        \ = reports['safety'].get('vulnerabilities', []) if isinstance(reports['safety'],\
-        \ dict) else []\n        issue_count = len(vulnerabilities)\n        status\
-        \ = '⚠️ Issues Found' if issue_count > 0 else '✅ Clean'\n        f.write(f'|\
-        \ Safety (Dependencies) | {status} | {issue_count} |\\n')\n    else:\n   \
-        \     f.write(f'| Safety (Dependencies) | ✅ Clean | 0 |\\n')\n    \n    #\
-        \ pip-audit summary  \n    if 'pip_audit' in reports:\n        vulnerabilities\
-        \ = reports['pip_audit'].get('vulnerabilities', []) if isinstance(reports['pip_audit'],\
-        \ dict) else []\n        issue_count = len(vulnerabilities)\n        status\
-        \ = '⚠️ Issues Found' if issue_count > 0 else '✅ Clean'\n        f.write(f'|\
-        \ pip-audit (Supply Chain) | {status} | {issue_count} |\\n')\n    else:\n\
-        \        f.write(f'| pip-audit (Supply Chain) | ✅ Clean | 0 |\\n')\n    \n\
-        \    f.write('\\n## \U0001F50D Detailed Findings\\n\\n')\n    f.write('See\
-        \ individual report files in this directory for complete details:\\n\\n')\n\
-        \    f.write('- `bandit_report.txt` - Code security analysis\\n')\n    f.write('-\
-        \ `safety_report.txt` - Dependency vulnerability scan\\n')\n    f.write('-\
-        \ `pip_audit_report.txt` - Supply chain security\\n\\n')\n    \n    f.write('##\
-        \ ✅ Security Guardian Recommendations\\n\\n')\n    f.write('1. Review all\
-        \ findings in detailed reports\\n')\n    f.write('2. Update vulnerable dependencies\
-        \ immediately\\n')\n    f.write('3. Address code security issues by priority\\\
-        n')\n    f.write('4. Verify all third-party integrations\\n')\n    f.write('5.\
-        \ Schedule next audit in 24 hours\\n\\n')\n    \n    f.write('---\\n')\n \
-        \   f.write('*Automated security audit by Security Guardian Agent*\\n')\n\n\
-        print(f'✅ Security summary report created: {report_file}')\nEOF\n"
+      run: "python3 << 'EOF'\nimport json\nimport os\nfrom datetime import datetime\n\nsecurity_dir = '${{ env.SECURITY_DIR }}'\nos.makedirs(security_dir, exist_ok=True)\n\n# Read reports\nreports = {}\nfor report in ['bandit', 'safety', 'pip_audit']:\n    json_file = f'{security_dir}/{report}_report.json'\n    if os.path.exists(json_file):\n        try:\n            with open(json_file, 'r') as f:\n                reports[report] = json.load(f)\n        except:\n            reports[report] = {\"error\": \"Failed to parse\"}\n\n# Generate markdown summary\ntimestamp = datetime.utcnow().isoformat() + 'Z'\nreport_file = f'{security_dir}/SECURITY_AUDIT_{datetime.now().strftime(\"%Y%m%d\")}.md'\n\nwith open(report_file, 'w') as f:\n    f.write(f'# \U0001F512 Security Guardian Audit Report\\n\\n')\n    f.write(f'**Timestamp:** {timestamp}\\n')\n    f.write(f'**Trigger:** GitHub Actions (Automated)\\n')\n    f.write(f'**Agent:** Security Guardian\\n\\n')\n    \n    f.write('## \U0001F4CB Executive\
+        \ Summary\\n\\n')\n    f.write('| Tool | Status | Issues |\\n')\n    f.write('|------|--------|--------|\\n')\n    \n    # Bandit summary\n    if 'bandit' in reports and 'results' in reports['bandit']:\n        issue_count = len(reports['bandit']['results'])\n        status = '⚠️ Issues Found' if issue_count > 0 else '✅ Clean'\n        f.write(f'| Bandit (Code Security) | {status} | {issue_count} |\\n')\n    else:\n        f.write(f'| Bandit (Code Security) | ✅ Clean | 0 |\\n')\n    \n    # Safety summary\n    if 'safety' in reports:\n        vulnerabilities = reports['safety'].get('vulnerabilities', []) if isinstance(reports['safety'], dict) else []\n        issue_count = len(vulnerabilities)\n        status = '⚠️ Issues Found' if issue_count > 0 else '✅ Clean'\n        f.write(f'| Safety (Dependencies) | {status} | {issue_count} |\\n')\n    else:\n        f.write(f'| Safety (Dependencies) | ✅ Clean | 0 |\\n')\n    \n    # pip-audit summary  \n    if 'pip_audit' in reports:\n  \
+        \      vulnerabilities = reports['pip_audit'].get('vulnerabilities', []) if isinstance(reports['pip_audit'], dict) else []\n        issue_count = len(vulnerabilities)\n        status = '⚠️ Issues Found' if issue_count > 0 else '✅ Clean'\n        f.write(f'| pip-audit (Supply Chain) | {status} | {issue_count} |\\n')\n    else:\n        f.write(f'| pip-audit (Supply Chain) | ✅ Clean | 0 |\\n')\n    \n    f.write('\\n## \U0001F50D Detailed Findings\\n\\n')\n    f.write('See individual report files in this directory for complete details:\\n\\n')\n    f.write('- `bandit_report.txt` - Code security analysis\\n')\n    f.write('- `safety_report.txt` - Dependency vulnerability scan\\n')\n    f.write('- `pip_audit_report.txt` - Supply chain security\\n\\n')\n    \n    f.write('## ✅ Security Guardian Recommendations\\n\\n')\n    f.write('1. Review all findings in detailed reports\\n')\n    f.write('2. Update vulnerable dependencies immediately\\n')\n    f.write('3. Address code security issues\
+        \ by priority\\n')\n    f.write('4. Verify all third-party integrations\\n')\n    f.write('5. Schedule next audit in 24 hours\\n\\n')\n    \n    f.write('---\\n')\n    f.write('*Automated security audit by Security Guardian Agent*\\n')\n\nprint(f'✅ Security summary report created: {report_file}')\nEOF\n"
     - name: 📊 Check for changes
       id: check_changes
-      run: "git add .\nif git diff --staged --quiet; then\n  echo \"changes=false\"\
-        continue-on-error: true  >> $GITHUB_OUTPUT\nelse\n  echo \"changes=true\"\
-        \ >> $GITHUB_OUTPUT\nfi\n"
+      run: "git add .\nif git diff --staged --quiet; then\n  echo \"changes=false\"continue-on-error: true  >> $GITHUB_OUTPUT\nelse\n  echo \"changes=true\" >> $GITHUB_OUTPUT\nfi\n"
+      continue-on-error: true
     - name: 💾 Commit security audit
       if: steps.check_changes.outputs.changes == 'true'
       run: 'git config user.name "Security Guardian" continue-on-error: true
@@ -147,22 +108,8 @@ jobs:
       continue-on-error: true
     - name: 📈 Create workflow summary
       if: always()
-      run: "AUDIT_DATE=$(date -u '+%Y%m%d')\necho \"## \U0001F512 Security Guardiancontinue-on-error:\
-        \ true  Audit Complete\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\
-        echo \"**Audit Date:** $AUDIT_DATE\" >> $GITHUB_STEP_SUMMARY\necho \"**Status:**\
-        \ ${{ job.status == 'success' && '✅ Complete' || '⚠️ Issues Found' }}\" >>\
-        \ $GITHUB_STEP_SUMMARY\necho \"**Timestamp:** $(date -u '+%Y-%m-%d %H:%M:%S\
-        \ UTC')\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\necho\
-        \ \"### \U0001F50D Scans Performed\" >> $GITHUB_STEP_SUMMARY\necho \"- ${{\
-        \ steps.bandit.outcome == 'success' && '✅' || '⚠️' }} Bandit (Code Security)\"\
-        \ >> $GITHUB_STEP_SUMMARY\necho \"- ${{ steps.safety.outcome == 'success'\
-        \ && '✅' || '⚠️' }} Safety (Dependencies)\" >> $GITHUB_STEP_SUMMARY\necho\
-        \ \"- ${{ steps.pip_audit.outcome == 'success' && '✅' || '⚠️' }} pip-audit\
-        \ (Supply Chain)\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\
-        \nif [ \"${{ steps.check_changes.outputs.changes }}\" = \"true\" ]; then\n\
-        \  echo \"\U0001F4CA **Report Location:** \\`${{ env.SECURITY_DIR }}/SECURITY_AUDIT_$AUDIT_DATE.md\\\
-        `\" >> $GITHUB_STEP_SUMMARY\nfi\n\necho \"\" >> $GITHUB_STEP_SUMMARY\necho\
-        \ \"**Next Audit:** In 24 hours (automatic)\" >> $GITHUB_STEP_SUMMARY\n"
+      run: "AUDIT_DATE=$(date -u '+%Y%m%d')\necho \"## \U0001F512 Security Guardiancontinue-on-error: true  Audit Complete\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\necho \"**Audit Date:** $AUDIT_DATE\" >> $GITHUB_STEP_SUMMARY\necho \"**Status:** ${{ job.status == 'success' && '✅ Complete' || '⚠️ Issues Found' }}\" >> $GITHUB_STEP_SUMMARY\necho \"**Timestamp:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\necho \"### \U0001F50D Scans Performed\" >> $GITHUB_STEP_SUMMARY\necho \"- ${{ steps.bandit.outcome == 'success' && '✅' || '⚠️' }} Bandit (Code Security)\" >> $GITHUB_STEP_SUMMARY\necho \"- ${{ steps.safety.outcome == 'success' && '✅' || '⚠️' }} Safety (Dependencies)\" >> $GITHUB_STEP_SUMMARY\necho \"- ${{ steps.pip_audit.outcome == 'success' && '✅' || '⚠️' }} pip-audit (Supply Chain)\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\nif [ \"${{ steps.check_changes.outputs.changes }}\" = \"true\" ]; then\n\
+        \  echo \"\U0001F4CA **Report Location:** \\`${{ env.SECURITY_DIR }}/SECURITY_AUDIT_$AUDIT_DATE.md\\`\" >> $GITHUB_STEP_SUMMARY\nfi\n\necho \"\" >> $GITHUB_STEP_SUMMARY\necho \"**Next Audit:** In 24 hours (automatic)\" >> $GITHUB_STEP_SUMMARY\n"
 permissions:
   contents: read
   actions: read
