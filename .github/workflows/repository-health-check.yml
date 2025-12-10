@@ -1,5 +1,5 @@
 name: 🏥 Repository Health Check
-on:
+true:
   schedule:
   - cron: 0 */12 * * *
   workflow_dispatch: null
@@ -23,8 +23,7 @@ jobs:
       with:
         python-version: ${{ env.PYTHON_VERSION }}
     - name: 📦 Install dependencies
-      run: 'python -m pip install --upgrade pip
-      continue-on-error: true
+      run: 'python -m pip install --upgrade pip continue-on-error: true
 
         pip install requests PyGithub python-dotenv
 
@@ -33,10 +32,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: "python3 << 'EOF'\nimport os\nimport json\nfrom datetime import datetime\n\
-      continue-on-error: true
-        from github import Github, Auth\n\n# Authenticate with GitHub\nauth = Auth.Token(os.environ['GITHUB_TOKEN'])\n\
-        g = Github(auth=auth)\n\n# Get repository\nrepo = g.get_repo('DevGruGold/XMRT-Ecosystem')\n\
-        \n# Create health directory\nhealth_dir = '${{ env.HEALTH_DIR }}'\nos.makedirs(health_dir,\
+        continue-on-error: true from github import Github, Auth\n\n# Authenticate\
+        \ with GitHub\nauth = Auth.Token(os.environ['GITHUB_TOKEN'])\ng = Github(auth=auth)\n\
+        \n# Get repository\nrepo = g.get_repo('DevGruGold/XMRT-Ecosystem')\n\n# Create\
+        \ health directory\nhealth_dir = '${{ env.HEALTH_DIR }}'\nos.makedirs(health_dir,\
         \ exist_ok=True)\n\n# Collect metrics\nhealth_data = {\n    \"timestamp\"\
         : datetime.utcnow().isoformat() + 'Z',\n    \"repository\": {\n        \"\
         name\": repo.full_name,\n        \"stars\": repo.stargazers_count,\n     \
@@ -91,15 +90,15 @@ jobs:
         n')\n    \n    f.write('\\n---\\n')\n    f.write('*Automated health check\
         \ by Eliza Agent*\\n')\n\nprint(f'✅ Health check report created: {report_file}')\n\
         print(f'Health Score: {score}/100')\nEOF\n"
+      continue-on-error: true
     - name: 📊 Check for changes
       id: check_changes
       run: "git add .\nif git diff --staged --quiet; then\n  echo \"changes=false\"\
-      continue-on-error: true
-        \ >> $GITHUB_OUTPUT\nelse\n  echo \"changes=true\" >> $GITHUB_OUTPUT\nfi\n"
+        continue-on-error: true  >> $GITHUB_OUTPUT\nelse\n  echo \"changes=true\"\
+        \ >> $GITHUB_OUTPUT\nfi\n"
     - name: 💾 Commit health check
       if: steps.check_changes.outputs.changes == 'true'
-      run: 'git config user.name "Eliza Health Monitor"
-      continue-on-error: true
+      run: 'git config user.name "Eliza Health Monitor" continue-on-error: true
 
         git config user.email "health@xmrt-ecosystem.io"
 
@@ -124,11 +123,11 @@ jobs:
         git push
 
         '
+      continue-on-error: true
     - name: 📈 Create workflow summary
       if: always()
-      run: "CHECK_DATE=$(date -u '+%Y%m%d')\necho \"## \U0001F3E5 Repository Health\
-      continue-on-error: true
-        \ Check Complete\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\
+      run: "CHECK_DATE=$(date -u '+%Y%m%d')\necho \"## \U0001F3E5 Repository Healthcontinue-on-error:\
+        \ true  Check Complete\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\
         echo \"**Check Date:** $CHECK_DATE\" >> $GITHUB_STEP_SUMMARY\necho \"**Status:**\
         \ ✅ Complete\" >> $GITHUB_STEP_SUMMARY\necho \"**Timestamp:** $(date -u '+%Y-%m-%d\
         \ %H:%M:%S UTC')\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\
