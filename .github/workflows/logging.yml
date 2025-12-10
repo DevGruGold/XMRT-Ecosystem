@@ -26,7 +26,7 @@ on:
         - performance
 
 permissions:
-  contents: read
+  contents: write  # Changed from read to write
   issues: write
 env:
   LOG_RETENTION_DAYS: 30
