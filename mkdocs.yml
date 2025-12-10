@@ -1,6 +1,42 @@
-
 site_name: XMRT Ecosystem Documentation
-nav:
-    - Home: index.md
+site_description: Comprehensive documentation for the XMRT DAO and Multi-Agent System
+site_author: XMRT Development Team
+site_url: https://DevGruGold.github.io/XMRT-Ecosystem/
+
 theme:
-    name: material
+  name: material
+  palette:
+    primary: indigo
+    accent: cyan
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - search.highlight
+    - content.code.copy
+
+nav:
+  - Home: index.md
+  - Getting Started: GETTING_STARTED.md
+  - Architecture: ARCHITECTURE.md
+  - Agent Integration: AGENT_INTEGRATION.md
+  - Improvements: IMPROVEMENTS.md
+  - Documentation: README.md
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - toc:
+      permalink: true
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.details
+
+plugins:
+  - search
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/DevGruGold/XMRT-Ecosystem
