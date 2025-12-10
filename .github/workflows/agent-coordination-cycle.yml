@@ -22,147 +22,449 @@ on:
 env:
   AGENT_CYCLE_DIR: agent_cycles
   PYTHON_VERSION: '3.11'
+  # Main XMRT Ecosystem endpoints
   VERCEL_URL: https://xmrt-ecosystem.vercel.app
+  XMRTIO_URL: https://xmrt-ecosystem-0k8i.onrender.com
+  STREAMLIT_URL: https://xmrtsuite.streamlit.app
+  # XMRT DAO Ecosystem endpoint
+  DAO_API_URL: http://localhost:5000
+  # xmrtcouncil frontend
+  COUNCIL_URL: http://localhost:5173
+  # xmrt-eliza agents
+  ELIZA_API_URL: http://localhost:3000
 jobs:
   coordination-cycle:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: write
+      actions: read
+      checks: write
+      pull-requests: read
     steps:
     - name: 📥 Checkout repository
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
         token: ${{ secrets.GITHUB_TOKEN }}
+    
     - name: 🐍 Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
+    
     - name: 📦 Install dependencies
-      run: 'python -m pip install --upgrade pip
-
+      run: |
+        python -m pip install --upgrade pip
         pip install requests python-dotenv
 
-        '
-    - name: 🔍 Verify Vercel deployment health
+    - name: 🔍 Discover and Health Check All Ecosystem Agents
       id: health_check
-      run: "python3 << 'EOF'\nimport requests\nimport sys\n\nvercel_url = 'https://xmrt-ecosystem.vercel.app'\n\
-        \ntry:\n    response = requests.get(f'{vercel_url}/health', timeout=10)\n\
-        \    if response.status_code == 200:\n        print(f\"✅ Vercel deployment\
-        \ is healthy\")\n        print(f\"   URL: {vercel_url}\")\n        sys.exit(0)\n\
-        \    else:\n        print(f\"⚠️  Health check returned status {response.status_code}\"\
-        )\n        sys.exit(1)\nexcept Exception as e:\n    print(f\"❌ Health check\
-        \ failed: {e}\")\n    sys.exit(1)\nEOF\n"
+      run: |
+        python3 << 'EOF'
+        import requests
+        import json
+        from datetime import datetime
+
+        # Define all agent endpoints across the XMRT ecosystem
+        agent_endpoints = {
+            # XMRT-Ecosystem agents (Vercel)
+            "Eliza Coordinator": {
+                "url": "https://xmrt-ecosystem.vercel.app/health",
+                "api_url": "https://xmrt-ecosystem.vercel.app/api/tick",
+                "repo": "XMRT-Ecosystem",
+                "role": "Governor & Coordinator",
+                "weight": 1.2,
+                "enabled": True
+            },
+            "Security Guardian": {
+                "url": "https://xmrt-ecosystem.vercel.app/api/agents/security",
+                "repo": "XMRT-Ecosystem",
+                "role": "Security & Privacy",
+                "weight": 1.1,
+                "enabled": True
+            },
+            "DeFi Specialist": {
+                "url": "https://xmrt-ecosystem.vercel.app/api/agents/defi",
+                "repo": "XMRT-Ecosystem",
+                "role": "Mining & Tokenomics",
+                "weight": 1.05,
+                "enabled": True
+            },
+            "Community Manager": {
+                "url": "https://xmrt-ecosystem.vercel.app/api/agents/community",
+                "repo": "XMRT-Ecosystem",
+                "role": "Adoption & UX",
+                "weight": 1.0,
+                "enabled": True
+            },
+            
+            # XMRT.io agents (Render)
+            "XMRT.io Main Service": {
+                "url": "https://xmrt-ecosystem-0k8i.onrender.com/health",
+                "api_url": "https://xmrt-ecosystem-0k8i.onrender.com/api/status",
+                "repo": "XMRT.io",
+                "role": "Digital Ecosystem Hub",
+                "weight": 1.15,
+                "enabled": True
+            },
+            "XMRTsuite Analytics": {
+                "url": "https://xmrtsuite.streamlit.app",
+                "repo": "XMRT.io",
+                "role": "Analytics & Insights",
+                "weight": 0.95,
+                "enabled": True
+            },
+            
+            # XMRT-DAO-Ecosystem agents
+            "Autonomous Decision Engine": {
+                "url": None,  # No public endpoint, will skip
+                "repo": "XMRT-DAO-Ecosystem",
+                "role": "Decision Making",
+                "weight": 1.1,
+                "enabled": False,
+                "reason": "No API endpoint available"
+            },
+            "Autonomous Execution Engine": {
+                "url": None,
+                "repo": "XMRT-DAO-Ecosystem",
+                "role": "Action Execution",
+                "weight": 1.0,
+                "enabled": False,
+                "reason": "No API endpoint available"
+            },
+            "Autonomous Monitoring Engine": {
+                "url": None,
+                "repo": "XMRT-DAO-Ecosystem",
+                "role": "System Monitoring",
+                "weight": 1.0,
+                "enabled": False,
+                "reason": "No API endpoint available"
+            },
+            
+            # xmrtcouncil (Frontend interface - health check only)
+            "XMRT Council Interface": {
+                "url": None,  # Frontend only, no health endpoint
+                "repo": "xmrtcouncil",
+                "role": "Chatbot Interface & Frontend",
+                "weight": 0.9,
+                "enabled": False,
+                "reason": "Frontend only, no API endpoint"
+            },
+            
+            # xmrt-eliza agents
+            "Eliza OS Agent": {
+                "url": None,  # Would need to be running locally
+                "api_url": None,
+                "repo": "xmrt-eliza",
+                "role": "ElizaOS Integration",
+                "weight": 1.1,
+                "enabled": False,
+                "reason": "Requires local deployment"
+            }
+        }
+
+        # Perform health checks on enabled agents
+        healthy_agents = []
+        unhealthy_agents = []
+        disabled_agents = []
+        
+        print("="*80)
+        print("🔍 XMRT ECOSYSTEM AGENT HEALTH CHECK")
+        print("="*80)
+        
+        for agent_name, config in agent_endpoints.items():
+            if not config.get("enabled", False):
+                disabled_agents.append({
+                    "name": agent_name,
+                    "repo": config["repo"],
+                    "reason": config.get("reason", "Not enabled")
+                })
+                print(f"⏭️  {agent_name} ({config['repo']}): Skipped - {config.get('reason', 'Not enabled')}")
+                continue
+            
+            print(f"\n🔎 Testing {agent_name} ({config['repo']})...")
+            print(f"   URL: {config['url']}")
+            
+            try:
+                response = requests.get(config['url'], timeout=10)
+                
+                if response.status_code == 200:
+                    healthy_agents.append({
+                        "name": agent_name,
+                        "repo": config["repo"],
+                        "role": config["role"],
+                        "weight": config["weight"],
+                        "url": config['url'],
+                        "api_url": config.get('api_url'),
+                        "status": "✅ Healthy",
+                        "response_time": f"{response.elapsed.total_seconds():.2f}s"
+                    })
+                    print(f"   ✅ Healthy (Response: {response.status_code}, Time: {response.elapsed.total_seconds():.2f}s)")
+                else:
+                    unhealthy_agents.append({
+                        "name": agent_name,
+                        "repo": config["repo"],
+                        "status": f"⚠️  Status {response.status_code}",
+                        "url": config['url']
+                    })
+                    print(f"   ⚠️  Returned status {response.status_code}")
+                    
+            except requests.exceptions.Timeout:
+                unhealthy_agents.append({
+                    "name": agent_name,
+                    "repo": config["repo"],
+                    "status": "❌ Timeout",
+                    "url": config['url']
+                })
+                print(f"   ❌ Timeout after 10s")
+                
+            except Exception as e:
+                unhealthy_agents.append({
+                    "name": agent_name,
+                    "repo": config["repo"],
+                    "status": f"❌ Error: {str(e)[:50]}",
+                    "url": config['url']
+                })
+                print(f"   ❌ Error: {e}")
+
+        # Summary
+        print("\n" + "="*80)
+        print("📊 HEALTH CHECK SUMMARY")
+        print("="*80)
+        print(f"✅ Healthy agents: {len(healthy_agents)}")
+        print(f"⚠️  Unhealthy agents: {len(unhealthy_agents)}")
+        print(f"⏭️  Disabled agents: {len(disabled_agents)}")
+        print(f"📊 Total agents checked: {len(agent_endpoints)}")
+        
+        # Save results to file
+        results = {
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "healthy": healthy_agents,
+            "unhealthy": unhealthy_agents,
+            "disabled": disabled_agents,
+            "summary": {
+                "total": len(agent_endpoints),
+                "healthy": len(healthy_agents),
+                "unhealthy": len(unhealthy_agents),
+                "disabled": len(disabled_agents)
+            }
+        }
+        
+        with open('/tmp/health_check_results.json', 'w') as f:
+            json.dump(results, f, indent=2)
+        
+        print(f"\n✅ Health check complete - {len(healthy_agents)} healthy agents found")
+        
+        # Exit with success if at least one agent is healthy
+        import sys
+        sys.exit(0 if len(healthy_agents) > 0 else 1)
+        EOF
       continue-on-error: true
+
     - name: 🤖 Trigger Multi-Agent Coordination
       id: coordination
-      run: "python3 << 'EOF'\nimport requests\nimport json\nimport os\nfrom datetime\
-        \ import datetime\n\nvercel_url = 'https://xmrt-ecosystem.vercel.app'\ncycle_type\
-        \ = \"${{ github.event.inputs.cycle_type || 'standard' }}\"\n\n# Create cycle\
-        \ directory\nos.makedirs('${{ env.AGENT_CYCLE_DIR }}', exist_ok=True)\n\n\
-        # Trigger coordination\ncycle_data = {\n    \"status\": \"completed\",\n \
-        \   \"trigger\": \"github_actions\",\n    \"cycle_type\": cycle_type\n}\n\n\
-        try:\n    response = requests.post(\n        f'{vercel_url}/api/tick',\n \
-        \       json={\"trigger\": \"github_actions\", \"cycle_type\": cycle_type},\n\
-        \        timeout=30\n    )\n    if response.status_code == 200:\n        cycle_data\
-        \ = response.json()\n        print(\"✅ Coordination API call successful\"\
-        )\n    else:\n        print(f\"⚠️  API returned status {response.status_code}\"\
-        )\nexcept Exception as e:\n    print(f\"⚠️  API call failed: {e}\")\n    print(\"\
-        \   Continuing with local cycle generation...\")\n\n# Generate cycle report\n\
-        cycle_num = datetime.now().strftime('%Y%m%d%H%M')\nreport_file = f'${{ env.AGENT_CYCLE_DIR\
-        \ }}/AGENT_CYCLE_{cycle_num}.md'\n\nwith open(report_file, 'w') as f:\n  \
-        \  f.write(f'# \U0001F916 Multi-Agent Coordination Cycle #{cycle_num}\\n\\\
-        n')\n    f.write(f'**Timestamp:** {datetime.utcnow().isoformat()}Z\\n')\n\
-        \    f.write(f'**Cycle Type:** {cycle_type}\\n')\n    f.write(f'**Trigger:**\
-        \ GitHub Actions (Automated)\\n')\n    f.write(f'**Platform:** Vercel Serverless\\\
-        n')\n    f.write(f'**URL:** https://xmrt-ecosystem.vercel.app\\n\\n')\n  \
-        \  \n    f.write('## \U0001F465 Agent Participation\\n\\n')\n    f.write('|\
-        \ Agent | Role | Weight | Status |\\n')\n    f.write('|-------|------|--------|--------|\\\
-        n')\n    f.write('| \U0001F3AF Eliza | Coordinator & Governor | 1.2 | ✅ Active\
-        \ |\\n')\n    f.write('| \U0001F512 Security Guardian | Security & Privacy\
-        \ | 1.1 | ✅ Active |\\n')\n    f.write('| \U0001F4B0 DeFi Specialist | Mining\
-        \ & Tokenomics | 1.05 | ✅ Active |\\n')\n    f.write('| \U0001F465 Community\
-        \ Manager | Adoption & UX | 1.0 | ✅ Active |\\n\\n')\n    \n    f.write('##\
-        \ \U0001F4CA Coordination Results\\n\\n')\n    f.write(f'```json\\n{json.dumps(cycle_data,\
-        \ indent=2)}\\n```\\n\\n')\n    \n    f.write('## ✅ Operations Completed\\\
-        n\\n')\n    f.write('- ✅ Health check performed\\n')\n    f.write('- ✅ Agent\
-        \ coordination triggered\\n')\n    f.write('- ✅ Consensus process initiated\\\
-        n')\n    f.write('- ✅ Report generated\\n\\n')\n    \n    f.write('## \U0001F504\
-        \ Next Steps\\n\\n')\n    f.write('- Next cycle scheduled in 6 hours\\n')\n\
-        \    f.write('- Monitoring agent performance\\n')\n    f.write('- Awaiting\
-        \ consensus results\\n\\n')\n    \n    f.write(f'---\\n*Generated by XMRT\
-        \ Autonomous Agent System on Vercel*\\n')\n\nprint(f'✅ Cycle report created:\
-        \ {report_file}')\n\n# Set output\nwith open(os.environ['GITHUB_OUTPUT'],\
-        \ 'a') as f:\n    f.write(f'cycle_file={report_file}\\n')\n    f.write(f'cycle_num={cycle_num}\\\
-        n')\nEOF\n"
+      run: |
+        python3 << 'EOF'
+        import requests
+        import json
+        import os
+        from datetime import datetime
+
+        # Load health check results
+        with open('/tmp/health_check_results.json', 'r') as f:
+            health_results = json.load(f)
+
+        cycle_type = "${{ github.event.inputs.cycle_type || 'standard' }}"
+        
+        # Create cycle directory
+        os.makedirs('${{ env.AGENT_CYCLE_DIR }}', exist_ok=True)
+
+        # Trigger coordination on healthy agents
+        coordination_results = []
+        
+        print("="*80)
+        print("🤖 TRIGGERING COORDINATION ON HEALTHY AGENTS")
+        print("="*80)
+        
+        for agent in health_results['healthy']:
+            if agent.get('api_url'):
+                print(f"\n📡 Coordinating with {agent['name']}...")
+                try:
+                    response = requests.post(
+                        agent['api_url'],
+                        json={"trigger": "github_actions", "cycle_type": cycle_type},
+                        timeout=30
+                    )
+                    
+                    if response.status_code == 200:
+                        result = response.json() if response.content else {}
+                        coordination_results.append({
+                            "agent": agent['name'],
+                            "status": "✅ Success",
+                            "response": result
+                        })
+                        print(f"   ✅ Coordination successful")
+                    else:
+                        coordination_results.append({
+                            "agent": agent['name'],
+                            "status": f"⚠️  Status {response.status_code}"
+                        })
+                        print(f"   ⚠️  Returned status {response.status_code}")
+                        
+                except Exception as e:
+                    coordination_results.append({
+                        "agent": agent['name'],
+                        "status": f"❌ Error: {str(e)[:50]}"
+                    })
+                    print(f"   ❌ Error: {e}")
+
+        # Generate comprehensive cycle report
+        cycle_num = datetime.now().strftime('%Y%m%d%H%M')
+        report_file = f'${{ env.AGENT_CYCLE_DIR }}/AGENT_CYCLE_{cycle_num}.md'
+
+        with open(report_file, 'w') as f:
+            f.write(f'# 🤖 Multi-Agent Coordination Cycle #{cycle_num}\n\n')
+            f.write(f'**Timestamp:** {datetime.utcnow().isoformat()}Z\n')
+            f.write(f'**Cycle Type:** {cycle_type}\n')
+            f.write(f'**Trigger:** GitHub Actions (Automated)\n\n')
+            
+            f.write('## 🌐 XMRT Ecosystem Overview\n\n')
+            f.write('This coordination cycle includes agents from:\n')
+            f.write('- **XMRT-Ecosystem** (Vercel): Main DAO agents\n')
+            f.write('- **XMRT.io** (Render): Digital ecosystem hub\n')
+            f.write('- **XMRT-DAO-Ecosystem**: Autonomous engines\n')
+            f.write('- **xmrtcouncil**: Frontend interface\n')
+            f.write('- **xmrt-eliza**: ElizaOS integration\n\n')
+            
+            f.write('## 🔍 Health Check Results\n\n')
+            f.write(f'**Summary:**\n')
+            f.write(f'- ✅ Healthy: {health_results["summary"]["healthy"]}\n')
+            f.write(f'- ⚠️  Unhealthy: {health_results["summary"]["unhealthy"]}\n')
+            f.write(f'- ⏭️  Disabled: {health_results["summary"]["disabled"]}\n')
+            f.write(f'- 📊 Total: {health_results["summary"]["total"]}\n\n')
+            
+            f.write('### ✅ Healthy Agents\n\n')
+            f.write('| Agent | Repository | Role | Weight | Response Time |\n')
+            f.write('|-------|-----------|------|--------|---------------|\n')
+            for agent in health_results['healthy']:
+                f.write(f'| {agent["name"]} | {agent["repo"]} | {agent["role"]} | {agent["weight"]} | {agent["response_time"]} |\n')
+            
+            if health_results['unhealthy']:
+                f.write('\n### ⚠️  Unhealthy Agents\n\n')
+                f.write('| Agent | Repository | Status |\n')
+                f.write('|-------|-----------|--------|\n')
+                for agent in health_results['unhealthy']:
+                    f.write(f'| {agent["name"]} | {agent["repo"]} | {agent["status"]} |\n')
+            
+            if health_results['disabled']:
+                f.write('\n### ⏭️  Disabled Agents\n\n')
+                f.write('| Agent | Repository | Reason |\n')
+                f.write('|-------|-----------|--------|\n')
+                for agent in health_results['disabled']:
+                    f.write(f'| {agent["name"]} | {agent["repo"]} | {agent["reason"]} |\n')
+            
+            f.write('\n## 🤖 Coordination Results\n\n')
+            if coordination_results:
+                f.write('| Agent | Status | Details |\n')
+                f.write('|-------|--------|----------|\n')
+                for result in coordination_results:
+                    details = json.dumps(result.get('response', {}))[:100] if result.get('response') else 'N/A'
+                    f.write(f'| {result["agent"]} | {result["status"]} | {details} |\n')
+            else:
+                f.write('*No agents with API endpoints were available for coordination.*\n')
+            
+            f.write('\n## ✅ Operations Completed\n\n')
+            f.write('- ✅ Ecosystem-wide health check performed\n')
+            f.write('- ✅ Multi-repository agent discovery\n')
+            f.write('- ✅ Agent coordination triggered on available endpoints\n')
+            f.write('- ✅ Comprehensive report generated\n\n')
+            
+            f.write('## 📋 Next Steps\n\n')
+            f.write('- Next cycle scheduled in 6 hours\n')
+            f.write('- Monitoring all ecosystem agents\n')
+            f.write('- Awaiting coordination results\n\n')
+            
+            f.write('---\n')
+            f.write('*Generated by XMRT Multi-Repository Agent Coordination System*\n')
+
+        print(f'\n✅ Comprehensive cycle report created: {report_file}')
+        print(f'   Coordinated with {len(coordination_results)} agents')
+        print(f'   Health checked {health_results["summary"]["total"]} total agents')
+
+        # Set output
+        with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+            f.write(f'cycle_file={report_file}\n')
+            f.write(f'cycle_num={cycle_num}\n')
+            f.write(f'healthy_count={health_results["summary"]["healthy"]}\n')
+        EOF
+
     - name: 📊 Check for changes
       id: check_changes
-      run: "git add .\nif git diff --staged --quiet; then\n  echo \"changes=false\"\
-        \ >> $GITHUB_OUTPUT\nelse\n  echo \"changes=true\" >> $GITHUB_OUTPUT\nfi\n"
+      run: |
+        git add .
+        if git diff --staged --quiet; then
+          echo "changes=false" >> $GITHUB_OUTPUT
+        else
+          echo "changes=true" >> $GITHUB_OUTPUT
+        fi
+
     - name: 💾 Commit coordination results
       if: steps.check_changes.outputs.changes == 'true'
-      run: 'git config user.name "Eliza Coordinator"
-
+      run: |
+        git config user.name "Eliza Coordinator"
         git config user.email "eliza@xmrt-ecosystem.io"
-
         CYCLE_NUM="${{ steps.coordination.outputs.cycle_num }}"
-
         git add ${{ env.AGENT_CYCLE_DIR }}
+        git commit -m "🤖 Multi-Agent Coordination Cycle #$CYCLE_NUM [automated]
 
-        git commit -m "🤖 Agent Coordination Cycle #$CYCLE_NUM [automated]
+        ✅ Ecosystem-wide coordination achieved
+        🌐 Multi-repository agent discovery
+        🎯 Coordinated agents across XMRT ecosystem
+        📊 Comprehensive health check performed
+        🚀 Enhanced coordination workflow
 
-
-        ✅ Multi-agent consensus achieved
-
-        🎯 Eliza coordinated all agents
-
-        📊 Decision matrix generated
-
-        💡 Strategic recommendations provided
-
-        🚀 Vercel serverless execution
-
-
-        Agents: Eliza, Security Guardian, DeFi Specialist, Community Manager
-
-        Platform: Vercel Serverless (xmrt-ecosystem.vercel.app)
-
-        Generated by: XMRT Autonomous Agent System"
-
+        Repositories: XMRT-Ecosystem, XMRT.io, XMRT-DAO-Ecosystem, xmrtcouncil, xmrt-eliza
+        Healthy Agents: ${{ steps.coordination.outputs.healthy_count }}
+        Generated by: XMRT Multi-Repository Agent Coordination System"
         git push
 
-        '
     - name: 📈 Create workflow summary
       if: always()
-      run: "CYCLE_NUM=\"${{ steps.coordination.outputs.cycle_num }}\"\necho \"## \U0001F916\
-        \ Multi-Agent Coordination Complete\" >> $GITHUB_STEP_SUMMARY\necho \"\" >>\
-        \ $GITHUB_STEP_SUMMARY\necho \"**Cycle Number:** #$CYCLE_NUM\" >> $GITHUB_STEP_SUMMARY\n\
-        echo \"**Status:** ${{ job.status == 'success' && '✅ Success' || '❌ Failed'\
-        \ }}\" >> $GITHUB_STEP_SUMMARY\necho \"**Cycle Type:** ${{ github.event.inputs.cycle_type\
-        \ || 'standard' }}\" >> $GITHUB_STEP_SUMMARY\necho \"**Timestamp:** $(date\
-        \ -u '+%Y-%m-%d %H:%M:%S UTC')\" >> $GITHUB_STEP_SUMMARY\necho \"**Platform:**\
-        \ Vercel Serverless\" >> $GITHUB_STEP_SUMMARY\necho \"**Deployment:** https://xmrt-ecosystem.vercel.app\"\
-        \ >> $GITHUB_STEP_SUMMARY\necho \"**Health Status:** ${{ steps.health_check.outcome\
-        \ == 'success' && '✅ Healthy' || '⚠️ Check Required' }}\" >> $GITHUB_STEP_SUMMARY\n\
-        echo \"\" >> $GITHUB_STEP_SUMMARY\n\necho \"### \U0001F916 Agent Status\"\
-        \ >> $GITHUB_STEP_SUMMARY\necho \"| Agent | Status | Weight |\" >> $GITHUB_STEP_SUMMARY\n\
-        echo \"|-------|--------|--------|\" >> $GITHUB_STEP_SUMMARY\necho \"| \U0001F3AF\
-        \ Eliza (Coordinator) | Active | 1.2 |\" >> $GITHUB_STEP_SUMMARY\necho \"\
-        | \U0001F512 Security Guardian | Active | 1.1 |\" >> $GITHUB_STEP_SUMMARY\n\
-        echo \"| \U0001F4B0 DeFi Specialist | Active | 1.05 |\" >> $GITHUB_STEP_SUMMARY\n\
-        echo \"| \U0001F465 Community Manager | Active | 1.0 |\" >> $GITHUB_STEP_SUMMARY\n\
-        echo \"\" >> $GITHUB_STEP_SUMMARY\n\necho \"### \U0001F4CA Operations Completed\"\
-        \ >> $GITHUB_STEP_SUMMARY\necho \"- ✅ Vercel health check\" >> $GITHUB_STEP_SUMMARY\n\
-        echo \"- ✅ Agent coordination triggered\" >> $GITHUB_STEP_SUMMARY\necho \"\
-        - ✅ Consensus process executed\" >> $GITHUB_STEP_SUMMARY\necho \"- ✅ Cycle\
-        \ report generated\" >> $GITHUB_STEP_SUMMARY\n\nif [ \"${{ steps.check_changes.outputs.changes\
-        \ }}\" = \"true\" ]; then\n  echo \"- ✅ Results committed to repository\"\
-        \ >> $GITHUB_STEP_SUMMARY\nelse\n  echo \"- ℹ️ No changes to commit\" >> $GITHUB_STEP_SUMMARY\n\
-        fi\n\necho \"\" >> $GITHUB_STEP_SUMMARY\necho \"**Next Cycle:** In 6 hours\
-        \ (automatic)\" >> $GITHUB_STEP_SUMMARY\necho \"**API Endpoint:** https://xmrt-ecosystem.vercel.app/api/tick\"\
-        \ >> $GITHUB_STEP_SUMMARY\n"
-permissions:
-  contents: read
-  actions: read
-  checks: write
-  pull-requests: read
+      run: |
+        CYCLE_NUM="${{ steps.coordination.outputs.cycle_num }}"
+        HEALTHY_COUNT="${{ steps.coordination.outputs.healthy_count }}"
+        
+        echo "## 🤖 Multi-Agent Coordination Complete" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Cycle Number:** #$CYCLE_NUM" >> $GITHUB_STEP_SUMMARY
+        echo "**Status:** ${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Cycle Type:** ${{ github.event.inputs.cycle_type || 'standard' }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Timestamp:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+        echo "**Healthy Agents:** $HEALTHY_COUNT" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        echo "### 🌐 XMRT Ecosystem Repositories" >> $GITHUB_STEP_SUMMARY
+        echo "- **XMRT-Ecosystem** (Vercel): Main DAO with 4 agents" >> $GITHUB_STEP_SUMMARY
+        echo "- **XMRT.io** (Render): Digital ecosystem hub" >> $GITHUB_STEP_SUMMARY
+        echo "- **XMRT-DAO-Ecosystem**: Autonomous decision/execution/monitoring engines" >> $GITHUB_STEP_SUMMARY
+        echo "- **xmrtcouncil**: Chatbot interface with frontend/backend" >> $GITHUB_STEP_SUMMARY
+        echo "- **xmrt-eliza**: ElizaOS integration fork" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        echo "### 📊 Operations Completed" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Multi-repository agent discovery" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Ecosystem-wide health checks" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Agent coordination triggered" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Comprehensive cycle report generated" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "${{ steps.check_changes.outputs.changes }}" = "true" ]; then
+          echo "- ✅ Results committed to repository" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "- ℹ️  No changes to commit" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Next Cycle:** In 6 hours (automatic)" >> $GITHUB_STEP_SUMMARY
+        echo "**Coordination:** Ecosystem-wide multi-agent system" >> $GITHUB_STEP_SUMMARY
