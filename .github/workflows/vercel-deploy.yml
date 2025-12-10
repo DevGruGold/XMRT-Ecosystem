@@ -1,5 +1,5 @@
 name: 🚀 Deploy to Vercel
-on:
+true:
   push:
     branches:
     - main
@@ -21,34 +21,31 @@ jobs:
       continue-on-error: true
     - name: 🔗 Pull Vercel Environment Information
       run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN
-      continue-on-error: true
-        }}
+      continue-on-error: true }}
     - name: 🏗️ Build Project Artifacts
       run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
       continue-on-error: true
     - name: 🚀 Deploy to Vercel
       id: deploy
-      run: 'DEPLOY_URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN
-      continue-on-error: true
-        }})
+      run: 'DEPLOY_URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN continue-on-error: true }})
 
         echo "deployment_url=$DEPLOY_URL" >> $GITHUB_OUTPUT
 
         echo "Deployed to: $DEPLOY_URL"
 
         '
-    - name: ✅ Verify Deployment
-      run: 'sleep 10
       continue-on-error: true
+    - name: ✅ Verify Deployment
+      run: 'sleep 10 continue-on-error: true
 
         curl -f ${{ steps.deploy.outputs.deployment_url }}/health || exit 1
 
         echo "Deployment verified successfully!"
 
         '
-    - name: 📊 Create Deployment Summary
-      run: 'echo "## 🚀 Vercel Deployment Complete" >> $GITHUB_STEP_SUMMARY
       continue-on-error: true
+    - name: 📊 Create Deployment Summary
+      run: 'echo "## 🚀 Vercel Deployment Complete" >> $GITHUB_STEP_SUMMARY continue-on-error: true
 
         echo "" >> $GITHUB_STEP_SUMMARY
 
@@ -68,13 +65,12 @@ jobs:
 
         echo "- [Application](${{ steps.deploy.outputs.deployment_url }})" >> $GITHUB_STEP_SUMMARY
 
-        echo "- [Health Check](${{ steps.deploy.outputs.deployment_url }}/health)"
-        >> $GITHUB_STEP_SUMMARY
+        echo "- [Health Check](${{ steps.deploy.outputs.deployment_url }}/health)" >> $GITHUB_STEP_SUMMARY
 
-        echo "- [Agents API](${{ steps.deploy.outputs.deployment_url }}/agents)" >>
-        $GITHUB_STEP_SUMMARY
+        echo "- [Agents API](${{ steps.deploy.outputs.deployment_url }}/agents)" >> $GITHUB_STEP_SUMMARY
 
         '
+      continue-on-error: true
     timeout-minutes: 30
 permissions:
   contents: read
