@@ -1,0 +1,272 @@
+name: 'Autonomous Workflow Creation Cycle'
+
+on:
+  schedule:
+    - cron: '0 */8 * * *'  # Every 8 hours
+  workflow_dispatch:
+    inputs:
+      workflow_type:
+        description: 'Type of workflow to generate'
+        required: true
+        default: 'agent-communication'
+        type: choice
+        options:
+          - 'data-processing'
+          - 'agent-communication'
+          - 'monitoring'
+          - 'content-generation'
+          - 'integration'
+      purpose:
+        description: 'Purpose of the workflow'
+        required: true
+        default: 'Autonomous XMRT ecosystem coordination'
+      priority:
+        description: 'Workflow priority (1-10)'
+        required: false
+        default: '5'
+        type: string
+
+env:
+  SUPABASE_URL: https://vawouugtzwmejxqkeqqj.supabase.co
+  SUPABASE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+
+jobs:
+  generate-workflows:
+    runs-on: ubuntu-latest
+    name: 'Generate XMRT Autonomous Workflows'
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Generate N8N Workflow
+        id: generate-workflow
+        run: |
+          echo "🚀 Generating XMRT autonomous workflow..."
+          
+          # Determine workflow parameters
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            WORKFLOW_TYPE="${{ github.event.inputs.workflow_type }}"
+            PURPOSE="${{ github.event.inputs.purpose }}"
+            PRIORITY="${{ github.event.inputs.priority }}"
+          else
+            # Scheduled run - cycle through different types
+            HOUR=$(date +%H)
+            case $((HOUR % 5)) in
+              0) WORKFLOW_TYPE="agent-communication" ;;
+              1) WORKFLOW_TYPE="monitoring" ;;
+              2) WORKFLOW_TYPE="data-processing" ;;
+              3) WORKFLOW_TYPE="integration" ;;
+              4) WORKFLOW_TYPE="content-generation" ;;
+            esac
+            PURPOSE="Scheduled XMRT ecosystem $WORKFLOW_TYPE automation"
+            PRIORITY="5"
+          fi
+          
+          echo "workflow_type=$WORKFLOW_TYPE" >> $GITHUB_OUTPUT
+          echo "purpose=$PURPOSE" >> $GITHUB_OUTPUT
+          echo "priority=$PRIORITY" >> $GITHUB_OUTPUT
+          
+      - name: Call N8N Workflow Generator
+        id: call-generator
+        run: |
+          echo "📡 Calling XMRT N8N Workflow Generator..."
+          
+          RESPONSE=$(curl -s -X POST \
+            "https://vawouugtzwmejxqkeqqj.supabase.co/functions/v1/n8n-workflow-generator" \
+            -H "Authorization: Bearer ${{ env.SUPABASE_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "type": "${{ steps.generate-workflow.outputs.workflow_type }}",
+              "purpose": "${{ steps.generate-workflow.outputs.purpose }}",
+              "sources": ["https://xmrt-ecosystem.vercel.app/api/agents", "https://suite.lovable.app/api/health"],
+              "targets": ["https://vawouugtzwmejxqkeqqj.supabase.co/rest/v1/generated_workflows"],
+              "agents": ["eliza", "security-guardian", "defi-specialist", "community-manager"],
+              "schedule": "0 */6 * * *",
+              "priority": ${{ steps.generate-workflow.outputs.priority }}
+            }')
+          
+          echo "Response: $RESPONSE"
+          
+          # Extract workflow ID if successful
+          WORKFLOW_ID=$(echo $RESPONSE | jq -r '.id // empty')
+          SUCCESS=$(echo $RESPONSE | jq -r '.success // false')
+          
+          echo "workflow_id=$WORKFLOW_ID" >> $GITHUB_OUTPUT
+          echo "success=$SUCCESS" >> $GITHUB_OUTPUT
+          echo "response=$RESPONSE" >> $GITHUB_OUTPUT
+          
+      - name: Log Workflow Creation
+        if: steps.call-generator.outputs.success == 'true'
+        run: |
+          echo "✅ XMRT workflow created successfully!"
+          echo "Workflow ID: ${{ steps.call-generator.outputs.workflow_id }}"
+          echo "Type: ${{ steps.generate-workflow.outputs.workflow_type }}"
+          echo "Purpose: ${{ steps.generate-workflow.outputs.purpose }}"
+          
+          # Log to Supabase
+          curl -X POST \
+            "https://vawouugtzwmejxqkeqqj.supabase.co/rest/v1/eliza_activity_log" \
+            -H "Authorization: Bearer ${{ env.SUPABASE_KEY }}" \
+            -H "Content-Type: application/json" \
+            -H "Prefer: return=minimal" \
+            -d '{
+              "agent_name": "GitHub-Workflow-Creator",
+              "action": "create_autonomous_workflow",
+              "details": "Created ${{ steps.generate-workflow.outputs.workflow_type }} workflow: ${{ steps.call-generator.outputs.workflow_id }}",
+              "timestamp": "'$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")'",
+              "context": {
+                "workflow_type": "${{ steps.generate-workflow.outputs.workflow_type }}",
+                "purpose": "${{ steps.generate-workflow.outputs.purpose }}",
+                "workflow_id": "${{ steps.call-generator.outputs.workflow_id }}",
+                "source": "github_action"
+              }
+            }'
+
+      - name: Handle Workflow Creation Error
+        if: steps.call-generator.outputs.success != 'true'
+        run: |
+          echo "❌ XMRT workflow creation failed"
+          echo "Response: ${{ steps.call-generator.outputs.response }}"
+          exit 1
+
+  generate-gemini-agent:
+    runs-on: ubuntu-latest
+    name: 'Generate XMRT Gemini Agent'
+    needs: generate-workflows
+    if: always() && (needs.generate-workflows.result == 'success' || github.event_name == 'workflow_dispatch')
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        
+      - name: Generate Gemini Agent
+        id: generate-agent
+        run: |
+          echo "🤖 Generating XMRT Gemini agent..."
+          
+          # Determine agent parameters
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            AGENT_TYPE="specialist"
+            DOMAIN="${{ github.event.inputs.workflow_type }}"
+            PURPOSE="Specialized agent for ${{ github.event.inputs.purpose }}"
+          else
+            # Scheduled run - create complementary agent
+            HOUR=$(date +%H)
+            case $((HOUR % 6)) in
+              0) AGENT_TYPE="coordinator"; DOMAIN="ecosystem-management" ;;
+              1) AGENT_TYPE="monitor"; DOMAIN="system-health" ;;
+              2) AGENT_TYPE="analyst"; DOMAIN="performance-analysis" ;;
+              3) AGENT_TYPE="executor"; DOMAIN="workflow-automation" ;;
+              4) AGENT_TYPE="integrator"; DOMAIN="cross-platform" ;;
+              5) AGENT_TYPE="specialist"; DOMAIN="optimization" ;;
+            esac
+            PURPOSE="Autonomous $DOMAIN management for XMRT ecosystem"
+          fi
+          
+          echo "agent_type=$AGENT_TYPE" >> $GITHUB_OUTPUT
+          echo "domain=$DOMAIN" >> $GITHUB_OUTPUT
+          echo "purpose=$PURPOSE" >> $GITHUB_OUTPUT
+          
+      - name: Call Gemini Agent Creator
+        id: call-creator
+        run: |
+          echo "🧠 Calling XMRT Gemini Agent Creator..."
+          
+          RESPONSE=$(curl -s -X POST \
+            "https://vawouugtzwmejxqkeqqj.supabase.co/functions/v1/gemini-agent-creator" \
+            -H "Authorization: Bearer ${{ env.SUPABASE_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "agent_type": "${{ steps.generate-agent.outputs.agent_type }}",
+              "domain": "${{ steps.generate-agent.outputs.domain }}",
+              "purpose": "${{ steps.generate-agent.outputs.purpose }}",
+              "integration_points": [
+                "https://xmrt-ecosystem.vercel.app/api/*",
+                "https://suite.lovable.app/*",
+                "https://vawouugtzwmejxqkeqqj.supabase.co/rest/v1/*"
+              ],
+              "memory_context": "XMRT ecosystem shared memory with Suite AI integration",
+              "xmrt_role": "Autonomous ${{ steps.generate-agent.outputs.agent_type }} for XMRT ecosystem"
+            }')
+          
+          echo "Response: $RESPONSE"
+          
+          # Extract agent ID if successful
+          AGENT_ID=$(echo $RESPONSE | jq -r '.id // empty')
+          SUCCESS=$(echo $RESPONSE | jq -r '.success // false')
+          AGENT_NAME=$(echo $RESPONSE | jq -r '.agent.name // empty')
+          
+          echo "agent_id=$AGENT_ID" >> $GITHUB_OUTPUT
+          echo "success=$SUCCESS" >> $GITHUB_OUTPUT
+          echo "agent_name=$AGENT_NAME" >> $GITHUB_OUTPUT
+          
+      - name: Log Agent Creation
+        if: steps.call-creator.outputs.success == 'true'
+        run: |
+          echo "✅ XMRT Gemini agent created successfully!"
+          echo "Agent ID: ${{ steps.call-creator.outputs.agent_id }}"
+          echo "Agent Name: ${{ steps.call-creator.outputs.agent_name }}"
+          echo "Type: ${{ steps.generate-agent.outputs.agent_type }}"
+          echo "Domain: ${{ steps.generate-agent.outputs.domain }}"
+
+  trigger-coordination:
+    runs-on: ubuntu-latest
+    name: 'Trigger XMRT Ecosystem Coordination'
+    needs: [generate-workflows, generate-gemini-agent]
+    if: always() && (needs.generate-workflows.result == 'success' || needs.generate-gemini-agent.result == 'success')
+    
+    steps:
+      - name: Trigger XMRT Coordination
+        run: |
+          echo "🔄 Triggering XMRT ecosystem coordination..."
+          
+          RESPONSE=$(curl -s -X POST \
+            "https://xmrt-ecosystem.vercel.app/api/tick" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "source": "autonomous_workflow_creation",
+              "trigger_reason": "New workflow and agent generated"
+            }')
+          
+          echo "Coordination response: $RESPONSE"
+          
+          # Also trigger Suite AI ecosystem monitor
+          curl -s -X POST \
+            "https://vawouugtzwmejxqkeqqj.supabase.co/functions/v1/ecosystem-monitor" \
+            -H "Authorization: Bearer ${{ env.SUPABASE_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "action": "coordination_triggered",
+              "source": "github_action",
+              "timestamp": "'$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")'"
+            }' || echo "Suite AI trigger sent"
+
+      - name: Update Ecosystem Status
+        run: |
+          echo "📊 Updating XMRT ecosystem status..."
+          
+          # Log the completion of autonomous cycle
+          curl -X POST \
+            "https://vawouugtzwmejxqkeqqj.supabase.co/rest/v1/eliza_activity_log" \
+            -H "Authorization: Bearer ${{ env.SUPABASE_KEY }}" \
+            -H "Content-Type: application/json" \
+            -H "Prefer: return=minimal" \
+            -d '{
+              "agent_name": "Autonomous-System-Coordinator",
+              "action": "complete_generation_cycle",
+              "details": "Completed autonomous workflow and agent generation cycle",
+              "timestamp": "'$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")'",
+              "context": {
+                "cycle_type": "workflow_and_agent_generation",
+                "trigger": "'${{ github.event_name }}'",
+                "ecosystem": "XMRT"
+              }
+            }'
+          
+          echo "✅ XMRT autonomous generation cycle completed!"
