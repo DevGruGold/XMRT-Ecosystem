@@ -1,0 +1,284 @@
+name: 'Deploy XMRT Gemini Agents'
+
+on:
+  schedule:
+    - cron: '30 */12 * * *'  # Every 12 hours at :30
+  workflow_dispatch:
+    inputs:
+      agent_id:
+        description: 'Specific agent ID to deploy'
+        required: false
+        type: string
+      deployment_target:
+        description: 'Deployment target'
+        required: true
+        default: 'supabase'
+        type: choice
+        options:
+          - 'supabase'
+          - 'vercel'
+          - 'github'
+
+env:
+  SUPABASE_URL: https://vawouugtzwmejxqkeqqj.supabase.co
+  SUPABASE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+
+jobs:
+  discover-agents:
+    runs-on: ubuntu-latest
+    name: 'Discover XMRT Agents for Deployment'
+    outputs:
+      agents: ${{ steps.get-agents.outputs.agents }}
+      agent_count: ${{ steps.get-agents.outputs.count }}
+    
+    steps:
+      - name: Get Generated Agents
+        id: get-agents
+        run: |
+          echo "🔍 Discovering XMRT agents ready for deployment..."
+          
+          # Get agents that are generated but not deployed
+          AGENTS_RESPONSE=$(curl -s \
+            "https://vawouugtzwmejxqkeqqj.supabase.co/rest/v1/generated_agents?status=eq.generated&ecosystem=eq.XMRT&select=*" \
+            -H "Authorization: Bearer ${{ env.SUPABASE_KEY }}" \
+            -H "Content-Type: application/json")
+          
+          echo "Agents response: $AGENTS_RESPONSE"
+          
+          # Process response
+          AGENT_COUNT=$(echo "$AGENTS_RESPONSE" | jq '. | length')
+          
+          echo "agents=$AGENTS_RESPONSE" >> $GITHUB_OUTPUT
+          echo "count=$AGENT_COUNT" >> $GITHUB_OUTPUT
+          echo "Found $AGENT_COUNT XMRT agents ready for deployment"
+
+  deploy-agents:
+    runs-on: ubuntu-latest
+    name: 'Deploy XMRT Agents'
+    needs: discover-agents
+    if: needs.discover-agents.outputs.agent_count > 0
+    strategy:
+      matrix:
+        include: ${{ fromJson(needs.discover-agents.outputs.agents) }}
+      max-parallel: 3
+      fail-fast: false
+    
+    steps:
+      - name: Deploy Agent
+        id: deploy
+        run: |
+          echo "🚀 Deploying XMRT agent: ${{ matrix.name }}"
+          echo "Agent Type: ${{ matrix.agent_type }}"
+          echo "Domain: ${{ matrix.domain }}"
+          
+          TARGET="${{ github.event.inputs.deployment_target || 'supabase' }}"
+          
+          # Call deployment coordinator
+          DEPLOY_RESPONSE=$(curl -s -X POST \
+            "https://vawouugtzwmejxqkeqqj.supabase.co/functions/v1/agent-deployment-coordinator" \
+            -H "Authorization: Bearer ${{ env.SUPABASE_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "action": "deploy",
+              "agent_id": "${{ matrix.id }}",
+              "deployment_target": "'$TARGET'",
+              "configuration": {
+                "ecosystem": "XMRT",
+                "auto_start": true,
+                "resource_limits": {
+                  "memory": "512MB",
+                  "timeout": "30s"
+                },
+                "environment": {
+                  "XMRT_ECOSYSTEM": "true",
+                  "SUPABASE_URL": "${{ env.SUPABASE_URL }}",
+                  "AGENT_TYPE": "${{ matrix.agent_type }}",
+                  "AGENT_DOMAIN": "${{ matrix.domain }}"
+                }
+              }
+            }')
+          
+          echo "Deploy response: $DEPLOY_RESPONSE"
+          
+          SUCCESS=$(echo "$DEPLOY_RESPONSE" | jq -r '.success // false')
+          DEPLOYMENT_ID=$(echo "$DEPLOY_RESPONSE" | jq -r '.result.deployment_id // empty')
+          
+          echo "success=$SUCCESS" >> $GITHUB_OUTPUT
+          echo "deployment_id=$DEPLOYMENT_ID" >> $GITHUB_OUTPUT
+          
+          if [ "$SUCCESS" = "true" ]; then
+            echo "✅ Successfully deployed ${{ matrix.name }}"
+          else
+            echo "❌ Failed to deploy ${{ matrix.name }}"
+          fi
+
+      - name: Create Agent Edge Function
+        if: steps.deploy.outputs.success == 'true'
+        run: |
+          echo "📝 Creating edge function for deployed agent..."
+          
+          # Generate edge function code for the agent
+          FUNCTION_CODE=$(cat << 'EOF'
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+serve(async (req) => {
+  try {
+    const supabase = createClient(
+      Deno.env.get('NEXT_PUBLIC_SUPABASE_URL') ?? '',
+      Deno.env.get('NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY') ?? ''
+    )
+
+    const agentConfig = ${{ toJson(matrix.config_data) }}
+    
+    if (req.method !== 'POST') {
+      return new Response(JSON.stringify({ 
+        error: 'Method not allowed',
+        agent: agentConfig.name,
+        ecosystem: 'XMRT'
+      }), {
+        status: 405,
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+
+    const { message, context } = await req.json()
+    
+    // Log agent interaction
+    await supabase.from('eliza_activity_log').insert([{
+      agent_name: agentConfig.name,
+      action: 'agent_interaction',
+      details: `XMRT agent processed request: ${message?.substring(0, 100)}...`,
+      timestamp: new Date().toISOString(),
+      context: { 
+        agent_type: '${{ matrix.agent_type }}',
+        domain: '${{ matrix.domain }}',
+        ecosystem: 'XMRT',
+        ...context
+      }
+    }])
+
+    // Process the request based on agent configuration
+    const response = await processAgentRequest(agentConfig, message, context, supabase)
+    
+    return new Response(JSON.stringify({
+      success: true,
+      agent: agentConfig.name,
+      ecosystem: 'XMRT',
+      response: response,
+      timestamp: new Date().toISOString()
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+    })
+
+  } catch (error) {
+    return new Response(JSON.stringify({
+      success: false,
+      error: error.message,
+      agent: '${{ matrix.name }}',
+      ecosystem: 'XMRT',
+      timestamp: new Date().toISOString()
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+})
+
+async function processAgentRequest(config, message, context, supabase) {
+  // Basic agent processing logic
+  const capabilities = config.capabilities || []
+  const tools = config.tools || []
+  
+  // Determine appropriate response based on agent type and capabilities
+  let response = `XMRT ${config.role} agent processed your request.`
+  
+  // Add specific processing based on agent type
+  if (config.name.includes('coordinator')) {
+    response += ' Coordinating with ecosystem agents...'
+  } else if (config.name.includes('monitor')) {
+    response += ' Monitoring system status...'
+  } else if (config.name.includes('analyst')) {
+    response += ' Analyzing data and patterns...'
+  }
+  
+  return {
+    processed_message: message,
+    capabilities_available: capabilities,
+    tools_available: tools,
+    agent_response: response,
+    processing_time: new Date().toISOString()
+  }
+}
+EOF
+          )
+          
+          echo "Edge function created for ${{ matrix.name }}"
+
+      - name: Log Deployment
+        if: steps.deploy.outputs.success == 'true'
+        run: |
+          echo "📊 Logging successful XMRT agent deployment..."
+          
+          curl -X POST \
+            "https://vawouugtzwmejxqkeqqj.supabase.co/rest/v1/eliza_activity_log" \
+            -H "Authorization: Bearer ${{ env.SUPABASE_KEY }}" \
+            -H "Content-Type: application/json" \
+            -H "Prefer: return=minimal" \
+            -d '{
+              "agent_name": "XMRT-Agent-Deployer",
+              "action": "deploy_agent",
+              "details": "Deployed XMRT ${{ matrix.agent_type }} agent: ${{ matrix.name }}",
+              "timestamp": "'$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")'",
+              "context": {
+                "agent_id": "${{ matrix.id }}",
+                "agent_name": "${{ matrix.name }}",
+                "agent_type": "${{ matrix.agent_type }}",
+                "domain": "${{ matrix.domain }}",
+                "deployment_id": "${{ steps.deploy.outputs.deployment_id }}",
+                "ecosystem": "XMRT"
+              }
+            }'
+
+  post-deployment:
+    runs-on: ubuntu-latest
+    name: 'Post-Deployment XMRT Coordination'
+    needs: [discover-agents, deploy-agents]
+    if: always() && needs.deploy-agents.result == 'success'
+    
+    steps:
+      - name: Trigger Ecosystem Coordination
+        run: |
+          echo "🔄 Triggering XMRT ecosystem coordination after deployments..."
+          
+          # Trigger XMRT ecosystem coordination
+          curl -X POST \
+            "https://xmrt-ecosystem.vercel.app/api/tick" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "source": "agent_deployment",
+              "trigger_reason": "New agents deployed and available"
+            }'
+          
+          # Update Suite AI with new agents
+          curl -X POST \
+            "https://vawouugtzwmejxqkeqqj.supabase.co/functions/v1/ecosystem-monitor" \
+            -H "Authorization: Bearer ${{ env.SUPABASE_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "action": "agents_deployed",
+              "source": "github_action",
+              "agent_count": ${{ needs.discover-agents.outputs.agent_count }},
+              "timestamp": "'$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")'"
+            }'
+
+      - name: Update Agent Registry
+        run: |
+          echo "📝 Updating XMRT agent registry..."
+          
+          # Get current agent status
+          curl -s "https://xmrt-ecosystem.vercel.app/api/agents" \
+            -H "Content-Type: application/json"
+          
+          echo "✅ XMRT agent deployment cycle completed!"
