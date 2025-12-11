@@ -7,6 +7,7 @@ from http.server import BaseHTTPRequestHandler
 import json
 from datetime import datetime
 from urllib.parse import urlparse, parse_qs
+from .supabase_client import get_registered_agents, register_agent, log_activity
 
 # Agent information
 AGENTS = {
