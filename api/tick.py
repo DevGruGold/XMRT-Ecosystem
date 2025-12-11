@@ -6,7 +6,7 @@ Vercel Serverless Function
 from http.server import BaseHTTPRequestHandler
 import json
 from datetime import datetime
-from .supabase_client import log_activity, register_agent
+from api.supabase_client import log_activity, register_agent
 
 class handler(BaseHTTPRequestHandler):
     def do_POST(self):
