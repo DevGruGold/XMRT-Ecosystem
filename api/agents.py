@@ -7,7 +7,20 @@ from http.server import BaseHTTPRequestHandler
 import json
 from datetime import datetime
 from urllib.parse import urlparse, parse_qs
-from api.supabase_client import get_registered_agents, register_agent, log_activity
+# Supabase integration - optional, graceful degradation
+try:
+    from api.supabase_client import get_registered_agents, register_agent, log_activity
+    SUPABASE_AVAILABLE = True
+except Exception as e:
+    print(f"⚠️ Supabase client not available: {e}")
+    SUPABASE_AVAILABLE = False
+    # Mock functions for graceful degradation
+    def get_registered_agents(status=None):
+        return []
+    def register_agent(*args, **kwargs):
+        return None
+    def log_activity(*args, **kwargs):
+        return None
 
 # Agent information
 AGENTS = {
