@@ -6,7 +6,18 @@ Vercel Serverless Function
 from http.server import BaseHTTPRequestHandler
 import json
 from datetime import datetime
-from api.supabase_client import log_activity, register_agent
+# Supabase integration - optional, graceful degradation
+try:
+    from api.supabase_client import log_activity, register_agent
+    SUPABASE_AVAILABLE = True
+except Exception as e:
+    print(f"⚠️ Supabase client not available: {e}")
+    SUPABASE_AVAILABLE = False
+    # Mock functions for graceful degradation
+    def log_activity(*args, **kwargs):
+        return None
+    def register_agent(*args, **kwargs):
+        return None
 
 class handler(BaseHTTPRequestHandler):
     def do_POST(self):
