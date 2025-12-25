@@ -1,40 +1,121 @@
-name: Build & Test Frontend
+name: XMRT Build Pipeline
+
 on:
   push:
-    branches:
-    - main
+    branches: [ "main", "develop" ]
   pull_request:
-    branches:
-    - main
+    branches: [ "main" ]
+
 jobs:
-  test-frontend:
+  build:
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
-    - name: Setup Node.js
+
+    - name: Setup Node.js 18
       uses: actions/setup-node@v4
-      with:
-        node-version: 18
-    - name: Check for package.json
-      run: "if [ ! -f package.json ]; then\n  echo \"No package.json found, creating\
-        \ minimal one for testing\"\n  echo '{\"name\": \"xmrt-ecosystem\", \"version\"\
-        : \"1.0.0\", \"scripts\": {\"lint\": \"echo \"No linter configured\"\", \"\
-        test\": \"echo \"No tests configured\"\"}}' > package.json\nfi\n"
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+
+    - name: Setup Python 3.9
+      uses: actions/setup-python@v5
+
     - name: Install Frontend Dependencies
-      run: "if [ -f package.json ]; then\n  npm install || echo \"npm install failed,\
-        \ continuing...\"\nfi\n"
-    - name: Run Frontend Linting
-      run: "if [ -f package.json ] && npm run lint --if-present; then\n  echo \"Linting\
-        \ completed\"\nelse\n  echo \"No linting configured or available\"\nfi\n"
-      continue-on-error: true
+      run: |
+        cd frontend/xmrt-dao-frontend
+
+    - name: Build Frontend
+      run: |
+        cd frontend/xmrt-dao-frontend
+        pnpm run build
+
+    - name: Install Backend Dependencies
+      run: |
+        # Main DAO Backend
+        cd backend/xmrt-dao-backend
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        cd ../..
+
+        # AI Automation Service
+        cd backend/ai-automation-service
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        cd ../..
+
+        # Cross-Chain Service
+        cd backend/cross-chain-service/xmrt-cross-chain-service
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        cd ../../..
+
+        # ZK Service
+        cd backend/zk-service/xmrt-zk-service
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        cd ../../..
+
+    - name: Run Backend Tests
+      run: |
+        # Main DAO Backend Tests
+        cd backend/xmrt-dao-backend
+        python -m pytest
+        cd ../..
+
+        # AI Automation Service Tests
+        cd backend/ai-automation-service
+        python -m pytest
+        cd ../..
+
+        # Cross-Chain Service Tests
+        cd backend/cross-chain-service/xmrt-cross-chain-service
+        python -m pytest
+        cd ../../..
+
+        # ZK Service Tests
+        cd backend/zk-service/xmrt-zk-service
+        python -m pytest
+        cd ../../..
+
     - name: Run Frontend Tests
-      run: "if [ -f package.json ] && npm test --if-present; then\n  echo \"Tests\
-        \ completed\"\nelse\n  echo \"No tests configured or available\"\nfi\n"
-      continue-on-error: true
-    timeout-minutes: 30
-permissions:
-  contents: read
-  actions: read
-  checks: write
-  pull-requests: read
+      run: |
+        cd frontend/xmrt-dao-frontend
+        pnpm test
+
+    - name: Run Contract Tests
+      run: |
+        cd contracts
+        npm test
+
+    - name: Archive Production Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: production-artifacts
+        path: |
+          frontend/xmrt-dao-frontend/dist
+          backend/xmrt-dao-backend/build
+          contracts/build
+
+    - name: Deploy to Vercel (Frontend)
+      if: github.ref == 'refs/heads/main'
+      run: |
+        cd frontend/xmrt-dao-frontend
+        npm install -g vercel
+        vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
+
+    - name: Deploy to Render (Backend)
+      if: github.ref == 'refs/heads/main'
+      run: |
+        # Render deployment logic here
+        echo "Deploying backend to Render..."
+
+    - name: Deploy Contracts
+      if: github.ref == 'refs/heads/main'
+      run: |
+        # Contract deployment logic here
+        echo "Deploying contracts..."
+
+
