@@ -37,16 +37,52 @@ jobs:
         run: |
           echo "🔍 Discovering XMRT agents ready for deployment..."
           
-          # Get agents that are generated but not deployed
-          AGENTS_RESPONSE=$(curl -s \
-            "https://vawouugtzwmejxqkeqqj.supabase.co/rest/v1/generated_agents?status=eq.generated&ecosystem=eq.XMRT&select=*" \
-            -H "Authorization: Bearer ${{ env.SUPABASE_KEY }}" \
-            -H "Content-Type: application/json")
+          MAX_RETRIES=3
+          RETRY_DELAY=5
+          AGENTS_RESPONSE="[]"
+          HTTP_CODE=0
+          
+          for i in $(seq 1 $MAX_RETRIES); do
+            echo "Attempt $i of $MAX_RETRIES..."
+            
+            # Get agents that are generated but not deployed. Use -w "%{http_code}" to capture status code.
+            RESPONSE_WITH_CODE=$(curl -s -w "%{http_code}" \
+              "https://vawouugtzwmejxqkeqqj.supabase.co/rest/v1/generated_agents?status=eq.generated&ecosystem=eq.XMRT&select=*" \
+              -H "Authorization: Bearer ${{ env.SUPABASE_KEY }}" \
+              -H "Content-Type: application/json")
+            
+            HTTP_CODE="${RESPONSE_WITH_CODE: -3}"
+            AGENTS_RESPONSE="${RESPONSE_WITH_CODE:0:${#RESPONSE_WITH_CODE}-3}"
+            
+            if [ "$HTTP_CODE" -eq 200 ]; then
+              echo "✅ Successfully retrieved agents (HTTP $HTTP_CODE)"
+              break
+            elif [ "$HTTP_CODE" -eq 402 ]; then
+              echo "⚠️  Received HTTP 402 (Quota Exceeded). Retrying in $RETRY_DELAY seconds..."
+            else
+              echo "❌ Failed to retrieve agents (HTTP $HTTP_CODE). Retrying in $RETRY_DELAY seconds..."
+            fi
+            
+            if [ "$i" -lt "$MAX_RETRIES" ]; then
+              sleep $RETRY_DELAY
+            else
+              echo "❌ All retries failed. Proceeding with empty agent list."
+              AGENTS_RESPONSE="[]"
+              break
+            fi
+          done
           
           echo "Agents response: $AGENTS_RESPONSE"
           
           # Process response
-          AGENT_COUNT=$(echo "$AGENTS_RESPONSE" | jq '. | length')
+          # Use 'jq -e' to ensure valid JSON and non-empty array before processing
+          if echo "$AGENTS_RESPONSE" | jq -e . > /dev/null; then
+            AGENT_COUNT=$(echo "$AGENTS_RESPONSE" | jq '. | length')
+          else
+            echo "❌ Error: Response is not valid JSON or is empty. Setting agent count to 0."
+            AGENT_COUNT=0
+            AGENTS_RESPONSE="[]"
+          fi
           
           echo "agents=$AGENTS_RESPONSE" >> $GITHUB_OUTPUT
           echo "count=$AGENT_COUNT" >> $GITHUB_OUTPUT
@@ -73,36 +109,70 @@ jobs:
           
           TARGET="${{ github.event.inputs.deployment_target || 'supabase' }}"
           
-          # Call deployment coordinator
-          DEPLOY_RESPONSE=$(curl -s -X POST \
-            "https://vawouugtzwmejxqkeqqj.supabase.co/functions/v1/agent-deployment-coordinator" \
-            -H "Authorization: Bearer ${{ env.SUPABASE_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "action": "deploy",
-              "agent_id": "${{ matrix.id }}",
-              "deployment_target": "'$TARGET'",
-              "configuration": {
-                "ecosystem": "XMRT",
-                "auto_start": true,
-                "resource_limits": {
-                  "memory": "512MB",
-                  "timeout": "30s"
-                },
-                "environment": {
-                  "XMRT_ECOSYSTEM": "true",
-                  "SUPABASE_URL": "${{ env.SUPABASE_URL }}",
-                  "AGENT_TYPE": "${{ matrix.agent_type }}",
-                  "AGENT_DOMAIN": "${{ matrix.domain }}"
+          MAX_RETRIES=3
+          RETRY_DELAY=5
+          DEPLOY_RESPONSE=""
+          SUCCESS="false"
+          DEPLOYMENT_ID=""
+          
+          for i in $(seq 1 $MAX_RETRIES); do
+            echo "Attempt $i of $MAX_RETRIES to deploy..."
+            
+            # Call deployment coordinator
+            RESPONSE_WITH_CODE=$(curl -s -w "%{http_code}" -X POST \
+              "https://vawouugtzwmejxqkeqqj.supabase.co/functions/v1/agent-deployment-coordinator" \
+              -H "Authorization: Bearer ${{ env.SUPABASE_KEY }}" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "action": "deploy",
+                "agent_id": "${{ matrix.id }}",
+                "deployment_target": "'$TARGET'",
+                "configuration": {
+                  "ecosystem": "XMRT",
+                  "auto_start": true,
+                  "resource_limits": {
+                    "memory": "512MB",
+                    "timeout": "30s"
+                  },
+                  "environment": {
+                    "XMRT_ECOSYSTEM": "true",
+                    "SUPABASE_URL": "${{ env.SUPABASE_URL }}",
+                    "AGENT_TYPE": "${{ matrix.agent_type }}",
+                    "AGENT_DOMAIN": "${{ matrix.domain }}"
+                  }
                 }
-              }
-            }')
+              }')
+            
+            HTTP_CODE="${RESPONSE_WITH_CODE: -3}"
+            DEPLOY_RESPONSE="${RESPONSE_WITH_CODE:0:${#RESPONSE_WITH_CODE}-3}"
+            
+            if [ "$HTTP_CODE" -eq 200 ]; then
+              # Check for internal success flag in the JSON response
+              if echo "$DEPLOY_RESPONSE" | jq -e '.success == true' > /dev/null; then
+                SUCCESS="true"
+                DEPLOYMENT_ID=$(echo "$DEPLOY_RESPONSE" | jq -r '.result.deployment_id // empty')
+                echo "✅ Successfully deployed (HTTP $HTTP_CODE)"
+                break
+              else
+                echo "❌ Deployment failed internally (HTTP $HTTP_CODE). Response: $DEPLOY_RESPONSE"
+              fi
+            elif [ "$HTTP_CODE" -eq 402 ]; then
+              echo "⚠️  Received HTTP 402 (Quota Exceeded). Retrying in $RETRY_DELAY seconds..."
+            else
+              echo "❌ Deployment failed (HTTP $HTTP_CODE). Retrying in $RETRY_DELAY seconds..."
+            fi
+            
+            if [ "$i" -lt "$MAX_RETRIES" ]; then
+              sleep $RETRY_DELAY
+            else
+              echo "❌ All retries failed for deployment."
+              break
+            fi
+          done
           
           echo "Deploy response: $DEPLOY_RESPONSE"
           
-          SUCCESS=$(echo "$DEPLOY_RESPONSE" | jq -r '.success // false')
-          DEPLOYMENT_ID=$(echo "$DEPLOY_RESPONSE" | jq -r '.result.deployment_id // empty')
-          
+          # Final output setting
           echo "success=$SUCCESS" >> $GITHUB_OUTPUT
           echo "deployment_id=$DEPLOYMENT_ID" >> $GITHUB_OUTPUT
           
@@ -110,6 +180,8 @@ jobs:
             echo "✅ Successfully deployed ${{ matrix.name }}"
           else
             echo "❌ Failed to deploy ${{ matrix.name }}"
+            # Fail the step if deployment was not successful after all retries
+            exit 1
           fi
 
       - name: Create Agent Edge Function
@@ -221,25 +293,51 @@ EOF
         run: |
           echo "📊 Logging successful XMRT agent deployment..."
           
-          curl -X POST \
-            "https://vawouugtzwmejxqkeqqj.supabase.co/rest/v1/eliza_activity_log" \
-            -H "Authorization: Bearer ${{ env.SUPABASE_KEY }}" \
-            -H "Content-Type: application/json" \
-            -H "Prefer: return=minimal" \
-            -d '{
-              "agent_name": "XMRT-Agent-Deployer",
-              "action": "deploy_agent",
-              "details": "Deployed XMRT ${{ matrix.agent_type }} agent: ${{ matrix.name }}",
-              "timestamp": "'$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")'",
-              "context": {
-                "agent_id": "${{ matrix.id }}",
-                "agent_name": "${{ matrix.name }}",
-                "agent_type": "${{ matrix.agent_type }}",
-                "domain": "${{ matrix.domain }}",
-                "deployment_id": "${{ steps.deploy.outputs.deployment_id }}",
-                "ecosystem": "XMRT"
-              }
-            }'
+          MAX_RETRIES=3
+          RETRY_DELAY=5
+          
+          for i in $(seq 1 $MAX_RETRIES); do
+            echo "Attempt $i of $MAX_RETRIES to log deployment..."
+            
+            # Log deployment activity
+            RESPONSE_WITH_CODE=$(curl -s -w "%{http_code}" -X POST \
+              "https://vawouugtzwmejxqkeqqj.supabase.co/rest/v1/eliza_activity_log" \
+              -H "Authorization: Bearer ${{ env.SUPABASE_KEY }}" \
+              -H "Content-Type: application/json" \
+              -H "Prefer: return=minimal" \
+              -d '{
+                "agent_name": "XMRT-Agent-Deployer",
+                "action": "deploy_agent",
+                "details": "Deployed XMRT ${{ matrix.agent_type }} agent: ${{ matrix.name }}",
+                "timestamp": "'$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")'",
+                "context": {
+                  "agent_id": "${{ matrix.id }}",
+                  "agent_name": "${{ matrix.name }}",
+                  "agent_type": "${{ matrix.agent_type }}",
+                  "domain": "${{ matrix.domain }}",
+                  "deployment_id": "${{ steps.deploy.outputs.deployment_id }}",
+                  "ecosystem": "XMRT"
+                }
+              }')
+            
+            HTTP_CODE="${RESPONSE_WITH_CODE: -3}"
+            
+            if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+              echo "✅ Successfully logged deployment (HTTP $HTTP_CODE)"
+              break
+            elif [ "$HTTP_CODE" -eq 402 ]; then
+              echo "⚠️  Received HTTP 402 (Quota Exceeded) while logging. Retrying in $RETRY_DELAY seconds..."
+            else
+              echo "❌ Failed to log deployment (HTTP $HTTP_CODE). Retrying in $RETRY_DELAY seconds..."
+            fi
+            
+            if [ "$i" -lt "$MAX_RETRIES" ]; then
+              sleep $RETRY_DELAY
+            else
+              echo "❌ All retries failed for logging. Continuing workflow."
+              break # Do not fail the entire job for a failed log entry
+            fi
+          done
 
   post-deployment:
     runs-on: ubuntu-latest
@@ -252,26 +350,71 @@ EOF
         run: |
           echo "🔄 Triggering XMRT ecosystem coordination after deployments..."
           
-          # Trigger XMRT ecosystem coordination
-          curl -X POST \
-            "https://xmrt-ecosystem.vercel.app/api/tick" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "source": "agent_deployment",
-              "trigger_reason": "New agents deployed and available"
-            }'
+          MAX_RETRIES=3
+          RETRY_DELAY=5
           
-          # Update Suite AI with new agents
-          curl -X POST \
-            "https://vawouugtzwmejxqkeqqj.supabase.co/functions/v1/ecosystem-monitor" \
-            -H "Authorization: Bearer ${{ env.SUPABASE_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "action": "agents_deployed",
-              "source": "github_action",
-              "agent_count": ${{ needs.discover-agents.outputs.agent_count }},
-              "timestamp": "'$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")'"
-            }'
+          # Trigger XMRT ecosystem coordination (Vercel)
+          for i in $(seq 1 $MAX_RETRIES); do
+            echo "Attempt $i of $MAX_RETRIES to trigger Vercel coordination..."
+            RESPONSE_WITH_CODE=$(curl -s -w "%{http_code}" -X POST \
+              "https://xmrt-ecosystem.vercel.app/api/tick" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "source": "agent_deployment",
+                "trigger_reason": "New agents deployed and available"
+              }')
+            
+            HTTP_CODE="${RESPONSE_WITH_CODE: -3}"
+            
+            if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+              echo "✅ Successfully triggered Vercel coordination (HTTP $HTTP_CODE)"
+              break
+            elif [ "$HTTP_CODE" -eq 402 ]; then
+              echo "⚠️  Received HTTP 402 (Quota Exceeded). Retrying in $RETRY_DELAY seconds..."
+            else
+              echo "❌ Failed to trigger Vercel coordination (HTTP $HTTP_CODE). Retrying in $RETRY_DELAY seconds..."
+            fi
+            
+            if [ "$i" -lt "$MAX_RETRIES" ]; then
+              sleep $RETRY_DELAY
+            else
+              echo "❌ All retries failed for Vercel coordination. Continuing workflow."
+              break
+            fi
+          done
+          
+          # Update Suite AI with new agents (Supabase Function)
+          for i in $(seq 1 $MAX_RETRIES); do
+            echo "Attempt $i of $MAX_RETRIES to update Suite AI..."
+            RESPONSE_WITH_CODE=$(curl -s -w "%{http_code}" -X POST \
+              "https://vawouugtzwmejxqkeqqj.supabase.co/functions/v1/ecosystem-monitor" \
+              -H "Authorization: Bearer ${{ env.SUPABASE_KEY }}" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "action": "agents_deployed",
+                "source": "github_action",
+                "agent_count": ${{ needs.discover-agents.outputs.agent_count }},
+                "timestamp": "'$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")'"
+              }')
+            
+            HTTP_CODE="${RESPONSE_WITH_CODE: -3}"
+            
+            if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+              echo "✅ Successfully updated Suite AI (HTTP $HTTP_CODE)"
+              break
+            elif [ "$HTTP_CODE" -eq 402 ]; then
+              echo "⚠️  Received HTTP 402 (Quota Exceeded). Retrying in $RETRY_DELAY seconds..."
+            else
+              echo "❌ Failed to update Suite AI (HTTP $HTTP_CODE). Retrying in $RETRY_DELAY seconds..."
+            fi
+            
+            if [ "$i" -lt "$MAX_RETRIES" ]; then
+              sleep $RETRY_DELAY
+            else
+              echo "❌ All retries failed for Suite AI update. Continuing workflow."
+              break
+            fi
+          done
 
       - name: Update Agent Registry
         run: |
