@@ -1,0 +1,50 @@
+name: Deploy UX Improvements
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/components/**'
+      - 'src/services/**'
+      - 'src/lib/**'
+  workflow_dispatch:
+
+jobs:
+  deploy-ux-improvements:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run tests
+        run: npm test
+      
+      - name: Build application
+        run: npm run build
+      
+      - name: Deploy to Vercel
+        run: |
+          npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
+      
+      - name: Test deployment
+        run: |
+          echo "Testing deployment..."
+          sleep 10
+          curl -f https://suite-beta.vercel.app/ || exit 1
+      
+      - name: Notify deployment
+        if: success()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: '✨ UX improvements deployed to production'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
