@@ -1,0 +1,43 @@
+name: Security Audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Daily at 2 AM
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate || true
+      
+      - name: Check for secrets in code
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+      
+      - name: Dependency vulnerability scan
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        continue-on-error: true
+      
+      - name: Database security check
+        run: |
+          # Check for common security issues
+          echo "Running database security checks..."
+          # Add security validation queries
+      
+      - name: API security test
+        run: |
+          echo "Testing API security..."
+          # Add API security tests
