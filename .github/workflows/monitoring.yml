@@ -1,0 +1,59 @@
+name: Ecosystem Monitoring
+
+on:
+  schedule:
+    # Every 5 minutes
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ecosystem Health Check
+        run: |
+          HEALTH_RESPONSE=$(curl -s "${{ secrets.SUPABASE_URL }}/functions/v1/ecosystem-health-check"             -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}")
+          
+          echo "$HEALTH_RESPONSE" | jq .
+          
+          OVERALL_HEALTH=$(echo "$HEALTH_RESPONSE" | jq -r '.overall_health')
+          
+          if [ "$OVERALL_HEALTH" != "healthy" ]; then
+            echo "❌ Ecosystem health is degraded!"
+            exit 1
+          fi
+      
+      - name: Performance Monitoring
+        run: |
+          curl -s "${{ secrets.SUPABASE_URL }}/functions/v1/cross-repo-latency-monitor"             -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" | jq .
+      
+      - name: Alert on failure
+        if: failure()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: '🚨 Ecosystem health check failed!'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
+  data-consistency-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate Cross-Repo Data
+        run: |
+          VALIDATION_RESPONSE=$(curl -s "${{ secrets.SUPABASE_URL }}/functions/v1/validate-cross-repo-data"             -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}")
+          
+          echo "$VALIDATION_RESPONSE" | jq .
+          
+          IS_VALID=$(echo "$VALIDATION_RESPONSE" | jq -r '.valid')
+          
+          if [ "$IS_VALID" != "true" ]; then
+            echo "❌ Data inconsistencies detected!"
+            echo "$VALIDATION_RESPONSE" | jq '.inconsistencies'
+            exit 1
+          fi
+      
+      - name: Alert on inconsistency
+        if: failure()
+        run: |
+          curl -X POST "${{ secrets.SUPABASE_URL }}/functions/v1/alert-on-desync"             -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"             -H "Content-Type: application/json"             -d '{"source": "github-actions"}'
