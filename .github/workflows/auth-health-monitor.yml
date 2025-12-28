@@ -1,0 +1,71 @@
+name: Auth Health Monitor
+
+on:
+  schedule:
+    # Run every 5 minutes
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  monitor-auth-health:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Auth Service Health
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -H "Content-Type: application/json" \
+            "${{ secrets.SUPABASE_URL }}/functions/v1/auth-health-monitor"
+      
+      - name: Query Recent Crash Loops
+        run: |
+          # Use Supabase REST API to check for crash loop alerts
+          RESPONSE=$(curl -s -X GET \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/ecosystem_event_log?event_type=eq.crash_loop_detected&order=created_at.desc&limit=1" \
+            -H "apikey: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}")
+          
+          echo "Recent crash loop alerts: $RESPONSE"
+          
+          # Check if there's a recent alert (within last 15 minutes)
+          RECENT_ALERT=$(echo $RESPONSE | jq -r '.[0].created_at // empty')
+          if [ ! -z "$RECENT_ALERT" ]; then
+            ALERT_TIME=$(date -d "$RECENT_ALERT" +%s)
+            CURRENT_TIME=$(date +%s)
+            AGE=$((CURRENT_TIME - ALERT_TIME))
+            
+            if [ $AGE -lt 900 ]; then
+              echo "🚨 CRITICAL: Auth crash loop detected within last 15 minutes!"
+              echo "Alert time: $RECENT_ALERT"
+              exit 1
+            fi
+          fi
+      
+      - name: Notify on Failure
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🚨 Auth Service Crash Loop Detected',
+              body: `## Critical Alert
+              
+The auth service is in a crash loop. This requires immediate attention.
+
+**Detected at:** ${{ github.event.repository.updated_at }}
+
+**Recommended Actions:**
+1. Check Supabase logs for auth errors
+2. Review \`.env\` for deprecated JWT config
+3. Check database connection pool limits
+4. Review recent deployments
+5. Check memory/CPU usage
+
+**View Logs:** ${{ secrets.SUPABASE_URL }}/project/_/logs/edge-functions
+
+**Health Dashboard:** [View ecosystem health](https://suite-beta.vercel.app/admin/health)
+              `,
+              labels: ['critical', 'auth', 'infrastructure']
+            })
