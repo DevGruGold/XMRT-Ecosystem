@@ -20,55 +20,91 @@ jobs:
       id: check
       uses: actions/github-script@v7
       with:
-        script: "const commentBody = context.payload.comment.body.toLowerCase();\n\
-          const commentId = context.payload.comment.id;\nconst issueNumber = context.payload.issue\
-          \ ? context.payload.issue.number : null;\nconst discussionNumber = context.payload.discussion\
-          \ ? context.payload.discussion.node_id : null;\n\n// --- Malicious Content\
-          \ Patterns ---\nconst maliciousPatterns = [\n  // Common executable and\
-          \ script extensions\n  /\\.exe/g, /\\.dll/g, /\\.scr/g, /\\.bat/g, /\\.cmd/g,\
-          \ /\\.ps1/g, /\\.vbs/g, /\\.sh/g, /\\.bin/g, /\\.apk/g, /\\.msi/g,\n  //\
-          \ Common archive and disk image extensions\n  /\\.zip/g, /\\.tar/g, /\\\
-          .gz/g, /\\.7z/g, /\\.rar/g, /\\.iso/g,\n  // Suspicious document/macro-enabled\
-          \ file extensions\n  /\\.pdf/g, /\\.doc\\b/g, /\\.docx\\b/g, /\\.xls\\b/g,\
-          \ /\\.xlsx\\b/g, /\\.ppt\\b/g, /\\.pptx\\b/g, /\\.rtf/g,\n  // Generic attachment/download\
-          \ keywords\n  /attachment/g, /download/g, /file/g, /click here/g,\n  //\
-          \ Markdown image/link syntax pointing to suspicious extensions\n  /!\\[.*?\\\
-          ]\\(.*?(\\.exe|\\.zip|\\.dll|\\.scr|\\.bat|\\.cmd|\\.ps1|\\.vbs|\\.sh|\\\
-          .bin|\\.apk|\\.msi|\\.tar|\\.gz|\\.7z|\\.rar|\\.iso|\\.pdf|\\.doc|\\.docx|\\\
-          .xls|\\.xlsx|\\.ppt|\\.pptx|\\.rtf)\\)/g,\n  /\\[.*?\\]\\(.*?(\\.exe|\\\
-          .zip|\\.dll|\\.scr|\\.bat|\\.cmd|\\.ps1|\\.vbs|\\.sh|\\.bin|\\.apk|\\.msi|\\\
-          .tar|\\.gz|\\.7z|\\.rar|\\.iso|\\.pdf|\\.doc|\\.docx|\\.xls|\\.xlsx|\\.ppt|\\\
-          .pptx|\\.rtf)\\)/g,\n  // Common file hosting/sharing services (can be a\
-          \ sign of external malicious links)\n  /drive\\.google\\.com/g, /dropbox\\\
-          .com/g, /mega\\.nz/g, /mediafire\\.com/g, /anonfiles\\.com/g,\n];\n\nlet\
-          \ isMalicious = false;\nlet matchedPattern = '';\n\nfor (const pattern of\
-          \ maliciousPatterns) {\n  if (commentBody.match(pattern)) {\n    isMalicious\
-          \ = true;\n    matchedPattern = pattern.source;\n    break;\n  }\n}\n\n\
-          if (isMalicious) {\n  console.log(`Security: Detected malicious content\
-          \ in comment ${commentId}. Pattern: ${matchedPattern}`);\n  \n  // 1. Delete\
-          \ the comment\n  try {\n    await github.rest.issues.deleteComment({\n \
-          \     owner: context.repo.owner,\n      repo: context.repo.repo,\n     \
-          \ comment_id: commentId\n    });\n    console.log(`Security: Successfully\
-          \ deleted comment ${commentId}.`);\n  } catch (error) {\n    console.error(`Security:\
-          \ Failed to delete comment ${commentId}. Error: ${error.message}`);\n  \
-          \  // Continue to next step even if deletion fails (e.g., due to permissions)\n\
-          \  }\n  \n  // 2. Post a warning to the issue/discussion (optional but recommended)\n\
-          \  const warningMessage = `**Security Alert:** A comment was automatically\
-          \ deleted from this ${issueNumber ? 'issue' : 'discussion'} because it contained\
-          \ content matching known malicious patterns (e.g., executable files, suspicious\
-          \ links, or common malware keywords). The comment ID was \\`${commentId}\\\
-          `.`;\n  \n  if (issueNumber) {\n    await github.rest.issues.createComment({\n\
-          \      owner: context.repo.owner,\n      repo: context.repo.repo,\n    \
-          \  issue_number: issueNumber,\n      body: warningMessage\n    });\n  }\
-          \ else if (discussionNumber) {\n    // Deleting discussion comments requires\
-          \ a different API call (GraphQL) which is more complex.\n    // For simplicity\
-          \ and robustness, we will only delete the comment and log the event.\n \
-          \   // The issue comment API is sufficient for most cases.\n    console.log(\"\
-          Security: Discussion comment detected. Skipping automated warning post for\
-          \ simplicity.\");\n  }\n  \n  core.setFailed(`Malicious content detected\
-          \ and comment ${commentId} deleted.`);\n} else {\n  console.log(`Security:\
-          \ Comment ${commentId} passed scan.`);\n}\n\n// Set output for subsequent\
-          \ steps if needed\ncore.setOutput('is_malicious', isMalicious);\n"
+        script: |
+          const commentBody = context.payload.comment.body.toLowerCase();
+          const commentId = context.payload.comment.id;
+          const issueNumber = context.payload.issue ? context.payload.issue.number : null;
+          const discussionNumber = context.payload.discussion ? context.payload.discussion.node_id : null;
+
+          // --- Malicious Content Patterns ---
+          const maliciousPatterns = [
+            // Common executable and script extensions
+            /\.exe/g, /\.dll/g, /\.scr/g, /\.bat/g, /\.cmd/g, /\.ps1/g, /\.vbs/g, /\.sh/g, /\.bin/g, /\.apk/g, /\.msi/g,
+            // Common archive and disk image extensions
+            /\.zip/g, /\.tar/g, /\.gz/g, /\.7z/g, /\.rar/g, /\.iso/g,
+            // Suspicious document/macro-enabled file extensions
+            /\.pdf/g, /\.doc\b/g, /\.docx\b/g, /\.xls\b/g, /\.xlsx\b/g, /\.ppt\b/g, /\.pptx\b/g, /\.rtf/g,
+            // Generic attachment/download keywords
+            /attachment/g, /download/g, /file/g, /click here/g,
+            // Markdown image/link syntax pointing to suspicious extensions
+            /!\[.*?\]\(.*?(\.exe|\.zip|\.dll|\.scr|\.bat|\.cmd|\.ps1|\.vbs|\.sh|\.bin|\.apk|\.msi|\.tar|\.gz|\.7z|\.rar|\.iso|\.pdf|\.doc|\.docx|\.xls|\.xlsx|\.ppt|\.pptx|\.rtf)\)/g,
+            /\[.*?\]\(.*?(\.exe|\.zip|\.dll|\.scr|\.bat|\.cmd|\.ps1|\.vbs|\.sh|\.bin|\.apk|\.msi|\.tar|\.gz|\.7z|\.rar|\.iso|\.pdf|\.doc|\.docx|\.xls|\.xlsx|\.ppt|\.pptx|\.rtf)\)/g,
+            // Common file hosting/sharing services (can be a sign of external malicious links)
+            /drive\.google\.com/g, /dropbox\.com/g, /mega\.nz/g, /mediafire\.com/g, /anonfiles\.com/g,
+          ];
+
+          let isMalicious = false;
+          let matchedPattern = '';
+
+          for (const pattern of maliciousPatterns) {
+            if (commentBody.match(pattern)) {
+              isMalicious = true;
+              matchedPattern = pattern.source;
+              break;
+            }
+          }
+
+          if (isMalicious) {
+            console.log(`Security: Detected malicious content in comment ${commentId}. Pattern: ${matchedPattern}`);
+            
+            // 1. Delete the comment
+            try {
+              await github.rest.issues.deleteComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: commentId
+              });
+              console.log(`Security: ✅ Successfully deleted comment ${commentId}.`);
+            } catch (error) {
+              console.error(`Security: ❌ Failed to delete comment ${commentId}. Error: ${error.message}`);
+              // If deletion fails, that's a real error
+              core.setFailed(`Failed to delete malicious comment ${commentId}: ${error.message}`);
+              return;
+            }
+            
+            // 2. Post a warning to the issue/discussion (optional but recommended)
+            const warningMessage = `**🔒 Security Alert:** A comment was automatically deleted from this ${issueNumber ? 'issue' : 'discussion'} because it contained content matching known malicious patterns (e.g., executable files, suspicious links, or common malware keywords). The comment ID was \`${commentId}\`.`;
+            
+            if (issueNumber) {
+              try {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issueNumber,
+                  body: warningMessage
+                });
+                console.log(`Security: ✅ Posted warning message to issue #${issueNumber}.`);
+              } catch (error) {
+                console.error(`Security: ⚠️ Failed to post warning message: ${error.message}`);
+                // Non-critical, continue
+              }
+            } else if (discussionNumber) {
+              // Deleting discussion comments requires a different API call (GraphQL) which is more complex.
+              // For simplicity and robustness, we will only delete the comment and log the event.
+              console.log("Security: Discussion comment detected. Skipping automated warning post for simplicity.");
+            }
+            
+            // ✅ THIS IS THE FIX: Don't fail when successfully handling malicious content
+            console.log(`Security: ✅ Malicious content successfully handled. Comment ${commentId} deleted.`);
+            core.setOutput('is_malicious', true);
+            core.setOutput('action_taken', 'deleted');
+            core.setOutput('comment_id', commentId);
+            core.setOutput('pattern_matched', matchedPattern);
+          } else {
+            console.log(`Security: ✅ Comment ${commentId} passed scan - no malicious content detected.`);
+            core.setOutput('is_malicious', false);
+            core.setOutput('action_taken', 'none');
+          }
     timeout-minutes: 30
 permissions:
   contents: read
