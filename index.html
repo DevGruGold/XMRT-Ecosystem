@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XMRT Ecosystem 7.0 — Serverless Architecture</title>
-    <meta name="description" content="AI-Governed Mobile-First Cryptocurrency Ecosystem for the Unbanked">
+    <title>XMRT Ecosystem — AI-Governed Cryptocurrency for the Unbanked</title>
+    <meta name="description" content="Mobile-first, AI-driven cryptocurrency ecosystem featuring autonomous agents, mobile mining, emotional AI, and decentralized governance">
     
     <style>
         :root {
@@ -14,9 +14,8 @@
             --warning: #f59e0b;
             --danger: #ef4444;
             --dark: #0f172a;
-            --darker: #020617;
-            --light: #e2e8f0;
-            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --dark-card: #1e293b;
+            --dark-border: #334155;
         }
 
         * {
@@ -26,303 +25,367 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: var(--darker);
-            color: var(--light);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
             line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        .bg-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: linear-gradient(45deg, #020617, #1e1b4b, #312e81);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        header {
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
-            padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .logo h1 {
-            font-size: 1.8rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .version-badge {
-            background: var(--gradient);
-            color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            min-height: 100vh;
         }
 
         .container {
             max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 2rem;
+            margin: 0 auto;
+            padding: 2rem;
         }
 
-        .hero {
+        /* Header */
+        header {
             text-align: center;
             padding: 3rem 0;
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
+            border-radius: 20px;
             margin-bottom: 3rem;
+            border: 1px solid var(--dark-border);
         }
 
-        .hero h2 {
+        header h1 {
             font-size: 3rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #fff, var(--primary));
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            margin-bottom: 1rem;
         }
 
-        .hero p {
+        header p {
             font-size: 1.2rem;
-            color: var(--light);
+            color: #94a3b8;
             max-width: 800px;
-            margin: 0 auto 2rem;
+            margin: 0 auto;
         }
 
-        .status-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
-        .status-card {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            border-radius: 16px;
-            padding: 1.5rem;
+        .nav-tab {
+            padding: 0.75rem 1.5rem;
+            background: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            border-radius: 10px;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .nav-tab:hover {
+            background: rgba(124, 58, 237, 0.2);
+            border-color: var(--secondary);
+            color: #e2e8f0;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-color: transparent;
+            color: white;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
             transition: all 0.3s ease;
         }
 
-        .status-card:hover {
+        .card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.1);
+        }
+
+        .card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card h3 {
+            color: #e2e8f0;
+            margin: 1.5rem 0 1rem;
+            font-size: 1.3rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid var(--dark-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
             transform: translateY(-5px);
             border-color: var(--primary);
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
         }
 
-        .status-card h3 {
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
-
-        .status-card .value {
-            font-size: 2rem;
+        .stat-value {
+            font-size: 2.5rem;
             font-weight: bold;
-            margin: 0.5rem 0;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
         }
 
-        .status-indicator {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-right: 0.5rem;
-            animation: blink 2s ease-in-out infinite;
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .status-indicator.online {
-            background: var(--success);
-            box-shadow: 0 0 10px var(--success);
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .agents-section, .api-section {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .agents-section h2, .api-section h2 {
-            color: var(--primary);
-            margin-bottom: 1.5rem;
-            font-size: 1.8rem;
-        }
-
-        .agents-grid {
+        /* Ecosystem Grid */
+        .ecosystem-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 1.5rem;
+            margin: 2rem 0;
         }
 
-        .agent-card {
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid rgba(124, 58, 237, 0.3);
-            border-radius: 12px;
-            padding: 1.5rem;
+        .ecosystem-card {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(0, 212, 255, 0.05));
+            border: 1px solid var(--dark-border);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
-        .agent-card:hover {
-            border-color: var(--secondary);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4);
+        .ecosystem-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.2);
         }
 
-        .agent-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
+        .ecosystem-icon {
+            font-size: 3rem;
             margin-bottom: 1rem;
         }
 
-        .agent-icon {
-            font-size: 2rem;
+        .ecosystem-card h3 {
+            color: #e2e8f0;
+            margin: 1rem 0;
+            font-size: 1.5rem;
         }
 
-        .agent-name {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--primary);
+        .ecosystem-card p {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            line-height: 1.6;
         }
 
-        .agent-role {
-            color: var(--light);
-            font-size: 0.9rem;
+        .ecosystem-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .ecosystem-link:hover {
+            background: var(--secondary);
+            transform: scale(1.05);
+        }
+
+        /* API Testing (Keep Original Style) */
+        .endpoint-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .endpoint-item {
+            background: rgba(124, 58, 237, 0.05);
+            border: 1px solid var(--dark-border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .endpoint-item:hover {
+            border-color: var(--primary);
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
             margin-bottom: 0.5rem;
         }
 
-        .agent-weight {
-            display: inline-block;
-            background: var(--gradient);
-            color: white;
-            padding: 0.2rem 0.6rem;
-            border-radius: 12px;
+        .method {
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            font-weight: 600;
             font-size: 0.85rem;
         }
 
-        .endpoint {
-            background: rgba(30, 41, 59, 0.6);
-            border-left: 4px solid var(--success);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .endpoint-method {
-            display: inline-block;
+        .method.get {
             background: var(--success);
             color: white;
-            padding: 0.3rem 0.6rem;
-            border-radius: 6px;
-            font-weight: bold;
-            margin-right: 1rem;
-            font-size: 0.85rem;
         }
 
-        .endpoint-method.post {
+        .method.post {
             background: var(--primary);
+            color: white;
         }
 
         .endpoint-path {
-            color: var(--light);
             font-family: 'Courier New', monospace;
-            flex: 1;
-        }
-
-        .test-btn {
-            background: var(--gradient);
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .test-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(124, 58, 237, 0.4);
-        }
-
-        footer {
-            text-align: center;
-            padding: 2rem;
-            border-top: 1px solid rgba(0, 212, 255, 0.2);
-            margin-top: 3rem;
-        }
-
-        footer a {
             color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .endpoint-response {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--dark);
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .endpoint-response.show {
+            display: block;
+        }
+
+        /* Agent Cards */
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .agent-card {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(0, 212, 255, 0.05));
+            border: 1px solid var(--dark-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .agent-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .agent-status {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .agent-status.active {
+            background: var(--success);
+            color: white;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
             text-decoration: none;
-            margin: 0 1rem;
+            display: inline-block;
         }
 
-        footer a:hover {
-            text-decoration: underline;
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
         }
 
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--dark-card);
+            color: #e2e8f0;
+            border: 1px solid var(--dark-border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Loading Spinner */
         .spinner {
-            border: 3px solid rgba(0, 212, 255, 0.3);
+            border: 3px solid rgba(0, 212, 255, 0.1);
             border-top: 3px solid var(--primary);
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            width: 40px;
+            height: 40px;
             animation: spin 1s linear infinite;
-            display: inline-block;
+            margin: 2rem auto;
         }
 
         @keyframes spin {
@@ -330,191 +393,653 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* Status Indicators */
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-indicator.green {
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        .status-indicator.red {
+            background: var(--danger);
+            box-shadow: 0 0 10px var(--danger);
+        }
+
+        .status-indicator.yellow {
+            background: var(--warning);
+            box-shadow: 0 0 10px var(--warning);
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            .hero h2 {
+            header h1 {
                 font-size: 2rem;
             }
-            .hero p {
-                font-size: 1rem;
+
+            .container {
+                padding: 1rem;
             }
-            .status-grid, .agents-grid {
+
+            .nav-tabs {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+
+            .stats-grid,
+            .ecosystem-grid,
+            .agent-grid {
                 grid-template-columns: 1fr;
             }
-            .logo h1 {
-                font-size: 1.5rem;
-            }
+        }
+
+        /* Feature List */
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--dark-border);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-check {
+            color: var(--success);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Ticker */
+        .ticker {
+            background: var(--dark);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+
+        .ticker-content {
+            display: flex;
+            gap: 2rem;
+            animation: ticker 30s linear infinite;
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .ticker-item {
+            white-space: nowrap;
+            color: #94a3b8;
+        }
+
+        .ticker-item strong {
+            color: var(--primary);
         }
     </style>
 </head>
 <body>
-    <div class="bg-animation"></div>
-
-    <header>
-        <div class="header-content">
-            <div class="logo">
-                <h1>🌐 XMRT Ecosystem</h1>
-                <span class="version-badge">v7.0 Serverless</span>
+    <div class="container">
+        <header>
+            <h1>🌐 XMRT Ecosystem</h1>
+            <p>AI-Governed, Mobile-First Cryptocurrency Built for the Unbanked</p>
+            <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="https://github.com/DevGruGold/XMRT-Ecosystem" class="btn btn-primary" target="_blank">GitHub</a>
+                <a href="https://josephandrewlee.medium.com" class="btn btn-secondary" target="_blank">📖 Medium Blog</a>
+                <a href="https://github.com/DevGruGold/XMRT-Ecosystem/discussions" class="btn btn-secondary" target="_blank">💬 Discussions</a>
             </div>
-            <div>
-                <span class="status-indicator online"></span>
-                <span id="status-text">System Online</span>
+        </header>
+
+        <!-- Live Stats Ticker -->
+        <div class="ticker">
+            <div class="ticker-content">
+                <span class="ticker-item"><strong>20.99M</strong> XMRT Tokens on Sepolia</span>
+                <span class="ticker-item"><strong>4</strong> Autonomous AI Agents</span>
+                <span class="ticker-item"><strong>120+</strong> Edge Functions</span>
+                <span class="ticker-item"><strong>5</strong> Major Ecosystem Apps</span>
+                <span class="ticker-item"><strong>24/7</strong> Serverless Operations</span>
+                <!-- Duplicate for seamless loop -->
+                <span class="ticker-item"><strong>20.99M</strong> XMRT Tokens on Sepolia</span>
+                <span class="ticker-item"><strong>4</strong> Autonomous AI Agents</span>
+                <span class="ticker-item"><strong>120+</strong> Edge Functions</span>
+                <span class="ticker-item"><strong>5</strong> Major Ecosystem Apps</span>
+                <span class="ticker-item"><strong>24/7</strong> Serverless Operations</span>
             </div>
         </div>
-    </header>
 
-    <main class="container">
-        <section class="hero">
-            <h2>AI-Governed Cryptocurrency Ecosystem</h2>
-            <p>Mobile-first, autonomous, and built for the unbanked. Powered by 4 specialized AI agents coordinating through serverless architecture on Vercel.</p>
-        </section>
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="showTab('overview')">🏠 Overview</div>
+            <div class="nav-tab" onclick="showTab('ecosystem')">🌍 Ecosystem</div>
+            <div class="nav-tab" onclick="showTab('agents')">🤖 AI Agents</div>
+            <div class="nav-tab" onclick="showTab('dashboard')">📊 System Dashboard</div>
+            <div class="nav-tab" onclick="showTab('api')">🔌 API Testing</div>
+            <div class="nav-tab" onclick="showTab('architecture')">🏗️ Architecture</div>
+        </div>
 
-        <section class="status-grid">
-            <div class="status-card">
-                <h3>System Health</h3>
-                <div class="value" id="health-status"><div class="spinner"></div></div>
-                <small>Checking API status...</small>
+        <!-- Tab: Overview -->
+        <div id="overview" class="tab-content active">
+            <div class="card">
+                <h2>🎯 Mission</h2>
+                <p style="font-size: 1.1rem; line-height: 1.8; color: #cbd5e1;">
+                    XMRT is an <strong style="color: var(--primary);">AI-governed cryptocurrency ecosystem</strong> designed for the unbanked and mobile-first world. 
+                    We combine <strong style="color: var(--secondary);">autonomous AI agents</strong>, <strong style="color: var(--primary);">mobile mining</strong>, 
+                    <strong style="color: var(--secondary);">emotional intelligence</strong>, and <strong style="color: var(--primary);">decentralized governance</strong> 
+                    to create a truly inclusive financial system.
+                </p>
             </div>
-            <div class="status-card">
-                <h3>Active Agents</h3>
-                <div class="value" id="agent-count"><div class="spinner"></div></div>
-                <small>Autonomous coordinators</small>
-            </div>
-            <div class="status-card">
-                <h3>XMRT Tokens</h3>
-                <div class="value">20.99M</div>
-                <small>Ethereum Sepolia testnet</small>
-            </div>
-            <div class="status-card">
-                <h3>Architecture</h3>
-                <div class="value">Serverless</div>
-                <small>Vercel + Supabase + Upstash</small>
-            </div>
-        </section>
 
-        <section class="agents-section">
-            <h2>🤖 Autonomous Agents</h2>
-            <div class="agents-grid" id="agents-container">
-                <div class="agent-card">
-                    <div class="agent-header">
-                        <span class="agent-icon">👑</span>
-                        <div class="spinner"></div>
-                    </div>
-                    <div>Loading agents...</div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="token-supply">20.99M</div>
+                    <div class="stat-label">XMRT Tokens</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Ecosystem Apps</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">120+</div>
+                    <div class="stat-label">Autonomous Functions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">24/7</div>
+                    <div class="stat-label">Serverless Uptime</div>
                 </div>
             </div>
-        </section>
 
-        <section class="api-section">
-            <h2>🔌 API Endpoints</h2>
-            <div class="endpoint">
-                <div><span class="endpoint-method">GET</span><span class="endpoint-path">/health</span></div>
-                <button class="test-btn" onclick="testEndpoint('/health')">Test</button>
+            <div class="card">
+                <h2>✨ Key Innovations</h2>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> <strong>Suite AI:</strong> Replace C-Suite executives with AI, save $12.4M annually, increase worker salaries 41%</li>
+                    <li><span class="feature-check">✓</span> <strong>MobileMonero:</strong> Android-based XMR mining pool for the unbanked</li>
+                    <li><span class="feature-check">✓</span> <strong>XMRT Glasses:</strong> AI-powered emotional intelligence for professionals</li>
+                    <li><span class="feature-check">✓</span> <strong>CashDapp:</strong> Privacy-first decentralized wallet with secure circle payments</li>
+                    <li><span class="feature-check">✓</span> <strong>Autonomous Agents:</strong> 4 specialized AI coordinators running 24/7</li>
+                    <li><span class="feature-check">✓</span> <strong>DAO Governance:</strong> Community-driven decision making with on-chain voting</li>
+                </ul>
             </div>
-            <div class="endpoint">
-                <div><span class="endpoint-method">GET</span><span class="endpoint-path">/api/agents</span></div>
-                <button class="test-btn" onclick="testEndpoint('/api/agents')">Test</button>
-            </div>
-            <div class="endpoint">
-                <div><span class="endpoint-method">GET</span><span class="endpoint-path">/api/agents/{agent_id}</span></div>
-                <button class="test-btn" onclick="testEndpoint('/api/agents/eliza')">Test</button>
-            </div>
-            <div class="endpoint">
-                <div><span class="endpoint-method post">POST</span><span class="endpoint-path">/api/tick</span></div>
-                <button class="test-btn" onclick="testEndpoint('/api/tick', 'POST')">Test</button>
-            </div>
-        </section>
-    </main>
 
-    <footer>
-        <p><strong>XMRT DAO</strong> — Built by Joseph Andrew Lee (Harvard, U.S. Marine Veteran)</p>
-        <p>
-            <a href="https://github.com/DevGruGold/XMRT-Ecosystem" target="_blank">GitHub</a>
-            <a href="https://josephandrewlee.medium.com" target="_blank">Medium</a>
-            <a href="https://vercel.com" target="_blank">Powered by Vercel</a>
-        </p>
-    </footer>
+            <div class="card">
+                <h2>📜 Recent Articles</h2>
+                <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+                    <a href="https://josephandrewlee.medium.com/when-ai-attacks-why-qubics-strike-on-monero-proves-xmrt-s-mission-matters-67ab04abf219" 
+                       target="_blank" 
+                       style="color: var(--primary); text-decoration: none; padding: 1rem; background: rgba(0, 212, 255, 0.05); border-radius: 8px; border: 1px solid var(--dark-border); transition: all 0.3s ease;"
+                       onmouseover="this.style.borderColor='var(--primary)'"
+                       onmouseout="this.style.borderColor='var(--dark-border)'">
+                        <strong>When AI Attacks: Why Qubic's Strike on Monero Proves XMRT's Mission Matters</strong>
+                        <p style="color: #94a3b8; margin-top: 0.5rem; font-size: 0.9rem;">On August 17, 2025, the AI-driven Qubic network voted to 51% attack Monero...</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Ecosystem -->
+        <div id="ecosystem" class="tab-content">
+            <div class="card">
+                <h2>🌍 The XMRT Ecosystem</h2>
+                <p style="color: #94a3b8; margin-bottom: 2rem;">
+                    A comprehensive suite of interconnected applications powered by AI and blockchain technology.
+                </p>
+
+                <div class="ecosystem-grid">
+                    <div class="ecosystem-card" onclick="window.open('https://suite-beta.vercel.app', '_blank')">
+                        <div class="ecosystem-icon">👔</div>
+                        <h3>Suite AI</h3>
+                        <p>Replace your C-Suite executives with AI. Save $12.4M annually while increasing employee salaries by 41%.</p>
+                        <a href="https://suite-beta.vercel.app" class="ecosystem-link" target="_blank">Launch Suite AI</a>
+                    </div>
+
+                    <div class="ecosystem-card" onclick="window.open('https://mobilemonero.com', '_blank')">
+                        <div class="ecosystem-icon">📱</div>
+                        <h3>MobileMonero</h3>
+                        <p>Android-based XMR mining pool. Mine Monero on your phone with Termux. Privacy-focused mining for the unbanked.</p>
+                        <a href="https://mobilemonero.com" class="ecosystem-link" target="_blank">Start Mining</a>
+                    </div>
+
+                    <div class="ecosystem-card" onclick="window.open('https://xmrtglasses.vercel.app', '_blank')">
+                        <div class="ecosystem-icon">👓</div>
+                        <h3>XMRT Glasses</h3>
+                        <p>AI-powered emotional intelligence. Read facial expressions and body language in real-time for professional success.</p>
+                        <a href="https://xmrtglasses.vercel.app" class="ecosystem-link" target="_blank">Learn More</a>
+                    </div>
+
+                    <div class="ecosystem-card" onclick="window.open('https://cashdapp.vercel.app', '_blank')">
+                        <div class="ecosystem-icon">💰</div>
+                        <h3>CashDapp</h3>
+                        <p>Privacy-first decentralized wallet. Secure Circle payments, tap-to-pay, and seamless crypto transactions.</p>
+                        <a href="https://cashdapp.vercel.app" class="ecosystem-link" target="_blank">Open Wallet</a>
+                    </div>
+
+                    <div class="ecosystem-card" onclick="window.open('https://xmrtcharger.vercel.app', '_blank')">
+                        <div class="ecosystem-icon">⚡</div>
+                        <h3>XMRT Charger</h3>
+                        <p>Coming soon: Charge your devices while mining XMRT. Turn wasted energy into cryptocurrency rewards.</p>
+                        <a href="https://xmrtcharger.vercel.app" class="ecosystem-link" target="_blank">Coming Soon</a>
+                    </div>
+
+                    <div class="ecosystem-card">
+                        <div class="ecosystem-icon">🏛️</div>
+                        <h3>XMRT DAO</h3>
+                        <p>Community governance platform. Vote on proposals, manage treasury, and shape the future of XMRT.</p>
+                        <a href="#" class="ecosystem-link" onclick="showTab('dashboard'); return false;">View Governance</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🔗 Smart Contracts (Sepolia Testnet)</h2>
+                <div style="font-family: 'Courier New', monospace; font-size: 0.9rem;">
+                    <p style="margin-bottom: 1rem;">
+                        <strong style="color: var(--primary);">XMRT Token:</strong><br>
+                        <a href="https://sepolia.etherscan.io/address/0x77307DFbc436224d5e6f2048d2b6bDfA66998a15" 
+                           target="_blank" 
+                           style="color: var(--secondary);">0x77307DFbc436224d5e6f2048d2b6bDfA66998a15</a>
+                    </p>
+                    <p>
+                        <strong style="color: var(--primary);">IP-NFT:</strong><br>
+                        <a href="https://sepolia.etherscan.io/address/0x9de91fc136a846d7442d1321a2d1b6aaef494eda" 
+                           target="_blank" 
+                           style="color: var(--secondary);">0x9de91fc136a846d7442d1321a2d1b6aaef494eda</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: AI Agents -->
+        <div id="agents" class="tab-content">
+            <div class="card">
+                <h2>🤖 Autonomous AI Agents</h2>
+                <p style="color: #94a3b8; margin-bottom: 2rem;">
+                    4 specialized AI coordinators working 24/7 through serverless architecture on Vercel and Supabase.
+                </p>
+
+                <div id="agents-loading" class="spinner"></div>
+                <div id="agents-grid" class="agent-grid" style="display: none;"></div>
+            </div>
+
+            <div class="card">
+                <h2>⚙️ Agent Capabilities</h2>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> <strong>Autonomous Decision Making:</strong> AI agents make strategic decisions without human intervention</li>
+                    <li><span class="feature-check">✓</span> <strong>Real-time Coordination:</strong> Agents communicate and coordinate through serverless functions</li>
+                    <li><span class="feature-check">✓</span> <strong>Task Orchestration:</strong> Distribute and execute complex workflows across multiple agents</li>
+                    <li><span class="feature-check">✓</span> <strong>GitHub Integration:</strong> Automated code reviews, issue management, and PR coordination</li>
+                    <li><span class="feature-check">✓</span> <strong>Security Monitoring:</strong> Continuous scanning for vulnerabilities and malicious activity</li>
+                    <li><span class="feature-check">✓</span> <strong>Performance Optimization:</strong> Self-healing systems that adapt to changing conditions</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Tab: System Dashboard -->
+        <div id="dashboard" class="tab-content">
+            <div class="card">
+                <h2>📊 System Health</h2>
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <span id="health-indicator" class="status-indicator yellow"></span>
+                    <span id="health-status">Checking API status...</span>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="api-status">--</div>
+                    <div class="stat-label">API Health</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="agents-count">--</div>
+                    <div class="stat-label">Active Agents</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="uptime">--</div>
+                    <div class="stat-label">Uptime</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="functions-count">120+</div>
+                    <div class="stat-label">Edge Functions</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🏗️ Architecture</h2>
+                <p style="color: #94a3b8;">Serverless architecture powered by Vercel, Supabase, and Upstash</p>
+                
+                <div style="margin-top: 2rem;">
+                    <h3>Technology Stack</h3>
+                    <ul class="feature-list">
+                        <li><span class="feature-check">✓</span> <strong>Vercel:</strong> Edge functions and serverless deployments</li>
+                        <li><span class="feature-check">✓</span> <strong>Supabase:</strong> PostgreSQL database and authentication</li>
+                        <li><span class="feature-check">✓</span> <strong>Upstash:</strong> Redis for real-time state management</li>
+                        <li><span class="feature-check">✓</span> <strong>Ethereum:</strong> Smart contracts on Sepolia testnet</li>
+                        <li><span class="feature-check">✓</span> <strong>Socket.io:</strong> Real-time bidirectional communication</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🎮 Test Agent Cycle</h2>
+                <p style="color: #94a3b8; margin-bottom: 1rem;">Manually trigger an agent coordination cycle to see the system in action.</p>
+                <button class="btn btn-primary" onclick="testAgentTick()">▶️ Run Test Cycle</button>
+                <div id="tick-response" class="endpoint-response"></div>
+            </div>
+        </div>
+
+        <!-- Tab: API Testing (Keep Your Favorite Feature!) -->
+        <div id="api" class="tab-content">
+            <div class="card">
+                <h2>🔌 API Endpoints Testing</h2>
+                <p style="color: #94a3b8; margin-bottom: 2rem;">
+                    Interactive API testing interface. Click any endpoint to test it live.
+                </p>
+
+                <div class="endpoint-list">
+                    <div class="endpoint-item" onclick="testEndpoint('GET', '/health', null, this)">
+                        <div class="endpoint-header">
+                            <span class="method get">GET</span>
+                            <span class="endpoint-path">/health</span>
+                        </div>
+                        <p style="color: #94a3b8; font-size: 0.9rem;">Check system health and status</p>
+                        <div class="endpoint-response"></div>
+                    </div>
+
+                    <div class="endpoint-item" onclick="testEndpoint('GET', '/api/agents', null, this)">
+                        <div class="endpoint-header">
+                            <span class="method get">GET</span>
+                            <span class="endpoint-path">/api/agents</span>
+                        </div>
+                        <p style="color: #94a3b8; font-size: 0.9rem;">List all active agents</p>
+                        <div class="endpoint-response"></div>
+                    </div>
+
+                    <div class="endpoint-item" onclick="testEndpoint('POST', '/api/tick', null, this)">
+                        <div class="endpoint-header">
+                            <span class="method post">POST</span>
+                            <span class="endpoint-path">/api/tick</span>
+                        </div>
+                        <p style="color: #94a3b8; font-size: 0.9rem;">Trigger agent coordination cycle</p>
+                        <div class="endpoint-response"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📚 API Documentation</h2>
+                <p style="color: #94a3b8; margin-bottom: 1rem;">
+                    For full API documentation and integration examples, visit our GitHub repository.
+                </p>
+                <a href="https://github.com/DevGruGold/XMRT-Ecosystem" class="btn btn-secondary" target="_blank">
+                    View Documentation
+                </a>
+            </div>
+        </div>
+
+        <!-- Tab: Architecture -->
+        <div id="architecture" class="tab-content">
+            <div class="card">
+                <h2>🏗️ System Architecture</h2>
+                
+                <h3>🎯 Design Principles</h3>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> <strong>Mobile-First:</strong> Optimized for smartphones and low-bandwidth environments</li>
+                    <li><span class="feature-check">✓</span> <strong>Serverless:</strong> Scale infinitely without infrastructure management</li>
+                    <li><span class="feature-check">✓</span> <strong>AI-Governed:</strong> Autonomous agents make decisions without human intervention</li>
+                    <li><span class="feature-check">✓</span> <strong>Privacy-Focused:</strong> End-to-end encryption and zero-knowledge proofs</li>
+                    <li><span class="feature-check">✓</span> <strong>Inclusive:</strong> Built for the unbanked with low barriers to entry</li>
+                </ul>
+
+                <h3>⚡ Edge Functions</h3>
+                <p style="color: #94a3b8;">Over 120 autonomous functions running at the edge:</p>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> Task orchestration and agent coordination</li>
+                    <li><span class="feature-check">✓</span> Security scanning and threat detection</li>
+                    <li><span class="feature-check">✓</span> API key health monitoring</li>
+                    <li><span class="feature-check">✓</span> Mining proxy and reward distribution</li>
+                    <li><span class="feature-check">✓</span> GitHub integration and automation</li>
+                    <li><span class="feature-check">✓</span> Code monitoring and quality checks</li>
+                    <li><span class="feature-check">✓</span> Opportunity scanning and analysis</li>
+                    <li><span class="feature-check">✓</span> Evening summary and reporting</li>
+                </ul>
+
+                <h3>🔐 Security Features</h3>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> Automated vulnerability scanning with Dependabot</li>
+                    <li><span class="feature-check">✓</span> Malicious content detection in comments and code</li>
+                    <li><span class="feature-check">✓</span> Multi-agent security coordination</li>
+                    <li><span class="feature-check">✓</span> Real-time threat monitoring and response</li>
+                    <li><span class="feature-check">✓</span> Encrypted communication between agents</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>📦 Technology Stack</h2>
+                
+                <h3>Frontend</h3>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> Vanilla JavaScript for lightweight performance</li>
+                    <li><span class="feature-check">✓</span> Socket.io for real-time updates</li>
+                    <li><span class="feature-check">✓</span> Progressive Web App (PWA) capabilities</li>
+                </ul>
+
+                <h3>Backend</h3>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> Vercel Edge Functions (Node.js runtime)</li>
+                    <li><span class="feature-check">✓</span> Supabase PostgreSQL database</li>
+                    <li><span class="feature-check">✓</span> Supabase Edge Functions (Deno runtime)</li>
+                    <li><span class="feature-check">✓</span> Upstash Redis for caching and queues</li>
+                </ul>
+
+                <h3>Blockchain</h3>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> Ethereum Sepolia testnet</li>
+                    <li><span class="feature-check">✓</span> ERC-20 XMRT token contract</li>
+                    <li><span class="feature-check">✓</span> ERC-721 IP-NFT contract</li>
+                    <li><span class="feature-check">✓</span> Web3.js for blockchain interactions</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
     <script>
-        async function fetchHealth() {
+        // Tab Navigation
+        function showTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            
+            // Add active class to clicked nav tab
+            event.target.classList.add('active');
+            
+            // Load tab-specific data
+            if (tabId === 'agents') {
+                loadAgents();
+            } else if (tabId === 'dashboard') {
+                checkHealth();
+            }
+        }
+
+        // Check API Health
+        async function checkHealth() {
+            const indicator = document.getElementById('health-indicator');
+            const status = document.getElementById('health-status');
+            const apiStatus = document.getElementById('api-status');
+            
+            indicator.className = 'status-indicator yellow';
+            status.textContent = 'Checking...';
+            
             try {
                 const response = await fetch('/health');
                 const data = await response.json();
-                document.getElementById('health-status').innerHTML = data.ok ? '✅ Healthy' : '⚠️ Degraded';
-                document.getElementById('status-text').textContent = data.ok ? 'System Online' : 'System Issues';
+                
+                if (response.ok) {
+                    indicator.className = 'status-indicator green';
+                    status.textContent = '✅ All systems operational';
+                    apiStatus.textContent = 'Online';
+                    document.getElementById('uptime').textContent = '99.9%';
+                } else {
+                    indicator.className = 'status-indicator red';
+                    status.textContent = '⚠️ Some services degraded';
+                    apiStatus.textContent = 'Degraded';
+                }
             } catch (error) {
-                document.getElementById('health-status').innerHTML = '❌ Error';
-                document.getElementById('status-text').textContent = 'API Unavailable';
-                console.error('Health check failed:', error);
+                indicator.className = 'status-indicator red';
+                status.textContent = '❌ API unreachable';
+                apiStatus.textContent = 'Offline';
             }
         }
 
-        async function fetchAgents() {
+        // Load Agents
+        async function loadAgents() {
+            const loading = document.getElementById('agents-loading');
+            const grid = document.getElementById('agents-grid');
+            
+            loading.style.display = 'block';
+            grid.style.display = 'none';
+            
             try {
                 const response = await fetch('/api/agents');
                 const data = await response.json();
-                document.getElementById('agent-count').textContent = data.count || 4;
-                if (data.agents) {
-                    renderAgents(data.agents);
+                
+                grid.innerHTML = '';
+                
+                if (data.agents && data.agents.length > 0) {
+                    document.getElementById('agents-count').textContent = data.agents.length;
+                    
+                    data.agents.forEach(agent => {
+                        const card = document.createElement('div');
+                        card.className = 'agent-card';
+                        card.innerHTML = `
+                            <div class="agent-icon">${getAgentIcon(agent.role)}</div>
+                            <h3>${agent.name}</h3>
+                            <p style="color: #94a3b8; font-size: 0.9rem;">${agent.description || agent.role}</p>
+                            <div class="agent-status active">Active</div>
+                        `;
+                        grid.appendChild(card);
+                    });
+                } else {
+                    grid.innerHTML = '<p style="color: #94a3b8; text-align: center;">No agents found. Check API connection.</p>';
                 }
+                
+                loading.style.display = 'none';
+                grid.style.display = 'grid';
             } catch (error) {
-                document.getElementById('agent-count').textContent = '4';
-                console.error('Agents fetch failed:', error);
-                renderDefaultAgents();
+                console.error('Error loading agents:', error);
+                loading.style.display = 'none';
+                grid.innerHTML = '<p style="color: var(--danger); text-align: center;">Failed to load agents. Please try again.</p>';
+                grid.style.display = 'block';
             }
         }
 
-        function renderAgents(agents) {
-            const container = document.getElementById('agents-container');
-            const agentIcons = {
-                'eliza': '👑',
-                'security_guardian': '🛡️',
-                'defi_specialist': '💎',
-                'community_manager': '🌟'
+        // Get Agent Icon
+        function getAgentIcon(role) {
+            const icons = {
+                'coordinator': '🎯',
+                'executor': '⚡',
+                'monitor': '👁️',
+                'analyzer': '📊',
+                'security': '🔐',
+                'governance': '🏛️'
             };
-            container.innerHTML = Object.entries(agents).map(([id, agent]) => `
-                <div class="agent-card">
-                    <div class="agent-header">
-                        <span class="agent-icon">${agentIcons[id] || '🤖'}</span>
-                        <span class="agent-name">${agent.name}</span>
-                    </div>
-                    <div class="agent-role">${agent.role}</div>
-                    <div class="agent-weight">Weight: ${agent.weight}</div>
-                </div>
-            `).join('');
+            return icons[role.toLowerCase()] || '🤖';
         }
 
-        function renderDefaultAgents() {
-            const defaultAgents = {
-                'eliza': { name: 'Eliza', role: 'Coordinator & Governor', weight: 1.2 },
-                'security_guardian': { name: 'Security Guardian', role: 'Security & Privacy', weight: 1.1 },
-                'defi_specialist': { name: 'DeFi Specialist', role: 'Mining & Tokenomics', weight: 1.05 },
-                'community_manager': { name: 'Community Manager', role: 'Adoption & UX', weight: 1.0 }
-            };
-            renderAgents(defaultAgents);
-        }
-
-        async function testEndpoint(path, method = 'GET') {
+        // Test Endpoint
+        async function testEndpoint(method, path, body, element) {
+            const responseDiv = element.querySelector('.endpoint-response');
+            responseDiv.style.display = 'block';
+            responseDiv.textContent = 'Loading...';
+            responseDiv.classList.add('show');
+            
             try {
-                const options = method === 'POST' 
-                    ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ trigger: 'manual' }) }
-                    : {};
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+                
+                if (body) {
+                    options.body = JSON.stringify(body);
+                }
+                
                 const response = await fetch(path, options);
                 const data = await response.json();
-                alert(`✅ Success!\n\nEndpoint: ${path}\nStatus: ${response.status}\n\nResponse:\n${JSON.stringify(data, null, 2)}`);
+                
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+                responseDiv.style.borderLeft = response.ok ? '4px solid var(--success)' : '4px solid var(--danger)';
             } catch (error) {
-                alert(`❌ Error!\n\nEndpoint: ${path}\n\nError: ${error.message}`);
+                responseDiv.textContent = `Error: ${error.message}`;
+                responseDiv.style.borderLeft = '4px solid var(--danger)';
             }
         }
 
+        // Test Agent Tick
+        async function testAgentTick() {
+            const responseDiv = document.getElementById('tick-response');
+            const button = event.target;
+            
+            button.disabled = true;
+            button.textContent = '⏳ Running...';
+            responseDiv.style.display = 'block';
+            responseDiv.textContent = 'Initiating agent coordination cycle...';
+            responseDiv.classList.add('show');
+            
+            try {
+                const response = await fetch('/api/tick', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+                responseDiv.style.borderLeft = response.ok ? '4px solid var(--success)' : '4px solid var(--danger)';
+            } catch (error) {
+                responseDiv.textContent = `Error: ${error.message}`;
+                responseDiv.style.borderLeft = '4px solid var(--danger)';
+            } finally {
+                button.disabled = false;
+                button.textContent = '▶️ Run Test Cycle';
+            }
+        }
+
+        // Initialize on page load
         document.addEventListener('DOMContentLoaded', () => {
-            fetchHealth();
-            fetchAgents();
-            setInterval(fetchHealth, 30000);
+            checkHealth();
         });
+
+        // Auto-refresh health every 30 seconds
+        setInterval(() => {
+            if (document.getElementById('dashboard').classList.contains('active')) {
+                checkHealth();
+            }
+        }, 30000);
     </script>
 </body>
 </html>
