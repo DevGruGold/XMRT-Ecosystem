@@ -492,7 +492,12 @@
         .ticker-item strong {
             color: var(--primary);
         }
-    </style>
+    
+        .api-category {
+            animation: fadeIn 0.3s ease;
+        }
+
+</style>
 </head>
 <body>
     <div class="container">
@@ -746,35 +751,139 @@
             <div class="card">
                 <h2>🔌 API Endpoints Testing</h2>
                 <p style="color: #94a3b8; margin-bottom: 2rem;">
-                    Interactive API testing interface. Click any endpoint to test it live.
+                    Interactive API testing across the entire XMRT ecosystem. Click any endpoint to test it live.
                 </p>
 
-                <div class="endpoint-list">
-                    <div class="endpoint-item" onclick="testEndpoint('GET', '/health', null, this)">
-                        <div class="endpoint-header">
-                            <span class="method get">GET</span>
-                            <span class="endpoint-path">/health</span>
-                        </div>
-                        <p style="color: #94a3b8; font-size: 0.9rem;">Check system health and status</p>
-                        <div class="endpoint-response"></div>
-                    </div>
+                <!-- Category Tabs -->
+                <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="showAPICategory('ecosystem')" id="cat-ecosystem">XMRT Ecosystem</button>
+                    <button class="btn btn-secondary" onclick="showAPICategory('suite')" id="cat-suite">Suite AI</button>
+                    <button class="btn btn-secondary" onclick="showAPICategory('dao')" id="cat-dao">DAO</button>
+                    <button class="btn btn-secondary" onclick="showAPICategory('other')" id="cat-other">Other</button>
+                </div>
 
-                    <div class="endpoint-item" onclick="testEndpoint('GET', '/api/agents', null, this)">
-                        <div class="endpoint-header">
-                            <span class="method get">GET</span>
-                            <span class="endpoint-path">/api/agents</span>
+                <!-- XMRT Ecosystem Endpoints -->
+                <div id="api-category-ecosystem" class="api-category">
+                    <h3 style="color: var(--primary); margin-bottom: 1rem;">🏠 XMRT Ecosystem APIs</h3>
+                    <div class="endpoint-list">
+                        <div class="endpoint-item" onclick="testEndpoint('GET', 'https://xmrt-ecosystem.vercel.app/health', null, this)">
+                            <div class="endpoint-header">
+                                <span class="method get">GET</span>
+                                <span class="endpoint-path">/health</span>
+                            </div>
+                            <p style="color: #94a3b8; font-size: 0.9rem;">System health check - Returns overall system status</p>
+                            <div class="endpoint-response"></div>
                         </div>
-                        <p style="color: #94a3b8; font-size: 0.9rem;">List all active agents</p>
-                        <div class="endpoint-response"></div>
-                    </div>
 
-                    <div class="endpoint-item" onclick="testEndpoint('POST', '/api/tick', null, this)">
-                        <div class="endpoint-header">
-                            <span class="method post">POST</span>
-                            <span class="endpoint-path">/api/tick</span>
+                        <div class="endpoint-item" onclick="testEndpoint('GET', 'https://xmrt-ecosystem.vercel.app/api/agents', null, this)">
+                            <div class="endpoint-header">
+                                <span class="method get">GET</span>
+                                <span class="endpoint-path">/api/agents</span>
+                            </div>
+                            <p style="color: #94a3b8; font-size: 0.9rem;">List all AI agents - Returns all 4 autonomous coordinators</p>
+                            <div class="endpoint-response"></div>
                         </div>
-                        <p style="color: #94a3b8; font-size: 0.9rem;">Trigger agent coordination cycle</p>
-                        <div class="endpoint-response"></div>
+
+                        <div class="endpoint-item" onclick="testEndpoint('POST', 'https://xmrt-ecosystem.vercel.app/api/tick', null, this)">
+                            <div class="endpoint-header">
+                                <span class="method post">POST</span>
+                                <span class="endpoint-path">/api/tick</span>
+                            </div>
+                            <p style="color: #94a3b8; font-size: 0.9rem;">Trigger agent coordination cycle - Manually run agent orchestration</p>
+                            <div class="endpoint-response"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Suite AI Endpoints -->
+                <div id="api-category-suite" class="api-category" style="display: none;">
+                    <h3 style="color: var(--primary); margin-bottom: 1rem;">👔 Suite AI Edge Functions</h3>
+                    <p style="color: #94a3b8; margin-bottom: 1rem;">120+ autonomous functions running on Supabase Edge</p>
+                    
+                    <div class="endpoint-list">
+                        <div class="endpoint-item" onclick="testEndpoint('POST', 'https://vawouugtzwmejxqkeqqj.supabase.co/functions/v1/api-key-health-monitor', {action: 'ping'}, this)">
+                            <div class="endpoint-header">
+                                <span class="method post">POST</span>
+                                <span class="endpoint-path">/functions/v1/api-key-health-monitor</span>
+                            </div>
+                            <p style="color: #94a3b8; font-size: 0.9rem;">API key health monitoring - Check API key status and usage</p>
+                            <div class="endpoint-response"></div>
+                        </div>
+
+                        <div class="endpoint-item" onclick="testEndpoint('POST', 'https://vawouugtzwmejxqkeqqj.supabase.co/functions/v1/task-orchestrator', {action: 'status'}, this)">
+                            <div class="endpoint-header">
+                                <span class="method post">POST</span>
+                                <span class="endpoint-path">/functions/v1/task-orchestrator</span>
+                            </div>
+                            <p style="color: #94a3b8; font-size: 0.9rem;">Task orchestration - Coordinate distributed tasks across agents</p>
+                            <div class="endpoint-response"></div>
+                        </div>
+
+                        <div class="endpoint-item" onclick="testEndpoint('POST', 'https://vawouugtzwmejxqkeqqj.supabase.co/functions/v1/opportunity-scanner', {action: 'scan'}, this)">
+                            <div class="endpoint-header">
+                                <span class="method post">POST</span>
+                                <span class="endpoint-path">/functions/v1/opportunity-scanner</span>
+                            </div>
+                            <p style="color: #94a3b8; font-size: 0.9rem;">Opportunity scanner - Identify and analyze opportunities</p>
+                            <div class="endpoint-response"></div>
+                        </div>
+
+                        <div class="endpoint-item" onclick="testEndpoint('POST', 'https://vawouugtzwmejxqkeqqj.supabase.co/functions/v1/mining-proxy', {action: 'status'}, this)">
+                            <div class="endpoint-header">
+                                <span class="method post">POST</span>
+                                <span class="endpoint-path">/functions/v1/mining-proxy</span>
+                            </div>
+                            <p style="color: #94a3b8; font-size: 0.9rem;">Mining proxy - XMR mining pool proxy interface</p>
+                            <div class="endpoint-response"></div>
+                        </div>
+
+                        <div class="endpoint-item" onclick="testEndpoint('POST', 'https://vawouugtzwmejxqkeqqj.supabase.co/functions/v1/code-monitor-daemon', {action: 'status'}, this)">
+                            <div class="endpoint-header">
+                                <span class="method post">POST</span>
+                                <span class="endpoint-path">/functions/v1/code-monitor-daemon</span>
+                            </div>
+                            <p style="color: #94a3b8; font-size: 0.9rem;">Code monitoring - Continuous code quality monitoring</p>
+                            <div class="endpoint-response"></div>
+                        </div>
+
+                        <div class="endpoint-item" onclick="testEndpoint('POST', 'https://vawouugtzwmejxqkeqqj.supabase.co/functions/v1/agent-coordination-hub', {action: 'status'}, this)">
+                            <div class="endpoint-header">
+                                <span class="method post">POST</span>
+                                <span class="endpoint-path">/functions/v1/agent-coordination-hub</span>
+                            </div>
+                            <p style="color: #94a3b8; font-size: 0.9rem;">Agent coordination hub - Central agent communication hub</p>
+                            <div class="endpoint-response"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DAO Ecosystem Endpoints -->
+                <div id="api-category-dao" class="api-category" style="display: none;">
+                    <h3 style="color: var(--primary); margin-bottom: 1rem;">🏛️ DAO Ecosystem APIs</h3>
+                    <div class="endpoint-list">
+                        <div class="endpoint-item" onclick="testEndpoint('GET', 'https://xmrt-dao-ecosystem.vercel.app/api/index', null, this)">
+                            <div class="endpoint-header">
+                                <span class="method get">GET</span>
+                                <span class="endpoint-path">/api/index</span>
+                            </div>
+                            <p style="color: #94a3b8; font-size: 0.9rem;">DAO API index - Available DAO endpoints and status</p>
+                            <div class="endpoint-response"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other Endpoints -->
+                <div id="api-category-other" class="api-category" style="display: none;">
+                    <h3 style="color: var(--primary); margin-bottom: 1rem;">🌐 Other Ecosystem APIs</h3>
+                    <div class="endpoint-list">
+                        <div class="endpoint-item" onclick="testEndpoint('GET', 'https://xmrt.io/api/index', null, this)">
+                            <div class="endpoint-header">
+                                <span class="method get">GET</span>
+                                <span class="endpoint-path">/api/index</span>
+                            </div>
+                            <p style="color: #94a3b8; font-size: 0.9rem;">XMRT.io API - Main portal API endpoints</p>
+                            <div class="endpoint-response"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -782,11 +891,19 @@
             <div class="card">
                 <h2>📚 API Documentation</h2>
                 <p style="color: #94a3b8; margin-bottom: 1rem;">
-                    For full API documentation and integration examples, visit our GitHub repository.
+                    For full API documentation and integration examples, visit our GitHub repositories:
                 </p>
-                <a href="https://github.com/DevGruGold/XMRT-Ecosystem" class="btn btn-secondary" target="_blank">
-                    View Documentation
-                </a>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <a href="https://github.com/DevGruGold/XMRT-Ecosystem" class="btn btn-secondary" target="_blank">
+                        XMRT Ecosystem Docs
+                    </a>
+                    <a href="https://github.com/DevGruGold/suite" class="btn btn-secondary" target="_blank">
+                        Suite AI Docs
+                    </a>
+                    <a href="https://github.com/DevGruGold/XMRT-DAO-Ecosystem" class="btn btn-secondary" target="_blank">
+                        DAO Docs
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -979,7 +1096,29 @@
             return icons[role.toLowerCase()] || '🤖';
         }
 
-        // Test Endpoint
+        
+        // Show API Category
+        function showAPICategory(category) {
+            // Hide all categories
+            document.querySelectorAll('.api-category').forEach(cat => {
+                cat.style.display = 'none';
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('[id^="cat-"]').forEach(btn => {
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-secondary');
+            });
+            
+            // Show selected category
+            document.getElementById('api-category-' + category).style.display = 'block';
+            
+            // Add active class to clicked button
+            document.getElementById('cat-' + category).classList.remove('btn-secondary');
+            document.getElementById('cat-' + category).classList.add('btn-primary');
+        }
+
+// Test Endpoint
         async function testEndpoint(method, path, body, element) {
             const responseDiv = element.querySelector('.endpoint-response');
             responseDiv.style.display = 'block';
