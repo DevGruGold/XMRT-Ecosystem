@@ -1,9 +1,9 @@
 name: Ecosystem Monitoring
 
 on:
-  schedule:
-    # Every 5 minutes
-    - cron: '*/5 * * * *'
+  # schedule:  # DISABLED - Was causing 96 failures/day
+    # # Every 5 minutes
+    # - cron: '*/5 * * * *'
   workflow_dispatch:
 
 jobs:

@@ -4,9 +4,9 @@ on:
   repository_dispatch:
     types: [sync-repos]
   workflow_dispatch:
-  schedule:
-    # Run every 5 minutes
-    - cron: '*/5 * * * *'
+  # schedule:  # DISABLED - Was causing 96 failures/day
+    # # Run every 5 minutes
+    # - cron: '*/5 * * * *'
 
 jobs:
   sync-state:
