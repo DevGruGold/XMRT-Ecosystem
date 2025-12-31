@@ -927,16 +927,27 @@
                 
                 grid.innerHTML = '';
                 
-                if (data.agents && data.agents.length > 0) {
-                    document.getElementById('agents-count').textContent = data.agents.length;
+                // Handle both array and object formats
+                let agents = [];
+                if (data.agents) {
+                    if (Array.isArray(data.agents)) {
+                        agents = data.agents;
+                    } else if (typeof data.agents === 'object') {
+                        // Convert object to array
+                        agents = Object.values(data.agents);
+                    }
+                }
+                
+                if (agents.length > 0) {
+                    document.getElementById('agents-count').textContent = agents.length;
                     
-                    data.agents.forEach(agent => {
+                    agents.forEach(agent => {
                         const card = document.createElement('div');
                         card.className = 'agent-card';
                         card.innerHTML = `
                             <div class="agent-icon">${getAgentIcon(agent.role)}</div>
                             <h3>${agent.name}</h3>
-                            <p style="color: #94a3b8; font-size: 0.9rem;">${agent.description || agent.role}</p>
+                            <p style="color: #94a3b8; font-size: 0.9rem;">${agent.voice || agent.role}</p>
                             <div class="agent-status active">Active</div>
                         `;
                         grid.appendChild(card);
