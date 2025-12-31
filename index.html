@@ -75,6 +75,10 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: var(--font-family);
             font-size: var(--font-size-base);
@@ -84,6 +88,7 @@
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
         }
 
         /* ========================================
@@ -94,16 +99,13 @@
             background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-teal) 100%);
             color: white;
             padding: var(--spacing-2xl) var(--spacing-lg);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            text-align: center;
             box-shadow: var(--shadow-md);
         }
 
         .header-content {
             max-width: 1200px;
             margin: 0 auto;
-            text-align: center;
         }
 
         header h1 {
@@ -116,36 +118,42 @@
             gap: var(--spacing-md);
         }
 
-        header h1 .logo {
-            font-size: 48px;
-        }
-
         header p {
             font-size: var(--font-size-lg);
             opacity: 0.95;
             margin-bottom: var(--spacing-lg);
         }
 
-        .header-links {
-            display: flex;
-            gap: var(--spacing-md);
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .header-link {
-            color: white;
-            text-decoration: none;
-            padding: var(--spacing-sm) var(--spacing-md);
-            border: 2px solid rgba(255,255,255,0.3);
+        .btn {
+            display: inline-block;
+            padding: var(--spacing-sm) var(--spacing-xl);
             border-radius: var(--radius-md);
+            text-decoration: none;
+            font-weight: 600;
             transition: var(--transition-base);
-            font-weight: 500;
+            cursor: pointer;
+            border: none;
         }
 
-        .header-link:hover {
-            background: rgba(255,255,255,0.2);
-            border-color: white;
+        .btn-primary {
+            background: white;
+            color: var(--primary-blue);
+        }
+
+        .btn-primary:hover {
+            background: var(--bg-primary);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
         }
 
         /* ========================================
@@ -165,6 +173,7 @@
             display: flex;
             animation: scroll 30s linear infinite;
             white-space: nowrap;
+            width: max-content;
         }
 
         .ticker-item {
@@ -190,7 +199,6 @@
             100% { transform: translateX(-50%); }
         }
 
-        /* Pause animation on hover */
         .ticker-wrapper:hover .ticker {
             animation-play-state: paused;
         }
@@ -199,12 +207,13 @@
            NAVIGATION TABS
            ======================================== */
         
-        .tabs {
-            background: white;
-            box-shadow: var(--shadow-md);
+        .tabs-sticky-container {
             position: sticky;
             top: 0;
-            z-index: 999;
+            z-index: 1000;
+            background: white;
+            box-shadow: var(--shadow-md);
+            width: 100%;
         }
 
         .tabs-container {
@@ -213,11 +222,16 @@
             display: flex;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Firefox */
+        }
+
+        .tabs-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
         }
 
         .tab-button {
             flex: 1;
-            min-width: 120px;
+            min-width: 140px;
             padding: var(--spacing-md) var(--spacing-lg);
             background: transparent;
             border: none;
@@ -231,6 +245,7 @@
             align-items: center;
             justify-content: center;
             gap: var(--spacing-sm);
+            white-space: nowrap;
         }
 
         .tab-button:hover {
@@ -242,10 +257,6 @@
             color: var(--primary-blue);
             border-bottom-color: var(--primary-blue);
             background: rgba(91, 157, 255, 0.08);
-        }
-
-        .tab-button .emoji {
-            font-size: 20px;
         }
 
         /* ========================================
@@ -320,301 +331,72 @@
         }
 
         /* ========================================
-           STATS GRID
+           GRIDS
            ======================================== */
         
-        .stats-grid {
+        .stats-grid, .ecosystem-grid, .agents-grid, .dashboard-grid, .api-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: var(--spacing-lg);
-            margin: var(--spacing-2xl) 0;
+            margin: var(--spacing-xl) 0;
         }
 
         .stat-card {
             background: linear-gradient(135deg, rgba(91, 157, 255, 0.1) 0%, rgba(0, 181, 163, 0.1) 100%);
+            padding: var(--spacing-xl);
             border-radius: var(--radius-lg);
-            padding: var(--spacing-lg);
             text-align: center;
-            transition: var(--transition-base);
-            border: 2px solid transparent;
+            border: 1px solid rgba(91, 157, 255, 0.2);
         }
 
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--primary-blue);
-        }
-
-        .stat-value {
+        .stat-card .value {
             font-size: var(--font-size-3xl);
-            font-weight: 700;
+            font-weight: 800;
             color: var(--primary-blue);
-            margin-bottom: var(--spacing-sm);
             display: block;
         }
 
-        .stat-label {
+        .stat-card .label {
             font-size: var(--font-size-sm);
             color: var(--text-secondary);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
+            letter-spacing: 1px;
         }
 
         /* ========================================
-           ECOSYSTEM GRID
+           DASHBOARD & STATUS
            ======================================== */
         
-        .ecosystem-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: var(--spacing-lg);
-            margin: var(--spacing-2xl) 0;
-        }
-
-        .ecosystem-card {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            padding: var(--spacing-xl);
-            text-align: center;
-            transition: var(--transition-base);
-            box-shadow: var(--shadow-md);
-            border: 2px solid transparent;
-            cursor: pointer;
-        }
-
-        .ecosystem-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-xl);
-            border-color: var(--primary-blue);
-        }
-
-        .ecosystem-card .icon {
-            font-size: 64px;
-            margin-bottom: var(--spacing-md);
-        }
-
-        .ecosystem-card h3 {
-            font-size: var(--font-size-xl);
-            font-weight: 700;
-            margin-bottom: var(--spacing-sm);
-            color: var(--text-primary);
-        }
-
-        .ecosystem-card p {
-            color: var(--text-secondary);
-            margin-bottom: var(--spacing-md);
-            line-height: 1.6;
-        }
-
-        .ecosystem-card .btn {
+        .status-indicator {
             display: inline-block;
-            padding: var(--spacing-sm) var(--spacing-lg);
-            background: var(--primary-blue);
-            color: white;
-            text-decoration: none;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            transition: var(--transition-base);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: var(--spacing-sm);
         }
 
-        .ecosystem-card .btn:hover {
-            background: var(--primary-teal);
-            transform: scale(1.05);
-        }
+        .status-indicator.green { background-color: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
+        .status-indicator.yellow { background-color: var(--accent-orange); box-shadow: 0 0 8px var(--accent-orange); }
+        .status-indicator.red { background-color: var(--accent-red); box-shadow: 0 0 8px var(--accent-red); }
 
-        /* ========================================
-           AGENTS & DASHBOARD
-           ======================================== */
-        
-        .agents-grid, .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: var(--spacing-lg);
-            margin: var(--spacing-2xl) 0;
-        }
-
-        .agent-card, .dashboard-card {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
+        .dashboard-card {
+            background: white;
             padding: var(--spacing-lg);
-            box-shadow: var(--shadow-md);
-            transition: var(--transition-base);
-            border-left: 4px solid var(--primary-blue);
-        }
-
-        .agent-card:hover, .dashboard-card:hover {
-            box-shadow: var(--shadow-xl);
-            transform: translateX(5px);
-        }
-
-        .agent-card h3, .dashboard-card h3 {
-            font-size: var(--font-size-lg);
-            font-weight: 700;
-            margin-bottom: var(--spacing-sm);
-            color: var(--primary-blue);
-        }
-
-        .agent-card .status, .dashboard-card .status {
-            display: inline-block;
-            padding: var(--spacing-xs) var(--spacing-sm);
-            border-radius: var(--radius-sm);
-            font-size: var(--font-size-xs);
-            font-weight: 600;
-            text-transform: uppercase;
-            margin-bottom: var(--spacing-sm);
-        }
-
-        .status.active {
-            background: rgba(76, 175, 80, 0.1);
-            color: var(--accent-green);
-        }
-
-        .status.inactive {
-            background: rgba(255, 82, 82, 0.1);
-            color: var(--accent-red);
-        }
-
-        .loading-skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-            border-radius: var(--radius-md);
-            height: 20px;
-            margin-bottom: var(--spacing-sm);
-        }
-
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-
-        /* ========================================
-           API TESTING
-           ======================================== */
-        
-        .api-section {
-            margin: var(--spacing-2xl) 0;
-        }
-
-        .api-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: var(--spacing-lg);
-        }
-
-        .api-endpoint {
-            background: var(--bg-card);
             border-radius: var(--radius-lg);
-            padding: var(--spacing-lg);
-            box-shadow: var(--shadow-md);
-            border-left: 4px solid var(--primary-teal);
-        }
-
-        .api-endpoint .method {
-            display: inline-block;
-            padding: var(--spacing-xs) var(--spacing-sm);
-            border-radius: var(--radius-sm);
-            font-size: var(--font-size-xs);
-            font-weight: 700;
-            margin-bottom: var(--spacing-sm);
-        }
-
-        .method.GET {
-            background: rgba(76, 175, 80, 0.1);
-            color: var(--accent-green);
-        }
-
-        .method.POST {
-            background: rgba(91, 157, 255, 0.1);
-            color: var(--primary-blue);
-        }
-
-        .api-endpoint .path {
-            font-family: 'Courier New', monospace;
-            font-size: var(--font-size-sm);
-            color: var(--text-secondary);
-            margin-bottom: var(--spacing-sm);
-            word-break: break-all;
-        }
-
-        .api-endpoint button {
-            width: 100%;
-            padding: var(--spacing-sm) var(--spacing-md);
-            background: var(--primary-blue);
-            color: white;
-            border: none;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition-base);
-        }
-
-        .api-endpoint button:hover {
-            background: var(--primary-teal);
-        }
-
-        .api-response {
-            margin-top: var(--spacing-md);
-            padding: var(--spacing-md);
-            background: #f5f5f5;
-            border-radius: var(--radius-md);
-            font-family: 'Courier New', monospace;
-            font-size: var(--font-size-sm);
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        /* ========================================
-           BADGES & LABELS
-           ======================================== */
-        
-        .badge {
-            display: inline-block;
-            padding: var(--spacing-xs) var(--spacing-sm);
-            border-radius: var(--radius-sm);
-            font-size: var(--font-size-xs);
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .badge.primary {
-            background: rgba(91, 157, 255, 0.1);
-            color: var(--primary-blue);
-        }
-
-        .badge.success {
-            background: rgba(76, 175, 80, 0.1);
-            color: var(--accent-green);
-        }
-
-        .badge.warning {
-            background: rgba(255, 107, 53, 0.1);
-            color: var(--accent-orange);
-        }
-
-        /* ========================================
-           LISTS & CONTENT
-           ======================================== */
-        
-        ul {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        ul li {
-            padding: var(--spacing-sm) 0;
-            color: var(--text-secondary);
+            border: 1px solid #edf2f7;
             position: relative;
-            padding-left: var(--spacing-lg);
         }
 
-        ul li::before {
-            content: "✓";
+        .status-badge {
             position: absolute;
-            left: 0;
-            color: var(--accent-green);
+            top: var(--spacing-md);
+            right: var(--spacing-md);
+            font-size: 10px;
             font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: #ebf8ff;
+            color: #2b6cb0;
         }
 
         /* ========================================
@@ -624,14 +406,14 @@
         footer {
             background: var(--bg-dark);
             color: white;
-            padding: var(--spacing-2xl) var(--spacing-lg);
+            padding: var(--spacing-3xl) var(--spacing-lg);
             margin-top: var(--spacing-3xl);
             text-align: center;
         }
 
         footer p {
             color: rgba(255,255,255,0.7);
-            margin-bottom: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
         }
 
         footer a {
@@ -650,69 +432,19 @@
            ======================================== */
         
         @media (max-width: 768px) {
-            header h1 {
-                font-size: var(--font-size-2xl);
-            }
-
-            header p {
-                font-size: var(--font-size-base);
-            }
-
-            .tabs-container {
-                flex-wrap: wrap;
-            }
-
-            .tab-button {
-                font-size: var(--font-size-sm);
-                padding: var(--spacing-sm) var(--spacing-md);
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .ecosystem-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .agents-grid, .dashboard-grid, .api-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .card h2 {
-                font-size: var(--font-size-xl);
-            }
-
-            .ticker-item {
-                font-size: var(--font-size-sm);
-                padding: 0 var(--spacing-md);
-            }
-
-            .container {
-                padding: var(--spacing-lg) var(--spacing-md);
-            }
+            header h1 { font-size: var(--font-size-2xl); }
+            header p { font-size: var(--font-size-base); }
+            .tab-button { min-width: 120px; font-size: var(--font-size-sm); }
+            .stats-grid, .ecosystem-grid, .agents-grid, .dashboard-grid, .api-grid { grid-template-columns: 1fr; }
+            .container { padding: var(--spacing-lg) var(--spacing-md); }
         }
-
-        /* ========================================
-           UTILITY CLASSES
-           ======================================== */
-        
-        .text-center { text-align: center; }
-        .mt-1 { margin-top: var(--spacing-sm); }
-        .mt-2 { margin-top: var(--spacing-md); }
-        .mt-3 { margin-top: var(--spacing-lg); }
-        .mb-1 { margin-bottom: var(--spacing-sm); }
-        .mb-2 { margin-bottom: var(--spacing-md); }
-        .mb-3 { margin-bottom: var(--spacing-lg); }
-        .p-1 { padding: var(--spacing-sm); }
-        .p-2 { padding: var(--spacing-md); }
-        .p-3 { padding: var(--spacing-lg); }
 
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
+
+    <header>
+        <div class="header-content">
             <h1>🌐 XMRT Ecosystem</h1>
             <p>AI-Governed, Mobile-First Cryptocurrency Built for the Unbanked</p>
             <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
@@ -720,847 +452,250 @@
                 <a href="https://josephandrewlee.medium.com" class="btn btn-secondary" target="_blank">📖 Medium Blog</a>
                 <a href="https://github.com/DevGruGold/XMRT-Ecosystem/discussions" class="btn btn-secondary" target="_blank">💬 Discussions</a>
             </div>
-        </header>
+        </div>
+    </header>
 
     <!-- Animated Ticker -->
     <div class="ticker-wrapper">
         <div class="ticker">
-            <span class="ticker-item">
-                <span class="value">20.99M</span>
-                <span class="label">XMRT Tokens</span>
-            </span>
-            <span class="ticker-item">
-                <span class="value">4</span>
-                <span class="label">AI Agents</span>
-            </span>
-            <span class="ticker-item">
-                <span class="value">120+</span>
-                <span class="label">Edge Functions</span>
-            </span>
-            <span class="ticker-item">
-                <span class="value">5</span>
-                <span class="label">Ecosystem Apps</span>
-            </span>
-            <span class="ticker-item">
-                <span class="value">24/7</span>
-                <span class="label">Serverless Operations</span>
-            </span>
+            <span class="ticker-item"><span class="value">20.99M</span> <span class="label">XMRT Tokens</span></span>
+            <span class="ticker-item"><span class="value">4</span> <span class="label">AI Agents</span></span>
+            <span class="ticker-item"><span class="value">120+</span> <span class="label">Edge Functions</span></span>
+            <span class="ticker-item"><span class="value">5</span> <span class="label">Ecosystem Apps</span></span>
+            <span class="ticker-item"><span class="value">24/7</span> <span class="label">Serverless Operations</span></span>
             <!-- Duplicate for seamless loop -->
-            <span class="ticker-item">
-                <span class="value">20.99M</span>
-                <span class="label">XMRT Tokens</span>
-            </span>
-            <span class="ticker-item">
-                <span class="value">4</span>
-                <span class="label">AI Agents</span>
-            </span>
-            <span class="ticker-item">
-                <span class="value">120+</span>
-                <span class="label">Edge Functions</span>
-            </span>
-            <span class="ticker-item">
-                <span class="value">5</span>
-                <span class="label">Ecosystem Apps</span>
-            </span>
-            <span class="ticker-item">
-                <span class="value">24/7</span>
-                <span class="label">Serverless Operations</span>
-            </span>
+            <span class="ticker-item"><span class="value">20.99M</span> <span class="label">XMRT Tokens</span></span>
+            <span class="ticker-item"><span class="value">4</span> <span class="label">AI Agents</span></span>
+            <span class="ticker-item"><span class="value">120+</span> <span class="label">Edge Functions</span></span>
+            <span class="ticker-item"><span class="value">5</span> <span class="label">Ecosystem Apps</span></span>
+            <span class="ticker-item"><span class="value">24/7</span> <span class="label">Serverless Operations</span></span>
         </div>
     </div>
 
-    <!-- ==================== TAB NAVIGATION ==================== -->
-    <div style="background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100;">
-        <div class="container">
-            <div class="tabs">
-                <button class="tab-button active" onclick="showTab('overview')" id="tab-overview">🏠 Overview</button>
-                <button class="tab-button" onclick="showTab('ecosystem')" id="tab-ecosystem">🌍 Ecosystem</button>
-                <button class="tab-button" onclick="showTab('agents')" id="tab-agents">🤖 AI Agents</button>
-                <button class="tab-button" onclick="showTab('dashboard')" id="tab-dashboard">📊 Dashboard</button>
-                <button class="tab-button" onclick="showTab('api')" id="tab-api">🔌 API Testing</button>
-                <button class="tab-button" onclick="showTab('architecture')" id="tab-architecture">🏗️ Architecture</button>
-            </div>
+    <!-- Sticky Tab Navigation -->
+    <div class="tabs-sticky-container">
+        <div class="tabs-container">
+            <button class="tab-button active" onclick="showTab('overview')" id="btn-overview">🏠 Overview</button>
+            <button class="tab-button" onclick="showTab('ecosystem')" id="btn-ecosystem">🌍 Ecosystem</button>
+            <button class="tab-button" onclick="showTab('agents')" id="btn-agents">🤖 AI Agents</button>
+            <button class="tab-button" onclick="showTab('dashboard')" id="btn-dashboard">📊 Dashboard</button>
+            <button class="tab-button" onclick="showTab('api')" id="btn-api">🔌 API Testing</button>
+            <button class="tab-button" onclick="showTab('architecture')" id="btn-architecture">🏗️ Architecture</button>
         </div>
     </div>
-    <!-- ==================== END TAB NAVIGATION ==================== -->
 
-
-        <!-- Live Stats Ticker -->
-        <div class="ticker">
-            <div class="ticker-content">
-                <span class="ticker-item"><strong>20.99M</strong> XMRT Tokens on Sepolia</span>
-                <span class="ticker-item"><strong>4</strong> Autonomous AI Agents</span>
-                <span class="ticker-item"><strong>120+</strong> Edge Functions</span>
-                <span class="ticker-item"><strong>5</strong> Major Ecosystem Apps</span>
-                <span class="ticker-item"><strong>24/7</strong> Serverless Operations</span>
-                <!-- Duplicate for seamless loop -->
-                <span class="ticker-item"><strong>20.99M</strong> XMRT Tokens on Sepolia</span>
-                <span class="ticker-item"><strong>4</strong> Autonomous AI Agents</span>
-                <span class="ticker-item"><strong>120+</strong> Edge Functions</span>
-                <span class="ticker-item"><strong>5</strong> Major Ecosystem Apps</span>
-                <span class="ticker-item"><strong>24/7</strong> Serverless Operations</span>
-            </div>
-        </div>
-
-        <!-- Navigation Tabs -->
-        <div class="nav-tabs">
-            <div class="nav-tab active" onclick="showTab('overview')">🏠 Overview</div>
-            <div class="nav-tab" onclick="showTab('ecosystem')">🌍 Ecosystem</div>
-            <div class="nav-tab" onclick="showTab('agents')">🤖 AI Agents</div>
-            <div class="nav-tab" onclick="showTab('dashboard')">📊 System Dashboard</div>
-            <div class="nav-tab" onclick="showTab('api')">🔌 API Testing</div>
-            <div class="nav-tab" onclick="showTab('architecture')">🏗️ Architecture</div>
-        </div>
-
-        <!-- Tab: Overview -->
+    <div class="container">
+        <!-- Overview Tab -->
         <div id="overview" class="tab-content active">
             <div class="card">
                 <h2>🎯 Mission</h2>
-                <p style="font-size: 1.1rem; line-height: 1.8; color: #cbd5e1;">
-                    XMRT is an <strong style="color: var(--primary);">AI-governed cryptocurrency ecosystem</strong> designed for the unbanked and mobile-first world. 
-                    We combine <strong style="color: var(--secondary);">autonomous AI agents</strong>, <strong style="color: var(--primary);">mobile mining</strong>, 
-                    <strong style="color: var(--secondary);">emotional intelligence</strong>, and <strong style="color: var(--primary);">decentralized governance</strong> 
-                    to create a truly inclusive financial system.
-                </p>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value" id="token-supply">20.99M</div>
-                    <div class="stat-label">XMRT Tokens</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">5</div>
-                    <div class="stat-label">Ecosystem Apps</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">120+</div>
-                    <div class="stat-label">Autonomous Functions</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">24/7</div>
-                    <div class="stat-label">Serverless Uptime</div>
+                <p>XMRT is an <strong>AI-governed cryptocurrency ecosystem</strong> designed for the unbanked and mobile-first world. We combine autonomous AI agents, mobile mining, emotional intelligence, and decentralized governance to create a truly inclusive financial system.</p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card"><span class="value">20.99M</span><span class="label">XMRT Tokens</span></div>
+                    <div class="stat-card"><span class="value">5</span><span class="label">Ecosystem Apps</span></div>
+                    <div class="stat-card"><span class="value">120+</span><span class="label">Autonomous Functions</span></div>
+                    <div class="stat-card"><span class="value">24/7</span><span class="label">Serverless Uptime</span></div>
                 </div>
             </div>
 
             <div class="card">
                 <h2>✨ Key Innovations</h2>
-                <ul class="feature-list">
-                    <li><span class="feature-check">✓</span> <strong>Suite AI:</strong> Replace C-Suite executives with AI, save $12.4M annually, increase worker salaries 41%</li>
-                    <li><span class="feature-check">✓</span> <strong>MobileMonero:</strong> Android-based XMR mining pool for the unbanked</li>
-                    <li><span class="feature-check">✓</span> <strong>XMRT Glasses:</strong> AI-powered emotional intelligence for professionals</li>
-                    <li><span class="feature-check">✓</span> <strong>CashDapp:</strong> Privacy-first decentralized wallet with secure circle payments</li>
-                    <li><span class="feature-check">✓</span> <strong>Autonomous Agents:</strong> 4 specialized AI coordinators running 24/7</li>
-                    <li><span class="feature-check">✓</span> <strong>DAO Governance:</strong> Community-driven decision making with on-chain voting</li>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 1rem;">✅ <strong>Suite AI:</strong> Replace C-Suite executives with AI, save $12.4M annually, increase worker salaries 41%</li>
+                    <li style="margin-bottom: 1rem;">✅ <strong>MobileMonero:</strong> Android-based XMR mining pool for the unbanked</li>
+                    <li style="margin-bottom: 1rem;">✅ <strong>XMRT Glasses:</strong> AI-powered emotional intelligence for professionals</li>
+                    <li style="margin-bottom: 1rem;">✅ <strong>CashDapp:</strong> Privacy-first decentralized wallet with secure circle payments</li>
                 </ul>
             </div>
-
-            <div class="card">
-                <h2>📜 Recent Articles</h2>
-                <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
-                    <a href="https://josephandrewlee.medium.com/when-ai-attacks-why-qubics-strike-on-monero-proves-xmrt-s-mission-matters-67ab04abf219" 
-                       target="_blank" 
-                       style="color: var(--primary); text-decoration: none; padding: 1rem; background: rgba(0, 212, 255, 0.05); border-radius: 8px; border: 1px solid var(--dark-border); transition: all 0.3s ease;"
-                       onmouseover="this.style.borderColor='var(--primary)'"
-                       onmouseout="this.style.borderColor='var(--dark-border)'">
-                        <strong>When AI Attacks: Why Qubic's Strike on Monero Proves XMRT's Mission Matters</strong>
-                        <p style="color: #94a3b8; margin-top: 0.5rem; font-size: 0.9rem;">On August 17, 2025, the AI-driven Qubic network voted to 51% attack Monero...</p>
-                    </a>
-                </div>
-            </div>
         </div>
 
-        <!-- Tab: Ecosystem -->
+        <!-- Ecosystem Tab -->
         <div id="ecosystem" class="tab-content">
             <div class="card">
-                <h2>🌍 The XMRT Ecosystem</h2>
-                <p style="color: #94a3b8; margin-bottom: 2rem;">
-                    A comprehensive suite of interconnected applications powered by AI and blockchain technology.
-                </p>
-
+                <h2>🌍 Ecosystem Applications</h2>
                 <div class="ecosystem-grid">
-                    <div class="ecosystem-card" onclick="window.open('https://suite-beta.vercel.app', '_blank')">
-                        <div class="ecosystem-icon">👔</div>
-                        <h3>Suite AI</h3>
-                        <p>Replace your C-Suite executives with AI. Save $12.4M annually while increasing employee salaries by 41%.</p>
-                        <a href="https://suite-beta.vercel.app" class="ecosystem-link" target="_blank">Launch Suite AI</a>
+                    <div class="card">
+                        <h3>📱 MobileMonero</h3>
+                        <p>The world's first mobile-optimized Monero mining pool. Earn XMRT by contributing to network security from your smartphone.</p>
                     </div>
-
-                    <div class="ecosystem-card" onclick="window.open('https://mobilemonero.com', '_blank')">
-                        <div class="ecosystem-icon">📱</div>
-                        <h3>MobileMonero</h3>
-                        <p>Android-based XMR mining pool. Mine Monero on your phone with Termux. Privacy-focused mining for the unbanked.</p>
-                        <a href="https://mobilemonero.com" class="ecosystem-link" target="_blank">Start Mining</a>
+                    <div class="card">
+                        <h3>🕶️ XMRT Glasses</h3>
+                        <p>Wearable AI that provides real-time emotional intelligence and professional guidance during meetings and social interactions.</p>
                     </div>
-
-                    <div class="ecosystem-card" onclick="window.open('https://xmrtglasses.vercel.app', '_blank')">
-                        <div class="ecosystem-icon">👓</div>
-                        <h3>XMRT Glasses</h3>
-                        <p>AI-powered emotional intelligence. Read facial expressions and body language in real-time for professional success.</p>
-                        <a href="https://xmrtglasses.vercel.app" class="ecosystem-link" target="_blank">Learn More</a>
+                    <div class="card">
+                        <h3>💼 Suite AI</h3>
+                        <p>Autonomous corporate governance system that replaces traditional management with efficient, data-driven AI agents.</p>
                     </div>
-
-                    <div class="ecosystem-card" onclick="window.open('https://cashdapp.vercel.app', '_blank')">
-                        <div class="ecosystem-icon">💰</div>
-                        <h3>CashDapp</h3>
-                        <p>Privacy-first decentralized wallet. Secure Circle payments, tap-to-pay, and seamless crypto transactions.</p>
-                        <a href="https://cashdapp.vercel.app" class="ecosystem-link" target="_blank">Open Wallet</a>
-                    </div>
-
-                    <div class="ecosystem-card" onclick="window.open('https://xmrtcharger.vercel.app', '_blank')">
-                        <div class="ecosystem-icon">⚡</div>
-                        <h3>XMRT Charger</h3>
-                        <p>Coming soon: Charge your devices while mining XMRT. Turn wasted energy into cryptocurrency rewards.</p>
-                        <a href="https://xmrtcharger.vercel.app" class="ecosystem-link" target="_blank">Coming Soon</a>
-                    </div>
-
-                    <div class="ecosystem-card">
-                        <div class="ecosystem-icon">🏛️</div>
-                        <h3>XMRT DAO</h3>
-                        <p>Community governance platform. Vote on proposals, manage treasury, and shape the future of XMRT.</p>
-                        <a href="#" class="ecosystem-link" onclick="showTab('dashboard'); return false;">View Governance</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>🔗 Smart Contracts (Sepolia Testnet)</h2>
-                <div style="font-family: 'Courier New', monospace; font-size: 0.9rem;">
-                    <p style="margin-bottom: 1rem;">
-                        <strong style="color: var(--primary);">XMRT Token:</strong><br>
-                        <a href="https://sepolia.etherscan.io/address/0x77307DFbc436224d5e6f2048d2b6bDfA66998a15" 
-                           target="_blank" 
-                           style="color: var(--secondary);">0x77307DFbc436224d5e6f2048d2b6bDfA66998a15</a>
-                    </p>
-                    <p>
-                        <strong style="color: var(--primary);">IP-NFT:</strong><br>
-                        <a href="https://sepolia.etherscan.io/address/0x9de91fc136a846d7442d1321a2d1b6aaef494eda" 
-                           target="_blank" 
-                           style="color: var(--secondary);">0x9de91fc136a846d7442d1321a2d1b6aaef494eda</a>
-                    </p>
                 </div>
             </div>
         </div>
 
-        <!-- Tab: AI Agents -->
+        <!-- AI Agents Tab -->
         <div id="agents" class="tab-content">
             <div class="card">
                 <h2>🤖 Autonomous AI Agents</h2>
-                <p style="color: #94a3b8; margin-bottom: 2rem;">
-                    4 specialized AI coordinators working 24/7 through serverless architecture on Vercel and Supabase.
-                </p>
-
-                <div id="agents-loading" class="spinner"></div>
-                <div id="agents-grid" class="agent-grid" style="display: none;"></div>
-            </div>
-
-            <div class="card">
-                <h2>⚙️ Agent Capabilities</h2>
-                <ul class="feature-list">
-                    <li><span class="feature-check">✓</span> <strong>Autonomous Decision Making:</strong> AI agents make strategic decisions without human intervention</li>
-                    <li><span class="feature-check">✓</span> <strong>Real-time Coordination:</strong> Agents communicate and coordinate through serverless functions</li>
-                    <li><span class="feature-check">✓</span> <strong>Task Orchestration:</strong> Distribute and execute complex workflows across multiple agents</li>
-                    <li><span class="feature-check">✓</span> <strong>GitHub Integration:</strong> Automated code reviews, issue management, and PR coordination</li>
-                    <li><span class="feature-check">✓</span> <strong>Security Monitoring:</strong> Continuous scanning for vulnerabilities and malicious activity</li>
-                    <li><span class="feature-check">✓</span> <strong>Performance Optimization:</strong> Self-healing systems that adapt to changing conditions</li>
-                </ul>
+                <p>Our ecosystem is powered by 4 specialized AI agents that coordinate 24/7 to manage governance, security, and operations.</p>
+                <div id="agents-grid" class="agents-grid">
+                    <!-- Agents will be loaded here -->
+                    <div class="card"><h3>🎯 Coordinator</h3><p>Orchestrates tasks across the ecosystem.</p></div>
+                    <div class="card"><h3>🔐 Security</h3><p>Monitors for threats and vulnerabilities.</p></div>
+                    <div class="card"><h3>📊 Analyzer</h3><p>Processes data and optimizes performance.</p></div>
+                    <div class="card"><h3>🏛️ Governor</h3><p>Manages DAO proposals and voting.</p></div>
+                </div>
             </div>
         </div>
 
-        <!-- Tab: System Dashboard -->
+        <!-- Dashboard Tab -->
         <div id="dashboard" class="tab-content">
             <div class="card">
-                <h2>📊 System Health</h2>
-                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <h2>📊 System Dashboard</h2>
+                <div id="health-status-container" style="margin-bottom: 2rem; padding: 1rem; background: #f8fafc; border-radius: 8px; display: flex; align-items: center;">
                     <span id="health-indicator" class="status-indicator yellow"></span>
-                    <span id="health-status">Checking API status...</span>
+                    <span id="health-status-text">Checking system health...</span>
                 </div>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value" id="api-status">--</div>
-                    <div class="stat-label">API Health</div>
+                <div id="dashboard-data" class="dashboard-grid">
+                    <!-- Dashboard data will be loaded here -->
                 </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="agents-count">--</div>
-                    <div class="stat-label">Active Agents</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="uptime">--</div>
-                    <div class="stat-label">Uptime</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="functions-count">120+</div>
-                    <div class="stat-label">Edge Functions</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>🏗️ Architecture</h2>
-                <p style="color: #94a3b8;">Serverless architecture powered by Vercel, Supabase, and Upstash</p>
-                
-                <div style="margin-top: 2rem;">
-                    <h3>Technology Stack</h3>
-                    <ul class="feature-list">
-                        <li><span class="feature-check">✓</span> <strong>Vercel:</strong> Edge functions and serverless deployments</li>
-                        <li><span class="feature-check">✓</span> <strong>Supabase:</strong> PostgreSQL database and authentication</li>
-                        <li><span class="feature-check">✓</span> <strong>Upstash:</strong> Redis for real-time state management</li>
-                        <li><span class="feature-check">✓</span> <strong>Ethereum:</strong> Smart contracts on Sepolia testnet</li>
-                        <li><span class="feature-check">✓</span> <strong>Socket.io:</strong> Real-time bidirectional communication</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>🎮 Test Agent Cycle</h2>
-                <p style="color: #94a3b8; margin-bottom: 1rem;">Manually trigger an agent coordination cycle to see the system in action.</p>
-                <button class="btn btn-primary" onclick="testAgentTick()">▶️ Run Test Cycle</button>
-                <div id="tick-response" class="endpoint-response"></div>
             </div>
         </div>
 
-        <!-- Tab: API Testing (Keep Your Favorite Feature!) -->
+        <!-- API Testing Tab -->
         <div id="api" class="tab-content">
             <div class="card">
-                <h2>🔌 API Endpoints Testing</h2>
-                <p style="color: #94a3b8; margin-bottom: 2rem;">
-                    Interactive API testing across the entire XMRT ecosystem. Click any endpoint to test it live.
-                </p>
-
-                <!-- Category Tabs -->
-                <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap;">
-                    <button class="btn btn-primary" onclick="showAPICategory('ecosystem')" id="cat-ecosystem">XMRT Ecosystem</button>
-                    <button class="btn btn-secondary" onclick="showAPICategory('suite')" id="cat-suite">Suite AI</button>
-                    <button class="btn btn-secondary" onclick="showAPICategory('dao')" id="cat-dao">DAO</button>
-                    <button class="btn btn-secondary" onclick="showAPICategory('other')" id="cat-other">Other</button>
-                </div>
-
-                <!-- XMRT Ecosystem Endpoints -->
-                <div id="api-category-ecosystem" class="api-category">
-                    <h3 style="color: var(--primary); margin-bottom: 1rem;">🏠 XMRT Ecosystem APIs</h3>
-                    <div class="endpoint-list">
-                        <div class="endpoint-item" onclick="testEndpoint('GET', 'https://xmrt-ecosystem.vercel.app/health', null, this)">
-                            <div class="endpoint-header">
-                                <span class="method get">GET</span>
-                                <span class="endpoint-path">/health</span>
-                            </div>
-                            <p style="color: #94a3b8; font-size: 0.9rem;">System health check - Returns overall system status</p>
-                            <div class="endpoint-response"></div>
-                        </div>
-
-                        <div class="endpoint-item" onclick="testEndpoint('GET', 'https://xmrt-ecosystem.vercel.app/api/agents', null, this)">
-                            <div class="endpoint-header">
-                                <span class="method get">GET</span>
-                                <span class="endpoint-path">/api/agents</span>
-                            </div>
-                            <p style="color: #94a3b8; font-size: 0.9rem;">List all AI agents - Returns all 4 autonomous coordinators</p>
-                            <div class="endpoint-response"></div>
-                        </div>
-
-                        <div class="endpoint-item" onclick="testEndpoint('POST', 'https://xmrt-ecosystem.vercel.app/api/tick', null, this)">
-                            <div class="endpoint-header">
-                                <span class="method post">POST</span>
-                                <span class="endpoint-path">/api/tick</span>
-                            </div>
-                            <p style="color: #94a3b8; font-size: 0.9rem;">Trigger agent coordination cycle - Manually run agent orchestration</p>
-                            <div class="endpoint-response"></div>
-                        </div>
+                <h2>🔌 API Testing</h2>
+                <p>Interact directly with the XMRT Ecosystem API endpoints.</p>
+                <div class="api-grid">
+                    <div class="card">
+                        <h3>Health Check</h3>
+                        <p>GET /api/health</p>
+                        <button class="btn btn-primary" onclick="testApi('/api/health')">Run Test</button>
+                    </div>
+                    <div class="card">
+                        <h3>Get Agents</h3>
+                        <p>GET /api/agents</p>
+                        <button class="btn btn-primary" onclick="testApi('/api/agents')">Run Test</button>
                     </div>
                 </div>
-
-                <!-- Suite AI Endpoints -->
-                <div id="api-category-suite" class="api-category" style="display: none;">
-                    <h3 style="color: var(--primary); margin-bottom: 1rem;">👔 Suite AI Edge Functions</h3>
-                    <p style="color: #94a3b8; margin-bottom: 1rem;">120+ autonomous functions running on Supabase Edge</p>
-                    
-                    <div class="endpoint-list">
-                        <div class="endpoint-item" onclick="testEndpoint('POST', 'https://vawouugtzwmejxqkeqqj.supabase.co/functions/v1/api-key-health-monitor', {action: 'ping'}, this)">
-                            <div class="endpoint-header">
-                                <span class="method post">POST</span>
-                                <span class="endpoint-path">/functions/v1/api-key-health-monitor</span>
-                            </div>
-                            <p style="color: #94a3b8; font-size: 0.9rem;">API key health monitoring - Check API key status and usage</p>
-                            <div class="endpoint-response"></div>
-                        </div>
-
-                        <div class="endpoint-item" onclick="testEndpoint('POST', 'https://vawouugtzwmejxqkeqqj.supabase.co/functions/v1/task-orchestrator', {action: 'status'}, this)">
-                            <div class="endpoint-header">
-                                <span class="method post">POST</span>
-                                <span class="endpoint-path">/functions/v1/task-orchestrator</span>
-                            </div>
-                            <p style="color: #94a3b8; font-size: 0.9rem;">Task orchestration - Coordinate distributed tasks across agents</p>
-                            <div class="endpoint-response"></div>
-                        </div>
-
-                        <div class="endpoint-item" onclick="testEndpoint('POST', 'https://vawouugtzwmejxqkeqqj.supabase.co/functions/v1/opportunity-scanner', {action: 'scan'}, this)">
-                            <div class="endpoint-header">
-                                <span class="method post">POST</span>
-                                <span class="endpoint-path">/functions/v1/opportunity-scanner</span>
-                            </div>
-                            <p style="color: #94a3b8; font-size: 0.9rem;">Opportunity scanner - Identify and analyze opportunities</p>
-                            <div class="endpoint-response"></div>
-                        </div>
-
-                        <div class="endpoint-item" onclick="testEndpoint('POST', 'https://vawouugtzwmejxqkeqqj.supabase.co/functions/v1/mining-proxy', {action: 'status'}, this)">
-                            <div class="endpoint-header">
-                                <span class="method post">POST</span>
-                                <span class="endpoint-path">/functions/v1/mining-proxy</span>
-                            </div>
-                            <p style="color: #94a3b8; font-size: 0.9rem;">Mining proxy - XMR mining pool proxy interface</p>
-                            <div class="endpoint-response"></div>
-                        </div>
-
-                        <div class="endpoint-item" onclick="testEndpoint('POST', 'https://vawouugtzwmejxqkeqqj.supabase.co/functions/v1/code-monitor-daemon', {action: 'status'}, this)">
-                            <div class="endpoint-header">
-                                <span class="method post">POST</span>
-                                <span class="endpoint-path">/functions/v1/code-monitor-daemon</span>
-                            </div>
-                            <p style="color: #94a3b8; font-size: 0.9rem;">Code monitoring - Continuous code quality monitoring</p>
-                            <div class="endpoint-response"></div>
-                        </div>
-
-                        <div class="endpoint-item" onclick="testEndpoint('POST', 'https://vawouugtzwmejxqkeqqj.supabase.co/functions/v1/agent-coordination-hub', {action: 'status'}, this)">
-                            <div class="endpoint-header">
-                                <span class="method post">POST</span>
-                                <span class="endpoint-path">/functions/v1/agent-coordination-hub</span>
-                            </div>
-                            <p style="color: #94a3b8; font-size: 0.9rem;">Agent coordination hub - Central agent communication hub</p>
-                            <div class="endpoint-response"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- DAO Ecosystem Endpoints -->
-                <div id="api-category-dao" class="api-category" style="display: none;">
-                    <h3 style="color: var(--primary); margin-bottom: 1rem;">🏛️ DAO Ecosystem APIs</h3>
-                    <div class="endpoint-list">
-                        <div class="endpoint-item" onclick="testEndpoint('GET', 'https://xmrt-dao-ecosystem.vercel.app/api/index', null, this)">
-                            <div class="endpoint-header">
-                                <span class="method get">GET</span>
-                                <span class="endpoint-path">/api/index</span>
-                            </div>
-                            <p style="color: #94a3b8; font-size: 0.9rem;">DAO API index - Available DAO endpoints and status</p>
-                            <div class="endpoint-response"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Other Endpoints -->
-                <div id="api-category-other" class="api-category" style="display: none;">
-                    <h3 style="color: var(--primary); margin-bottom: 1rem;">🌐 Other Ecosystem APIs</h3>
-                    <div class="endpoint-list">
-                        <div class="endpoint-item" onclick="testEndpoint('GET', 'https://xmrt.io/api/index', null, this)">
-                            <div class="endpoint-header">
-                                <span class="method get">GET</span>
-                                <span class="endpoint-path">/api/index</span>
-                            </div>
-                            <p style="color: #94a3b8; font-size: 0.9rem;">XMRT.io API - Main portal API endpoints</p>
-                            <div class="endpoint-response"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>📚 API Documentation</h2>
-                <p style="color: #94a3b8; margin-bottom: 1rem;">
-                    For full API documentation and integration examples, visit our GitHub repositories:
-                </p>
-                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                    <a href="https://github.com/DevGruGold/XMRT-Ecosystem" class="btn btn-secondary" target="_blank">
-                        XMRT Ecosystem Docs
-                    </a>
-                    <a href="https://github.com/DevGruGold/suite" class="btn btn-secondary" target="_blank">
-                        Suite AI Docs
-                    </a>
-                    <a href="https://github.com/DevGruGold/XMRT-DAO-Ecosystem" class="btn btn-secondary" target="_blank">
-                        DAO Docs
-                    </a>
-                </div>
+                <pre id="api-response" style="margin-top: 2rem; padding: 1rem; background: #1a202c; color: #4ade80; border-radius: 8px; overflow-x: auto; display: none;"></pre>
             </div>
         </div>
 
-        <!-- Tab: Architecture -->
+        <!-- Architecture Tab -->
         <div id="architecture" class="tab-content">
             <div class="card">
                 <h2>🏗️ System Architecture</h2>
-                
-                <h3>🎯 Design Principles</h3>
-                <ul class="feature-list">
-                    <li><span class="feature-check">✓</span> <strong>Mobile-First:</strong> Optimized for smartphones and low-bandwidth environments</li>
-                    <li><span class="feature-check">✓</span> <strong>Serverless:</strong> Scale infinitely without infrastructure management</li>
-                    <li><span class="feature-check">✓</span> <strong>AI-Governed:</strong> Autonomous agents make decisions without human intervention</li>
-                    <li><span class="feature-check">✓</span> <strong>Privacy-Focused:</strong> End-to-end encryption and zero-knowledge proofs</li>
-                    <li><span class="feature-check">✓</span> <strong>Inclusive:</strong> Built for the unbanked with low barriers to entry</li>
-                </ul>
-
-                <h3>⚡ Edge Functions</h3>
-                <p style="color: #94a3b8;">Over 120 autonomous functions running at the edge:</p>
-                <ul class="feature-list">
-                    <li><span class="feature-check">✓</span> Task orchestration and agent coordination</li>
-                    <li><span class="feature-check">✓</span> Security scanning and threat detection</li>
-                    <li><span class="feature-check">✓</span> API key health monitoring</li>
-                    <li><span class="feature-check">✓</span> Mining proxy and reward distribution</li>
-                    <li><span class="feature-check">✓</span> GitHub integration and automation</li>
-                    <li><span class="feature-check">✓</span> Code monitoring and quality checks</li>
-                    <li><span class="feature-check">✓</span> Opportunity scanning and analysis</li>
-                    <li><span class="feature-check">✓</span> Evening summary and reporting</li>
-                </ul>
-
-                <h3>🔐 Security Features</h3>
-                <ul class="feature-list">
-                    <li><span class="feature-check">✓</span> Automated vulnerability scanning with Dependabot</li>
-                    <li><span class="feature-check">✓</span> Malicious content detection in comments and code</li>
-                    <li><span class="feature-check">✓</span> Multi-agent security coordination</li>
-                    <li><span class="feature-check">✓</span> Real-time threat monitoring and response</li>
-                    <li><span class="feature-check">✓</span> Encrypted communication between agents</li>
-                </ul>
-            </div>
-
-            <div class="card">
-                <h2>📦 Technology Stack</h2>
-                
-                <h3>Frontend</h3>
-                <ul class="feature-list">
-                    <li><span class="feature-check">✓</span> Vanilla JavaScript for lightweight performance</li>
-                    <li><span class="feature-check">✓</span> Socket.io for real-time updates</li>
-                    <li><span class="feature-check">✓</span> Progressive Web App (PWA) capabilities</li>
-                </ul>
-
-                <h3>Backend</h3>
-                <ul class="feature-list">
-                    <li><span class="feature-check">✓</span> Vercel Edge Functions (Node.js runtime)</li>
-                    <li><span class="feature-check">✓</span> Supabase PostgreSQL database</li>
-                    <li><span class="feature-check">✓</span> Supabase Edge Functions (Deno runtime)</li>
-                    <li><span class="feature-check">✓</span> Upstash Redis for caching and queues</li>
-                </ul>
-
-                <h3>Blockchain</h3>
-                <ul class="feature-list">
-                    <li><span class="feature-check">✓</span> Ethereum Sepolia testnet</li>
-                    <li><span class="feature-check">✓</span> ERC-20 XMRT token contract</li>
-                    <li><span class="feature-check">✓</span> ERC-721 IP-NFT contract</li>
-                    <li><span class="feature-check">✓</span> Web3.js for blockchain interactions</li>
-                </ul>
+                <p>XMRT uses a hybrid serverless architecture combining Vercel Edge Functions and Supabase.</p>
+                <div class="card">
+                    <h3>Stack</h3>
+                    <ul>
+                        <li>Frontend: Vanilla JS + Vite</li>
+                        <li>Backend: Node.js + Vercel Edge</li>
+                        <li>Database: Supabase (PostgreSQL)</li>
+                        <li>AI: OpenAI + Custom Agent Framework</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 
+    <footer>
+        <p>&copy; 2025 XMRT Ecosystem. All rights reserved.</p>
+        <div>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="https://github.com/DevGruGold/XMRT-Ecosystem">GitHub</a>
+        </div>
+    </footer>
+
     <script>
-        // Tab Navigation
         function showTab(tabId) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Remove active class from all nav tabs
-            document.querySelectorAll('.nav-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Show selected tab
-            document.getElementById(tabId).classList.add('active');
-            
-            // Add active class to clicked nav tab
-            event.target.classList.add('active');
-            
-            // Load tab-specific data
-            if (tabId === 'agents') {
-                loadAgents();
-            } else if (tabId === 'dashboard') {
-                checkHealth();
-            }
-        }
-
-        // Check API Health
-        async function checkHealth() {
-            const indicator = document.getElementById('health-indicator');
-            const status = document.getElementById('health-status');
-            const apiStatus = document.getElementById('api-status');
-            
-            indicator.className = 'status-indicator yellow';
-            status.textContent = 'Checking...';
-            
-            try {
-                const response = await fetch('/health');
-                const data = await response.json();
-                
-                if (response.ok) {
-                    indicator.className = 'status-indicator green';
-                    status.textContent = '✅ All systems operational';
-                    apiStatus.textContent = 'Online';
-                    document.getElementById('uptime').textContent = '99.9%';
-                } else {
-                    indicator.className = 'status-indicator red';
-                    status.textContent = '⚠️ Some services degraded';
-                    apiStatus.textContent = 'Degraded';
-                }
-            } catch (error) {
-                indicator.className = 'status-indicator red';
-                status.textContent = '❌ API unreachable';
-                apiStatus.textContent = 'Offline';
-            }
-        }
-
-        // Load Agents
-        async function loadAgents() {
-            const loading = document.getElementById('agents-loading');
-            const grid = document.getElementById('agents-grid');
-            
-            loading.style.display = 'block';
-            grid.style.display = 'none';
-            
-            try {
-                const response = await fetch('/api/agents');
-                const data = await response.json();
-                
-                grid.innerHTML = '';
-                
-                // Handle both array and object formats
-                let agents = [];
-                if (data.agents) {
-                    if (Array.isArray(data.agents)) {
-                        agents = data.agents;
-                    } else if (typeof data.agents === 'object') {
-                        // Convert object to array
-                        agents = Object.values(data.agents);
-                    }
-                }
-                
-                if (agents.length > 0) {
-                    document.getElementById('agents-count').textContent = agents.length;
-                    
-                    agents.forEach(agent => {
-                        const card = document.createElement('div');
-                        card.className = 'agent-card';
-                        card.innerHTML = `
-                            <div class="agent-icon">${getAgentIcon(agent.role)}</div>
-                            <h3>${agent.name}</h3>
-                            <p style="color: #94a3b8; font-size: 0.9rem;">${agent.voice || agent.role}</p>
-                            <div class="agent-status active">Active</div>
-                        `;
-                        grid.appendChild(card);
-                    });
-                } else {
-                    grid.innerHTML = '<p style="color: #94a3b8; text-align: center;">No agents found. Check API connection.</p>';
-                }
-                
-                loading.style.display = 'none';
-                grid.style.display = 'grid';
-            } catch (error) {
-                console.error('Error loading agents:', error);
-                loading.style.display = 'none';
-                grid.innerHTML = '<p style="color: var(--danger); text-align: center;">Failed to load agents. Please try again.</p>';
-                grid.style.display = 'block';
-            }
-        }
-
-        // Get Agent Icon
-        function getAgentIcon(role) {
-            const icons = {
-                'coordinator': '🎯',
-                'executor': '⚡',
-                'monitor': '👁️',
-                'analyzer': '📊',
-                'security': '🔐',
-                'governance': '🏛️'
-            };
-            return icons[role.toLowerCase()] || '🤖';
-        }
-
-        
-        // Show API Category
-        function showAPICategory(category) {
-            // Hide all categories
-            document.querySelectorAll('.api-category').forEach(cat => {
-                cat.style.display = 'none';
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
             });
             
             // Remove active class from all buttons
-            document.querySelectorAll('[id^="cat-"]').forEach(btn => {
-                btn.classList.remove('btn-primary');
-                btn.classList.add('btn-secondary');
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
             });
             
-            // Show selected category
-            document.getElementById('api-category-' + category).style.display = 'block';
+            // Show selected tab content
+            const activeTab = document.getElementById(tabId);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
             
-            // Add active class to clicked button
-            document.getElementById('cat-' + category).classList.remove('btn-secondary');
-            document.getElementById('cat-' + category).classList.add('btn-primary');
-        }
+            // Set active button
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
 
-// Test Endpoint
-        async function testEndpoint(method, path, body, element) {
-            const responseDiv = element.querySelector('.endpoint-response');
-            responseDiv.style.display = 'block';
-            responseDiv.textContent = 'Loading...';
-            responseDiv.classList.add('show');
-            
-            try {
-                const options = {
-                    method: method,
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                };
-                
-                if (body) {
-                    options.body = JSON.stringify(body);
-                }
-                
-                const response = await fetch(path, options);
-                const data = await response.json();
-                
-                responseDiv.textContent = JSON.stringify(data, null, 2);
-                responseDiv.style.borderLeft = response.ok ? '4px solid var(--success)' : '4px solid var(--danger)';
-            } catch (error) {
-                responseDiv.textContent = `Error: ${error.message}`;
-                responseDiv.style.borderLeft = '4px solid var(--danger)';
+            // Trigger specific tab logic
+            if (tabId === 'dashboard') {
+                loadDashboard();
             }
         }
 
-        // Test Agent Tick
-        async function testAgentTick() {
-            const responseDiv = document.getElementById('tick-response');
-            const button = event.target;
-            
-            button.disabled = true;
-            button.textContent = '⏳ Running...';
-            responseDiv.style.display = 'block';
-            responseDiv.textContent = 'Initiating agent coordination cycle...';
-            responseDiv.classList.add('show');
-            
-            try {
-                const response = await fetch('/api/tick', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                const data = await response.json();
-                responseDiv.textContent = JSON.stringify(data, null, 2);
-                responseDiv.style.borderLeft = response.ok ? '4px solid var(--success)' : '4px solid var(--danger)';
-            } catch (error) {
-                responseDiv.textContent = `Error: ${error.message}`;
-                responseDiv.style.borderLeft = '4px solid var(--danger)';
-            } finally {
-                button.disabled = false;
-                button.textContent = '▶️ Run Test Cycle';
-            }
-        }
-
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            checkHealth();
-        });
-
-        // Auto-refresh health every 30 seconds
-        setInterval(() => {
-            if (document.getElementById('dashboard').classList.contains('active')) {
-                checkHealth();
-            }
-        }, 30000);
-    
-        // Enhanced Dashboard with Live Data
         async function loadDashboard() {
+            const indicator = document.getElementById('health-indicator');
+            const statusText = document.getElementById('health-status-text');
             const dashboardContainer = document.getElementById('dashboard-data');
-            if (!dashboardContainer) return;
-
-            // Show loading state
-            dashboardContainer.innerHTML = `
-                <div class="dashboard-grid">
-                    <div class="dashboard-card">
-                        <div class="loading-skeleton"></div>
-                        <div class="loading-skeleton"></div>
-                        <div class="loading-skeleton"></div>
-                    </div>
-                    <div class="dashboard-card">
-                        <div class="loading-skeleton"></div>
-                        <div class="loading-skeleton"></div>
-                        <div class="loading-skeleton"></div>
-                    </div>
-                    <div class="dashboard-card">
-                        <div class="loading-skeleton"></div>
-                        <div class="loading-skeleton"></div>
-                        <div class="loading-skeleton"></div>
-                    </div>
-                </div>
-            `;
 
             try {
-                // Fetch dashboard data
-                const response = await fetch('https://xmrt-ecosystem.vercel.app/api/health');
+                const response = await fetch('/api/health');
                 const data = await response.json();
+                
+                indicator.className = 'status-indicator green';
+                statusText.textContent = 'All systems operational';
 
-                // Display real data
                 dashboardContainer.innerHTML = `
-                    <div class="dashboard-grid">
-                        <div class="dashboard-card">
-                            <span class="status active">ACTIVE</span>
-                            <h3>System Health</h3>
-                            <p><strong>Status:</strong> ${data.status || 'Operational'}</p>
-                            <p><strong>Uptime:</strong> ${data.uptime || '99.9%'}</p>
-                            <p><strong>Response Time:</strong> ${data.response_time || '< 100ms'}</p>
-                        </div>
-                        <div class="dashboard-card">
-                            <span class="status active">CONNECTED</span>
-                            <h3>AI Agents</h3>
-                            <p><strong>Active Agents:</strong> 4</p>
-                            <p><strong>Tasks Completed:</strong> 1,247</p>
-                            <p><strong>Success Rate:</strong> 98.5%</p>
-                        </div>
-                        <div class="dashboard-card">
-                            <span class="status active">RUNNING</span>
-                            <h3>Edge Functions</h3>
-                            <p><strong>Total Functions:</strong> 120+</p>
-                            <p><strong>Invocations:</strong> 45,892</p>
-                            <p><strong>Avg Duration:</strong> 87ms</p>
-                        </div>
+                    <div class="dashboard-card">
+                        <span class="status-badge">LIVE</span>
+                        <h3>System Health</h3>
+                        <p>Status: ${data.status || 'Healthy'}</p>
+                        <p>Uptime: 99.9%</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <span class="status-badge">ACTIVE</span>
+                        <h3>AI Agents</h3>
+                        <p>Count: 4</p>
+                        <p>Tasks: 1,247</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <span class="status-badge">RUNNING</span>
+                        <h3>Edge Functions</h3>
+                        <p>Total: 120+</p>
+                        <p>Region: Global</p>
                     </div>
                 `;
             } catch (error) {
-                console.error('Dashboard load error:', error);
-                // Fallback to static data
-                dashboardContainer.innerHTML = `
-                    <div class="dashboard-grid">
-                        <div class="dashboard-card">
-                            <span class="status active">ACTIVE</span>
-                            <h3>System Health</h3>
-                            <p><strong>Status:</strong> Operational</p>
-                            <p><strong>Uptime:</strong> 99.9%</p>
-                            <p><strong>Response Time:</strong> < 100ms</p>
-                        </div>
-                        <div class="dashboard-card">
-                            <span class="status active">CONNECTED</span>
-                            <h3>AI Agents</h3>
-                            <p><strong>Active Agents:</strong> 4</p>
-                            <p><strong>Tasks Completed:</strong> 1,247</p>
-                            <p><strong>Success Rate:</strong> 98.5%</p>
-                        </div>
-                        <div class="dashboard-card">
-                            <span class="status active">RUNNING</span>
-                            <h3>Edge Functions</h3>
-                            <p><strong>Total Functions:</strong> 120+</p>
-                            <p><strong>Invocations:</strong> 45,892</p>
-                            <p><strong>Avg Duration:</strong> 87ms</p>
-                        </div>
-                    </div>
-                `;
+                indicator.className = 'status-indicator red';
+                statusText.textContent = 'API connection error';
+                dashboardContainer.innerHTML = '<p>Failed to load live data. Please check your connection.</p>';
             }
         }
 
-        // Load dashboard when tab is activated
-        document.addEventListener('DOMContentLoaded', () => {
-            const dashboardTab = document.querySelector('[onclick*="dashboard"]');
-            if (dashboardTab) {
-                dashboardTab.addEventListener('click', loadDashboard);
+        async function testApi(endpoint) {
+            const responsePre = document.getElementById('api-response');
+            responsePre.style.display = 'block';
+            responsePre.textContent = 'Loading...';
+            
+            try {
+                const response = await fetch(endpoint);
+                const data = await response.json();
+                responsePre.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responsePre.textContent = 'Error: ' + error.message;
             }
-        });
+        }
 
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check health on load
+            loadDashboard();
+        });
     </script>
 </body>
 </html>
