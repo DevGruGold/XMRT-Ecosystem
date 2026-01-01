@@ -3,70 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XMRT Ecosystem — AI-Governed Cryptocurrency for the Unbanked</title>
-    <meta name="description" content="Mobile-first, AI-driven cryptocurrency ecosystem featuring autonomous agents, mobile mining, emotional AI, and decentralized governance">
+    <title>XMRT Ecosystem | AI-Governed Financial Infrastructure</title>
+    <meta name="description" content="A professional, AI-driven cryptocurrency ecosystem designed for global financial inclusion and autonomous governance.">
     
+    <!-- Inter Font for a modern, corporate feel -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
-        /* ========================================
-           XMRT ECOSYSTEM - ULTIMATE CORPORATE DESIGN
-           Mobile-First | Professional | Animated
-           ======================================== */
-        
         :root {
-            /* Suite AI Inspired Color Palette */
-            --primary-blue: #5B9DFF;
-            --primary-teal: #00B5A3;
-            --accent-orange: #FF6B35;
-            --accent-purple: #9B51E0;
-            --accent-green: #4CAF50;
-            --accent-red: #FF5252;
-            
-            /* Background Colors */
-            --bg-primary: #F5F7FA;
-            --bg-secondary: #FFFFFF;
-            --bg-dark: #1A202C;
-            --bg-card: #FFFFFF;
-            
-            /* Text Colors */
-            --text-primary: #1A202C;
-            --text-secondary: #718096;
-            --text-accent: #5B9DFF;
-            
-            /* Spacing System */
-            --spacing-xs: 4px;
-            --spacing-sm: 8px;
-            --spacing-md: 16px;
-            --spacing-lg: 24px;
-            --spacing-xl: 32px;
-            --spacing-2xl: 48px;
-            --spacing-3xl: 60px;
+            /* Corporate Color Palette - Minimalist & Professional */
+            --color-bg: #ffffff;
+            --color-bg-alt: #f5f5f7;
+            --color-text-primary: #1d1d1f;
+            --color-text-secondary: #86868b;
+            --color-accent: #0066cc; /* Professional Blue */
+            --color-border: #d2d2d7;
+            --color-success: #28a745;
             
             /* Typography */
-            --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            --font-size-xs: 12px;
-            --font-size-sm: 14px;
-            --font-size-base: 16px;
-            --font-size-lg: 18px;
-            --font-size-xl: 24px;
-            --font-size-2xl: 36px;
-            --font-size-3xl: 48px;
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             
-            /* Shadows */
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            
-            /* Border Radius */
-            --radius-sm: 6px;
-            --radius-md: 8px;
-            --radius-lg: 12px;
-            --radius-xl: 16px;
-            
-            /* Transitions */
-            --transition-fast: 0.15s ease;
-            --transition-base: 0.3s ease;
-            --transition-slow: 0.5s ease;
+            /* Layout */
+            --max-width: 1100px;
+            --header-height: 64px;
+            --radius: 8px;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -80,607 +43,512 @@
         }
 
         body {
-            font-family: var(--font-family);
-            font-size: var(--font-size-base);
-            line-height: 1.6;
-            color: var(--text-primary);
-            background: var(--bg-primary);
-            min-height: 100vh;
+            font-family: var(--font-main);
+            background-color: var(--color-bg);
+            color: var(--color-text-primary);
+            line-height: 1.5;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            overflow-x: hidden;
         }
 
-        /* ========================================
-           HEADER & HERO SECTION
-           ======================================== */
-        
-        header {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-teal) 100%);
-            color: white;
-            padding: var(--spacing-2xl) var(--spacing-lg);
-            text-align: center;
-            box-shadow: var(--shadow-md);
-        }
-
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        header h1 {
-            font-size: var(--font-size-3xl);
-            font-weight: 700;
-            margin-bottom: var(--spacing-sm);
+        /* --- Navigation --- */
+        nav {
+            height: var(--header-height);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid var(--color-border);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: var(--spacing-md);
         }
 
-        header p {
-            font-size: var(--font-size-lg);
-            opacity: 0.95;
-            margin-bottom: var(--spacing-lg);
+        .nav-container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            width: 100%;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 18px;
+            letter-spacing: -0.02em;
+            color: var(--color-text-primary);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--color-text-secondary);
+            font-size: 14px;
+            font-weight: 400;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--color-text-primary);
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            padding: 140px 24px 80px;
+            text-align: center;
+            background-color: var(--color-bg);
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            margin-bottom: 16px;
+        }
+
+        .hero p {
+            font-size: 24px;
+            color: var(--color-text-secondary);
+            max-width: 700px;
+            margin: 0 auto 40px;
+            font-weight: 400;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
         }
 
         .btn {
-            display: inline-block;
-            padding: var(--spacing-sm) var(--spacing-xl);
-            border-radius: var(--radius-md);
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 16px;
+            font-weight: 500;
             text-decoration: none;
-            font-weight: 600;
-            transition: var(--transition-base);
-            cursor: pointer;
-            border: none;
+            transition: var(--transition);
+            display: inline-block;
         }
 
         .btn-primary {
-            background: white;
-            color: var(--primary-blue);
+            background-color: var(--color-accent);
+            color: white;
         }
 
         .btn-primary:hover {
-            background: var(--bg-primary);
-            transform: translateY(-2px);
+            background-color: #0077ed;
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: var(--color-accent);
         }
 
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
+            text-decoration: underline;
         }
 
-        /* ========================================
-           ANIMATED TICKER
-           ======================================== */
-        
-        .ticker-wrapper {
-            background: var(--bg-dark);
-            color: white;
-            padding: var(--spacing-md) 0;
+        /* --- Ticker --- */
+        .ticker-bar {
+            background-color: var(--color-bg-alt);
+            border-top: 1px solid var(--color-border);
+            border-bottom: 1px solid var(--color-border);
+            padding: 12px 0;
             overflow: hidden;
-            position: relative;
-            border-bottom: 3px solid var(--primary-teal);
         }
 
-        .ticker {
+        .ticker-content {
             display: flex;
-            animation: scroll 30s linear infinite;
             white-space: nowrap;
-            width: max-content;
+            animation: ticker 40s linear infinite;
         }
 
         .ticker-item {
-            display: inline-flex;
-            align-items: center;
-            padding: 0 var(--spacing-2xl);
-            font-weight: 600;
-            font-size: var(--font-size-base);
+            padding: 0 40px;
+            font-size: 13px;
+            color: var(--color-text-secondary);
+            font-weight: 500;
         }
 
-        .ticker-item .value {
-            color: var(--primary-teal);
-            margin: 0 var(--spacing-xs);
-            font-size: var(--font-size-lg);
+        .ticker-item span {
+            color: var(--color-text-primary);
+            margin-right: 4px;
         }
 
-        .ticker-item .label {
-            color: rgba(255,255,255,0.7);
-        }
-
-        @keyframes scroll {
+        @keyframes ticker {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
 
-        .ticker-wrapper:hover .ticker {
-            animation-play-state: paused;
-        }
-
-        /* ========================================
-           NAVIGATION TABS
-           ======================================== */
-        
-        .tabs-sticky-container {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: white;
-            box-shadow: var(--shadow-md);
-            width: 100%;
-        }
-
-        .tabs-container {
-            max-width: 1200px;
+        /* --- Main Content --- */
+        .section {
+            padding: 80px 24px;
+            max-width: var(--max-width);
             margin: 0 auto;
-            display: flex;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none; /* Firefox */
         }
 
-        .tabs-container::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin-top: 48px;
         }
 
-        .tab-button {
-            flex: 1;
-            min-width: 140px;
-            padding: var(--spacing-md) var(--spacing-lg);
-            background: transparent;
-            border: none;
-            border-bottom: 3px solid transparent;
-            color: var(--text-secondary);
-            font-size: var(--font-size-base);
+        .card {
+            background: var(--color-bg-alt);
+            padding: 40px;
+            border-radius: 18px;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .card:hover {
+            background: #f0f0f2;
+        }
+
+        .card h3 {
+            font-size: 24px;
             font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition-base);
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: var(--color-text-secondary);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* --- Tabs --- */
+        .tabs-nav {
             display: flex;
-            align-items: center;
             justify-content: center;
-            gap: var(--spacing-sm);
+            gap: 40px;
+            border-bottom: 1px solid var(--color-border);
+            margin-bottom: 48px;
+            overflow-x: auto;
+            padding-bottom: 1px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 16px 0;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            position: relative;
             white-space: nowrap;
+            transition: var(--transition);
         }
 
-        .tab-button:hover {
-            color: var(--primary-blue);
-            background: rgba(91, 157, 255, 0.05);
+        .tab-btn:hover {
+            color: var(--color-text-primary);
         }
 
-        .tab-button.active {
-            color: var(--primary-blue);
-            border-bottom-color: var(--primary-blue);
-            background: rgba(91, 157, 255, 0.08);
+        .tab-btn.active {
+            color: var(--color-text-primary);
         }
 
-        /* ========================================
-           CONTAINER & LAYOUT
-           ======================================== */
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: var(--spacing-2xl) var(--spacing-lg);
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--color-text-primary);
         }
 
         .tab-content {
             display: none;
-            animation: fadeInUp 0.4s ease;
+            animation: fadeIn 0.4s ease;
         }
 
         .tab-content.active {
             display: block;
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ========================================
-           CARDS
-           ======================================== */
-        
-        .card {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            padding: var(--spacing-lg);
-            margin-bottom: var(--spacing-lg);
-            box-shadow: var(--shadow-md);
-            transition: var(--transition-base);
+        /* --- Dashboard --- */
+        .status-panel {
+            background: var(--color-bg-alt);
+            border-radius: 18px;
+            padding: 32px;
+            margin-bottom: 32px;
         }
 
-        .card:hover {
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-2px);
-        }
-
-        .card h2 {
-            font-size: var(--font-size-2xl);
-            font-weight: 700;
-            margin-bottom: var(--spacing-md);
-            color: var(--text-primary);
+        .status-header {
             display: flex;
             align-items: center;
-            gap: var(--spacing-sm);
+            gap: 12px;
+            margin-bottom: 24px;
         }
 
-        .card h3 {
-            font-size: var(--font-size-xl);
-            font-weight: 600;
-            margin: var(--spacing-lg) 0 var(--spacing-md);
-            color: var(--text-primary);
-        }
-
-        .card p {
-            color: var(--text-secondary);
-            line-height: 1.7;
-            margin-bottom: var(--spacing-md);
-        }
-
-        /* ========================================
-           GRIDS
-           ======================================== */
-        
-        .stats-grid, .ecosystem-grid, .agents-grid, .dashboard-grid, .api-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: var(--spacing-lg);
-            margin: var(--spacing-xl) 0;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, rgba(91, 157, 255, 0.1) 0%, rgba(0, 181, 163, 0.1) 100%);
-            padding: var(--spacing-xl);
-            border-radius: var(--radius-lg);
-            text-align: center;
-            border: 1px solid rgba(91, 157, 255, 0.2);
-        }
-
-        .stat-card .value {
-            font-size: var(--font-size-3xl);
-            font-weight: 800;
-            color: var(--primary-blue);
-            display: block;
-        }
-
-        .stat-card .label {
-            font-size: var(--font-size-sm);
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* ========================================
-           DASHBOARD & STATUS
-           ======================================== */
-        
-        .status-indicator {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
+        .status-dot {
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            margin-right: var(--spacing-sm);
+            background-color: var(--color-success);
         }
 
-        .status-indicator.green { background-color: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
-        .status-indicator.yellow { background-color: var(--accent-orange); box-shadow: 0 0 8px var(--accent-orange); }
-        .status-indicator.red { background-color: var(--accent-red); box-shadow: 0 0 8px var(--accent-red); }
-
-        .dashboard-card {
-            background: white;
-            padding: var(--spacing-lg);
-            border-radius: var(--radius-lg);
-            border: 1px solid #edf2f7;
-            position: relative;
+        .status-text {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .status-badge {
-            position: absolute;
-            top: var(--spacing-md);
-            right: var(--spacing-md);
-            font-size: 10px;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 10px;
-            background: #ebf8ff;
-            color: #2b6cb0;
-        }
-
-        /* ========================================
-           FOOTER
-           ======================================== */
-        
+        /* --- Footer --- */
         footer {
-            background: var(--bg-dark);
-            color: white;
-            padding: var(--spacing-3xl) var(--spacing-lg);
-            margin-top: var(--spacing-3xl);
-            text-align: center;
+            padding: 80px 24px;
+            border-top: 1px solid var(--color-border);
+            background-color: var(--color-bg-alt);
         }
 
-        footer p {
-            color: rgba(255,255,255,0.7);
-            margin-bottom: var(--spacing-md);
+        .footer-container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 40px;
         }
 
-        footer a {
-            color: var(--primary-teal);
+        .footer-info p {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            max-width: 400px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 48px;
+        }
+
+        .footer-col h4 {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            color: var(--color-text-primary);
+        }
+
+        .footer-col a {
+            display: block;
             text-decoration: none;
-            margin: 0 var(--spacing-sm);
-            transition: var(--transition-base);
+            color: var(--color-text-secondary);
+            font-size: 12px;
+            margin-bottom: 8px;
+            transition: var(--transition);
         }
 
-        footer a:hover {
-            color: white;
+        .footer-col a:hover {
+            color: var(--color-text-primary);
+            text-decoration: underline;
         }
 
-        /* ========================================
-           MOBILE RESPONSIVE
-           ======================================== */
-        
+        /* --- Mobile --- */
         @media (max-width: 768px) {
-            header h1 { font-size: var(--font-size-2xl); }
-            header p { font-size: var(--font-size-base); }
-            .tab-button { min-width: 120px; font-size: var(--font-size-sm); }
-            .stats-grid, .ecosystem-grid, .agents-grid, .dashboard-grid, .api-grid { grid-template-columns: 1fr; }
-            .container { padding: var(--spacing-lg) var(--spacing-md); }
+            .hero h1 { font-size: 40px; }
+            .hero p { font-size: 20px; }
+            .nav-links { display: none; }
+            .footer-container { flex-direction: column; }
         }
-
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="header-content">
-            <h1>🌐 XMRT Ecosystem</h1>
-            <p>AI-Governed, Mobile-First Cryptocurrency Built for the Unbanked</p>
-            <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                <a href="https://github.com/DevGruGold/XMRT-Ecosystem" class="btn btn-primary" target="_blank">GitHub</a>
-                <a href="https://josephandrewlee.medium.com" class="btn btn-secondary" target="_blank">📖 Medium Blog</a>
-                <a href="https://github.com/DevGruGold/XMRT-Ecosystem/discussions" class="btn btn-secondary" target="_blank">💬 Discussions</a>
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="logo">XMRT Ecosystem</a>
+            <div class="nav-links">
+                <a href="#overview">Overview</a>
+                <a href="#ecosystem">Ecosystem</a>
+                <a href="#agents">AI Agents</a>
+                <a href="#dashboard">Dashboard</a>
             </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1>Financial infrastructure,<br>governed by AI.</h1>
+        <p>A mobile-first cryptocurrency ecosystem designed for global inclusion and autonomous operations.</p>
+        <div class="cta-group">
+            <a href="https://github.com/DevGruGold/XMRT-Ecosystem" class="btn btn-primary">View on GitHub</a>
+            <a href="https://josephandrewlee.medium.com" class="btn btn-secondary">Read the Blog &rarr;</a>
         </div>
     </header>
 
-    <!-- Animated Ticker -->
-    <div class="ticker-wrapper">
-        <div class="ticker">
-            <span class="ticker-item"><span class="value">20.99M</span> <span class="label">XMRT Tokens</span></span>
-            <span class="ticker-item"><span class="value">4</span> <span class="label">AI Agents</span></span>
-            <span class="ticker-item"><span class="value">120+</span> <span class="label">Edge Functions</span></span>
-            <span class="ticker-item"><span class="value">5</span> <span class="label">Ecosystem Apps</span></span>
-            <span class="ticker-item"><span class="value">24/7</span> <span class="label">Serverless Operations</span></span>
-            <!-- Duplicate for seamless loop -->
-            <span class="ticker-item"><span class="value">20.99M</span> <span class="label">XMRT Tokens</span></span>
-            <span class="ticker-item"><span class="value">4</span> <span class="label">AI Agents</span></span>
-            <span class="ticker-item"><span class="value">120+</span> <span class="label">Edge Functions</span></span>
-            <span class="ticker-item"><span class="value">5</span> <span class="label">Ecosystem Apps</span></span>
-            <span class="ticker-item"><span class="value">24/7</span> <span class="label">Serverless Operations</span></span>
+    <div class="ticker-bar">
+        <div class="ticker-content">
+            <div class="ticker-item"><span>20.99M</span> XMRT Tokens</div>
+            <div class="ticker-item"><span>4</span> Autonomous Agents</div>
+            <div class="ticker-item"><span>120+</span> Edge Functions</div>
+            <div class="ticker-item"><span>24/7</span> Serverless Uptime</div>
+            <div class="ticker-item"><span>5</span> Ecosystem Apps</div>
+            <!-- Duplicate for loop -->
+            <div class="ticker-item"><span>20.99M</span> XMRT Tokens</div>
+            <div class="ticker-item"><span>4</span> Autonomous Agents</div>
+            <div class="ticker-item"><span>120+</span> Edge Functions</div>
+            <div class="ticker-item"><span>24/7</span> Serverless Uptime</div>
+            <div class="ticker-item"><span>5</span> Ecosystem Apps</div>
         </div>
     </div>
 
-    <!-- Sticky Tab Navigation -->
-    <div class="tabs-sticky-container">
-        <div class="tabs-container">
-            <button class="tab-button active" onclick="showTab('overview')" id="btn-overview">🏠 Overview</button>
-            <button class="tab-button" onclick="showTab('ecosystem')" id="btn-ecosystem">🌍 Ecosystem</button>
-            <button class="tab-button" onclick="showTab('agents')" id="btn-agents">🤖 AI Agents</button>
-            <button class="tab-button" onclick="showTab('dashboard')" id="btn-dashboard">📊 Dashboard</button>
-            <button class="tab-button" onclick="showTab('api')" id="btn-api">🔌 API Testing</button>
-            <button class="tab-button" onclick="showTab('architecture')" id="btn-architecture">🏗️ Architecture</button>
+    <main class="section">
+        <div class="tabs-nav">
+            <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+            <button class="tab-btn" onclick="showTab('ecosystem')">Ecosystem</button>
+            <button class="tab-btn" onclick="showTab('agents')">AI Agents</button>
+            <button class="tab-btn" onclick="showTab('dashboard')">Dashboard</button>
+            <button class="tab-btn" onclick="showTab('api')">API</button>
         </div>
-    </div>
 
-    <div class="container">
-        <!-- Overview Tab -->
+        <!-- Overview -->
         <div id="overview" class="tab-content active">
-            <div class="card">
-                <h2>🎯 Mission</h2>
-                <p>XMRT is an <strong>AI-governed cryptocurrency ecosystem</strong> designed for the unbanked and mobile-first world. We combine autonomous AI agents, mobile mining, emotional intelligence, and decentralized governance to create a truly inclusive financial system.</p>
-                
-                <div class="stats-grid">
-                    <div class="stat-card"><span class="value">20.99M</span><span class="label">XMRT Tokens</span></div>
-                    <div class="stat-card"><span class="value">5</span><span class="label">Ecosystem Apps</span></div>
-                    <div class="stat-card"><span class="value">120+</span><span class="label">Autonomous Functions</span></div>
-                    <div class="stat-card"><span class="value">24/7</span><span class="label">Serverless Uptime</span></div>
+            <div class="grid">
+                <div class="card">
+                    <h3>Mission</h3>
+                    <p>XMRT is building a truly inclusive financial system by combining autonomous AI coordination with mobile-first accessibility.</p>
                 </div>
-            </div>
-
-            <div class="card">
-                <h2>✨ Key Innovations</h2>
-                <ul style="list-style: none; padding: 0;">
-                    <li style="margin-bottom: 1rem;">✅ <strong>Suite AI:</strong> Replace C-Suite executives with AI, save $12.4M annually, increase worker salaries 41%</li>
-                    <li style="margin-bottom: 1rem;">✅ <strong>MobileMonero:</strong> Android-based XMR mining pool for the unbanked</li>
-                    <li style="margin-bottom: 1rem;">✅ <strong>XMRT Glasses:</strong> AI-powered emotional intelligence for professionals</li>
-                    <li style="margin-bottom: 1rem;">✅ <strong>CashDapp:</strong> Privacy-first decentralized wallet with secure circle payments</li>
-                </ul>
+                <div class="card">
+                    <h3>Suite AI</h3>
+                    <p>Our governance model replaces traditional corporate overhead with efficient, data-driven AI agents.</p>
+                </div>
+                <div class="card">
+                    <h3>Mobile First</h3>
+                    <p>Designed for the unbanked, our tools are optimized for mobile performance and accessibility.</p>
+                </div>
             </div>
         </div>
 
-        <!-- Ecosystem Tab -->
+        <!-- Ecosystem -->
         <div id="ecosystem" class="tab-content">
-            <div class="card">
-                <h2>🌍 Ecosystem Applications</h2>
-                <div class="ecosystem-grid">
-                    <div class="card">
-                        <h3>📱 MobileMonero</h3>
-                        <p>The world's first mobile-optimized Monero mining pool. Earn XMRT by contributing to network security from your smartphone.</p>
-                    </div>
-                    <div class="card">
-                        <h3>🕶️ XMRT Glasses</h3>
-                        <p>Wearable AI that provides real-time emotional intelligence and professional guidance during meetings and social interactions.</p>
-                    </div>
-                    <div class="card">
-                        <h3>💼 Suite AI</h3>
-                        <p>Autonomous corporate governance system that replaces traditional management with efficient, data-driven AI agents.</p>
-                    </div>
+            <div class="grid">
+                <div class="card">
+                    <h3>MobileMonero</h3>
+                    <p>A mobile-optimized mining pool allowing users to contribute to network security from any device.</p>
+                </div>
+                <div class="card">
+                    <h3>XMRT Glasses</h3>
+                    <p>Wearable AI providing real-time professional guidance and emotional intelligence.</p>
+                </div>
+                <div class="card">
+                    <h3>CashDapp</h3>
+                    <p>A privacy-focused decentralized wallet featuring secure peer-to-peer payments.</p>
                 </div>
             </div>
         </div>
 
-        <!-- AI Agents Tab -->
+        <!-- AI Agents -->
         <div id="agents" class="tab-content">
-            <div class="card">
-                <h2>🤖 Autonomous AI Agents</h2>
-                <p>Our ecosystem is powered by 4 specialized AI agents that coordinate 24/7 to manage governance, security, and operations.</p>
-                <div id="agents-grid" class="agents-grid">
-                    <!-- Agents will be loaded here -->
-                    <div class="card"><h3>🎯 Coordinator</h3><p>Orchestrates tasks across the ecosystem.</p></div>
-                    <div class="card"><h3>🔐 Security</h3><p>Monitors for threats and vulnerabilities.</p></div>
-                    <div class="card"><h3>📊 Analyzer</h3><p>Processes data and optimizes performance.</p></div>
-                    <div class="card"><h3>🏛️ Governor</h3><p>Manages DAO proposals and voting.</p></div>
+            <div class="grid" id="agents-grid">
+                <div class="card">
+                    <h3>Coordinator</h3>
+                    <p>Manages task orchestration and agent synchronization across the global network.</p>
+                </div>
+                <div class="card">
+                    <h3>Security</h3>
+                    <p>Continuous monitoring for network threats and automated vulnerability detection.</p>
+                </div>
+                <div class="card">
+                    <h3>Analyzer</h3>
+                    <p>Real-time data processing and ecosystem performance optimization.</p>
                 </div>
             </div>
         </div>
 
-        <!-- Dashboard Tab -->
+        <!-- Dashboard -->
         <div id="dashboard" class="tab-content">
-            <div class="card">
-                <h2>📊 System Dashboard</h2>
-                <div id="health-status-container" style="margin-bottom: 2rem; padding: 1rem; background: #f8fafc; border-radius: 8px; display: flex; align-items: center;">
-                    <span id="health-indicator" class="status-indicator yellow"></span>
-                    <span id="health-status-text">Checking system health...</span>
+            <div class="status-panel">
+                <div class="status-header">
+                    <div class="status-dot"></div>
+                    <div class="status-text">Systems Operational</div>
                 </div>
-                <div id="dashboard-data" class="dashboard-grid">
-                    <!-- Dashboard data will be loaded here -->
+                <div class="grid" style="margin-top: 0; gap: 24px;">
+                    <div>
+                        <p style="font-size: 12px; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase;">Uptime</p>
+                        <p style="font-size: 24px; font-weight: 600;">99.98%</p>
+                    </div>
+                    <div>
+                        <p style="font-size: 12px; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase;">Active Agents</p>
+                        <p style="font-size: 24px; font-weight: 600;">4</p>
+                    </div>
+                    <div>
+                        <p style="font-size: 12px; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase;">Edge Invocations</p>
+                        <p style="font-size: 24px; font-weight: 600;">45.8k</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- API Testing Tab -->
+        <!-- API -->
         <div id="api" class="tab-content">
             <div class="card">
-                <h2>🔌 API Testing</h2>
-                <p>Interact directly with the XMRT Ecosystem API endpoints.</p>
-                <div class="api-grid">
-                    <div class="card">
-                        <h3>Health Check</h3>
-                        <p>GET /api/health</p>
-                        <button class="btn btn-primary" onclick="testApi('/api/health')">Run Test</button>
-                    </div>
-                    <div class="card">
-                        <h3>Get Agents</h3>
-                        <p>GET /api/agents</p>
-                        <button class="btn btn-primary" onclick="testApi('/api/agents')">Run Test</button>
-                    </div>
+                <h3>Developer API</h3>
+                <p>Access the XMRT infrastructure programmatically through our global edge network.</p>
+                <div style="margin-top: 24px;">
+                    <button class="btn btn-primary" onclick="testApi('/api/health')">Test Health Endpoint</button>
                 </div>
-                <pre id="api-response" style="margin-top: 2rem; padding: 1rem; background: #1a202c; color: #4ade80; border-radius: 8px; overflow-x: auto; display: none;"></pre>
+                <pre id="api-response" style="margin-top: 24px; padding: 24px; background: #1d1d1f; color: #f5f5f7; border-radius: 12px; font-size: 13px; overflow-x: auto; display: none;"></pre>
             </div>
         </div>
-
-        <!-- Architecture Tab -->
-        <div id="architecture" class="tab-content">
-            <div class="card">
-                <h2>🏗️ System Architecture</h2>
-                <p>XMRT uses a hybrid serverless architecture combining Vercel Edge Functions and Supabase.</p>
-                <div class="card">
-                    <h3>Stack</h3>
-                    <ul>
-                        <li>Frontend: Vanilla JS + Vite</li>
-                        <li>Backend: Node.js + Vercel Edge</li>
-                        <li>Database: Supabase (PostgreSQL)</li>
-                        <li>AI: OpenAI + Custom Agent Framework</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+    </main>
 
     <footer>
-        <p>&copy; 2025 XMRT Ecosystem. All rights reserved.</p>
-        <div>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Service</a>
-            <a href="https://github.com/DevGruGold/XMRT-Ecosystem">GitHub</a>
+        <div class="footer-container">
+            <div class="footer-info">
+                <p style="font-weight: 600; color: var(--color-text-primary); margin-bottom: 8px;">XMRT Ecosystem</p>
+                <p>Building the future of autonomous financial infrastructure. Designed for global inclusion and governed by intelligence.</p>
+                <p style="margin-top: 24px;">&copy; 2025 XMRT Ecosystem. All rights reserved.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-col">
+                    <h4>Resources</h4>
+                    <a href="https://github.com/DevGruGold/XMRT-Ecosystem">GitHub</a>
+                    <a href="https://josephandrewlee.medium.com">Medium</a>
+                    <a href="#">Documentation</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+            </div>
         </div>
     </footer>
 
     <script>
         function showTab(tabId) {
-            // Hide all tab contents
             document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.remove('active');
             });
-            
-            // Remove active class from all buttons
-            document.querySelectorAll('.tab-button').forEach(btn => {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             
-            // Show selected tab content
-            const activeTab = document.getElementById(tabId);
-            if (activeTab) {
-                activeTab.classList.add('active');
-            }
-            
-            // Set active button
-            const activeBtn = document.getElementById('btn-' + tabId);
-            if (activeBtn) {
-                activeBtn.classList.add('active');
-            }
-
-            // Trigger specific tab logic
-            if (tabId === 'dashboard') {
-                loadDashboard();
-            }
-        }
-
-        async function loadDashboard() {
-            const indicator = document.getElementById('health-indicator');
-            const statusText = document.getElementById('health-status-text');
-            const dashboardContainer = document.getElementById('dashboard-data');
-
-            try {
-                const response = await fetch('/api/health');
-                const data = await response.json();
-                
-                indicator.className = 'status-indicator green';
-                statusText.textContent = 'All systems operational';
-
-                dashboardContainer.innerHTML = `
-                    <div class="dashboard-card">
-                        <span class="status-badge">LIVE</span>
-                        <h3>System Health</h3>
-                        <p>Status: ${data.status || 'Healthy'}</p>
-                        <p>Uptime: 99.9%</p>
-                    </div>
-                    <div class="dashboard-card">
-                        <span class="status-badge">ACTIVE</span>
-                        <h3>AI Agents</h3>
-                        <p>Count: 4</p>
-                        <p>Tasks: 1,247</p>
-                    </div>
-                    <div class="dashboard-card">
-                        <span class="status-badge">RUNNING</span>
-                        <h3>Edge Functions</h3>
-                        <p>Total: 120+</p>
-                        <p>Region: Global</p>
-                    </div>
-                `;
-            } catch (error) {
-                indicator.className = 'status-indicator red';
-                statusText.textContent = 'API connection error';
-                dashboardContainer.innerHTML = '<p>Failed to load live data. Please check your connection.</p>';
-            }
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
         }
 
         async function testApi(endpoint) {
             const responsePre = document.getElementById('api-response');
             responsePre.style.display = 'block';
-            responsePre.textContent = 'Loading...';
+            responsePre.textContent = 'Requesting...';
             
             try {
                 const response = await fetch(endpoint);
@@ -690,12 +558,6 @@
                 responsePre.textContent = 'Error: ' + error.message;
             }
         }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            // Check health on load
-            loadDashboard();
-        });
     </script>
 </body>
 </html>
