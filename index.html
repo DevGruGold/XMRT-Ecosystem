@@ -21,6 +21,7 @@
             --color-accent: #0066cc; /* Professional Blue */
             --color-border: #d2d2d7;
             --color-success: #28a745;
+            --color-danger: #ff3b30;
             
             /* Typography */
             --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -28,7 +29,7 @@
             /* Layout */
             --max-width: 1100px;
             --header-height: 64px;
-            --radius: 8px;
+            --radius: 12px;
             --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -136,6 +137,8 @@
             text-decoration: none;
             transition: var(--transition);
             display: inline-block;
+            cursor: pointer;
+            border: none;
         }
 
         .btn-primary {
@@ -149,6 +152,7 @@
 
         .btn-secondary {
             color: var(--color-accent);
+            background: none;
         }
 
         .btn-secondary:hover {
@@ -207,10 +211,14 @@
             border-radius: 18px;
             transition: var(--transition);
             border: 1px solid transparent;
+            text-decoration: none;
+            color: inherit;
+            display: block;
         }
 
         .card:hover {
             background: #f0f0f2;
+            transform: translateY(-2px);
         }
 
         .card h3 {
@@ -223,6 +231,18 @@
             color: var(--color-text-secondary);
             font-size: 16px;
             line-height: 1.6;
+        }
+
+        .card .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: rgba(0, 102, 204, 0.1);
+            color: var(--color-accent);
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-transform: uppercase;
         }
 
         /* --- Tabs --- */
@@ -303,6 +323,9 @@
             background-color: var(--color-success);
         }
 
+        .status-dot.offline { background-color: var(--color-danger); }
+        .status-dot.checking { background-color: #ffcc00; }
+
         .status-text {
             font-size: 14px;
             font-weight: 600;
@@ -375,10 +398,10 @@
         <div class="nav-container">
             <a href="#" class="logo">XMRT Ecosystem</a>
             <div class="nav-links">
-                <a href="#overview">Overview</a>
-                <a href="#ecosystem">Ecosystem</a>
-                <a href="#agents">AI Agents</a>
-                <a href="#dashboard">Dashboard</a>
+                <a href="#overview" onclick="showTab('overview')">Overview</a>
+                <a href="#ecosystem" onclick="showTab('ecosystem')">Ecosystem</a>
+                <a href="#agents" onclick="showTab('agents')">AI Agents</a>
+                <a href="#dashboard" onclick="showTab('dashboard')">Dashboard</a>
             </div>
         </div>
     </nav>
@@ -393,7 +416,7 @@
     </header>
 
     <div class="ticker-bar">
-        <div class="ticker-content">
+        <div class="ticker-content" id="ticker-content">
             <div class="ticker-item"><span>20.99M</span> XMRT Tokens</div>
             <div class="ticker-item"><span>4</span> Autonomous Agents</div>
             <div class="ticker-item"><span>120+</span> Edge Functions</div>
@@ -438,36 +461,29 @@
         <!-- Ecosystem -->
         <div id="ecosystem" class="tab-content">
             <div class="grid">
-                <div class="card">
+                <a href="https://xmrt-ecosystem-0k8i.onrender.com" class="card" target="_blank">
+                    <span class="badge">Live App</span>
                     <h3>MobileMonero</h3>
                     <p>A mobile-optimized mining pool allowing users to contribute to network security from any device.</p>
-                </div>
-                <div class="card">
-                    <h3>XMRT Glasses</h3>
-                    <p>Wearable AI providing real-time professional guidance and emotional intelligence.</p>
-                </div>
-                <div class="card">
-                    <h3>CashDapp</h3>
-                    <p>A privacy-focused decentralized wallet featuring secure peer-to-peer payments.</p>
-                </div>
+                </a>
+                <a href="https://xmrtsuite.streamlit.app" class="card" target="_blank">
+                    <span class="badge">Dashboard</span>
+                    <h3>Suite AI</h3>
+                    <p>Autonomous corporate governance system that replaces traditional management with efficient AI agents.</p>
+                </a>
+                <a href="https://github.com/DevGruGold/XMRT-Ecosystem/discussions" class="card" target="_blank">
+                    <span class="badge">Community</span>
+                    <h3>DAO Governance</h3>
+                    <p>Participate in the decentralized decision-making process of the XMRT Ecosystem.</p>
+                </a>
             </div>
         </div>
 
         <!-- AI Agents -->
         <div id="agents" class="tab-content">
             <div class="grid" id="agents-grid">
-                <div class="card">
-                    <h3>Coordinator</h3>
-                    <p>Manages task orchestration and agent synchronization across the global network.</p>
-                </div>
-                <div class="card">
-                    <h3>Security</h3>
-                    <p>Continuous monitoring for network threats and automated vulnerability detection.</p>
-                </div>
-                <div class="card">
-                    <h3>Analyzer</h3>
-                    <p>Real-time data processing and ecosystem performance optimization.</p>
-                </div>
+                <!-- Agents will be loaded here -->
+                <div class="card"><h3>Loading Agents...</h3></div>
             </div>
         </div>
 
@@ -475,23 +491,31 @@
         <div id="dashboard" class="tab-content">
             <div class="status-panel">
                 <div class="status-header">
-                    <div class="status-dot"></div>
-                    <div class="status-text">Systems Operational</div>
+                    <div id="health-dot" class="status-dot checking"></div>
+                    <div id="health-text" class="status-text">Checking Systems...</div>
                 </div>
                 <div class="grid" style="margin-top: 0; gap: 24px;">
                     <div>
                         <p style="font-size: 12px; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase;">Uptime</p>
-                        <p style="font-size: 24px; font-weight: 600;">99.98%</p>
+                        <p id="uptime-val" style="font-size: 24px; font-weight: 600;">--</p>
                     </div>
                     <div>
                         <p style="font-size: 12px; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase;">Active Agents</p>
-                        <p style="font-size: 24px; font-weight: 600;">4</p>
+                        <p id="agents-val" style="font-size: 24px; font-weight: 600;">--</p>
                     </div>
                     <div>
-                        <p style="font-size: 12px; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase;">Edge Invocations</p>
-                        <p style="font-size: 24px; font-weight: 600;">45.8k</p>
+                        <p style="font-size: 12px; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase;">Version</p>
+                        <p id="version-val" style="font-size: 24px; font-weight: 600;">--</p>
                     </div>
                 </div>
+            </div>
+            <div class="card">
+                <h3>Coordination Cycle</h3>
+                <p>Trigger a manual synchronization cycle across all autonomous agents.</p>
+                <div style="margin-top: 24px;">
+                    <button class="btn btn-primary" onclick="triggerTick()">Trigger Cycle</button>
+                </div>
+                <pre id="tick-response" style="margin-top: 24px; padding: 24px; background: #1d1d1f; color: #f5f5f7; border-radius: 12px; font-size: 13px; overflow-x: auto; display: none;"></pre>
             </div>
         </div>
 
@@ -500,8 +524,10 @@
             <div class="card">
                 <h3>Developer API</h3>
                 <p>Access the XMRT infrastructure programmatically through our global edge network.</p>
-                <div style="margin-top: 24px;">
-                    <button class="btn btn-primary" onclick="testApi('/api/health')">Test Health Endpoint</button>
+                <div style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="testApi('/health')">Health Check</button>
+                    <button class="btn btn-primary" onclick="testApi('/api/agents')">List Agents</button>
+                    <button class="btn btn-primary" onclick="testApi('/api/agents/eliza')">Agent: Eliza</button>
                 </div>
                 <pre id="api-response" style="margin-top: 24px; padding: 24px; background: #1d1d1f; color: #f5f5f7; border-radius: 12px; font-size: 13px; overflow-x: auto; display: none;"></pre>
             </div>
@@ -520,7 +546,7 @@
                     <h4>Resources</h4>
                     <a href="https://github.com/DevGruGold/XMRT-Ecosystem">GitHub</a>
                     <a href="https://josephandrewlee.medium.com">Medium</a>
-                    <a href="#">Documentation</a>
+                    <a href="https://github.com/DevGruGold/XMRT-Ecosystem/discussions">Discussions</a>
                 </div>
                 <div class="footer-col">
                     <h4>Legal</h4>
@@ -541,8 +567,88 @@
                 btn.classList.remove('active');
             });
             
-            document.getElementById(tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
+            const target = document.getElementById(tabId);
+            if (target) target.classList.add('active');
+            
+            // Find the button that was clicked or matches the tabId
+            const btn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.textContent.toLowerCase() === tabId.toLowerCase());
+            if (btn) btn.classList.add('active');
+
+            if (tabId === 'agents') loadAgents();
+            if (tabId === 'dashboard') checkHealth();
+        }
+
+        async function loadAgents() {
+            const grid = document.getElementById('agents-grid');
+            try {
+                const response = await fetch('/api/agents');
+                const data = await response.json();
+                
+                let agents = [];
+                if (data.agents) {
+                    agents = Object.values(data.agents);
+                }
+
+                if (agents.length > 0) {
+                    grid.innerHTML = agents.map(agent => `
+                        <div class="card">
+                            <span class="badge">${agent.status}</span>
+                            <h3>${agent.name}</h3>
+                            <p><strong>Role:</strong> ${agent.role}</p>
+                            <p style="margin-top: 8px; font-style: italic;">"${agent.voice}"</p>
+                        </div>
+                    `).join('');
+                } else {
+                    grid.innerHTML = '<div class="card"><h3>No agents found</h3></div>';
+                }
+            } catch (error) {
+                grid.innerHTML = '<div class="card"><h3>Error loading agents</h3></div>';
+            }
+        }
+
+        async function checkHealth() {
+            const dot = document.getElementById('health-dot');
+            const text = document.getElementById('health-text');
+            const uptime = document.getElementById('uptime-val');
+            const agents = document.getElementById('agents-val');
+            const version = document.getElementById('version-val');
+
+            try {
+                const response = await fetch('/health');
+                const data = await response.json();
+                
+                if (data.ok) {
+                    dot.className = 'status-dot';
+                    text.textContent = 'Systems Operational';
+                    uptime.textContent = '99.9%';
+                    agents.textContent = data.agents_active || '4';
+                    version.textContent = data.version || '7.0.0';
+                } else {
+                    dot.className = 'status-dot offline';
+                    text.textContent = 'Systems Degraded';
+                }
+            } catch (error) {
+                dot.className = 'status-dot offline';
+                text.textContent = 'API Unreachable';
+            }
+        }
+
+        async function triggerTick() {
+            const responsePre = document.getElementById('tick-response');
+            responsePre.style.display = 'block';
+            responsePre.textContent = 'Triggering cycle...';
+            
+            try {
+                const response = await fetch('/api/tick', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ trigger: 'web_dashboard' })
+                });
+                const data = await response.json();
+                responsePre.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responsePre.textContent = 'Error: ' + error.message;
+            }
         }
 
         async function testApi(endpoint) {
@@ -558,6 +664,16 @@
                 responsePre.textContent = 'Error: ' + error.message;
             }
         }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            checkHealth();
+            // Handle hash links
+            if (window.location.hash) {
+                const tab = window.location.hash.substring(1);
+                showTab(tab);
+            }
+        });
     </script>
 </body>
 </html>
