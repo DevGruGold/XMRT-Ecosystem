@@ -323,7 +323,7 @@ jobs:
         coordination_results = []
         
         print("="*80)
-              for agent in health_results['healthy']:
+        for agent in health_results['healthy']:
             if agent.get('api_url'):
                 print(f"\n📡 Coordinating with {agent['name']}...")
                 
@@ -399,7 +399,8 @@ jobs:
                         break
                 else:
                     # This block executes if the loop completes without a 'break' (i.e., all retries failed)
-                    pass # The last error/unhealthy status would have been logged in the last attempt's except blockate comprehensive cycle report
+                    pass # The last error/unhealthy status would have been logged in the last attempt's except block
+        # Create comprehensive cycle report
         cycle_num = datetime.now().strftime('%Y%m%d%H%M')
         report_file = f'${{ env.AGENT_CYCLE_DIR }}/AGENT_CYCLE_{cycle_num}.md'
 
