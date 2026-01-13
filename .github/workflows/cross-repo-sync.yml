@@ -4,7 +4,7 @@ on:
     types: [sync-repos]
   workflow_dispatch:
   schedule:
-    # Run every 30 minutes to ensure consistency without overloading
+    # Run every 30 minutes
     - cron: '*/30 * * * *'
 
 jobs:
@@ -21,29 +21,52 @@ jobs:
       
       - name: Trigger sync across all repos
         run: |
-          curl -X POST "${{ secrets.SUPABASE_URL }}/functions/v1/sync-dashboard-data" \
+          echo "Triggering Supabase sync function..."
+          # Check if secrets are available
+          if [ -z "${{ secrets.SUPABASE_URL }}" ] || [ -z "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" ]; then
+            echo "⚠️ Warning: SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY is not set. Skipping sync trigger."
+            exit 0
+          fi
+          
+          RESPONSE=$(curl -s -w "%{http_code}" -X POST "${{ secrets.SUPABASE_URL }}/functions/v1/sync-dashboard-data" \
             -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
             -H "Content-Type: application/json" \
             -d '{
                 "target_repos": ["suite", "dao-ecosystem", "ecosystem-hub"],
                 "force_refresh": true
-              }'
+              }')
+          
+          HTTP_CODE=$(echo "$RESPONSE" | tail -c 4)
+          echo "Supabase Response Code: $HTTP_CODE"
+          
+          if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+            echo "✅ Sync triggered successfully"
+          else
+            echo "❌ Sync trigger failed with code $HTTP_CODE"
+            # We don't exit 1 here to allow health checks to run anyway
+          fi
       
       - name: Validate data consistency
         run: |
-          curl -X GET "${{ secrets.SUPABASE_URL }}/functions/v1/validate-cross-repo-data" \
-            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"
+          if [ -z "${{ secrets.SUPABASE_URL }}" ] || [ -z "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" ]; then
+            echo "⚠️ Skipping validation due to missing secrets."
+            exit 0
+          fi
+          
+          echo "Validating cross-repo data..."
+          curl -s -X GET "${{ secrets.SUPABASE_URL }}/functions/v1/validate-cross-repo-data" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" || echo "Validation request failed"
       
       - name: Health check all repos
         run: |
           echo "Checking suite-beta.vercel.app..."
-          curl -f https://suite-beta.vercel.app/health || echo "Suite health check failed"
+          curl -s -f https://suite-beta.vercel.app/health || echo "⚠️ Suite health check failed"
           
           echo "Checking xmrt-dao-ecosystem.vercel.app..."
-          curl -f https://xmrt-dao-ecosystem.vercel.app/health || echo "DAO Ecosystem health check failed"
+          curl -s -f https://xmrt-dao-ecosystem.vercel.app/health || echo "⚠️ DAO Ecosystem health check failed"
           
           echo "Checking xmrt-ecosystem.vercel.app..."
-          curl -f https://xmrt-ecosystem.vercel.app/api/health || echo "Ecosystem Hub health check failed"
+          curl -s -f https://xmrt-ecosystem.vercel.app/api/health || echo "⚠️ Ecosystem Hub health check failed"
       
       - name: Report sync status
         run: |
