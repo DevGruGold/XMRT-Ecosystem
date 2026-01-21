@@ -341,27 +341,120 @@ class TaskManager:
         task = self.tasks.get(task_id)
         if not task:
             return False
-        
+
         task.status = TaskStatus.COMPLETED
         task.progress = 100
-        
+
         if result:
             task.result = result
-        
+
         # Remove from agent's current tasks
         if task.assigned_agent:
             agent = self.agents.get(task.assigned_agent)
             if agent and task_id in agent.current_tasks:
                 agent.current_tasks.remove(task_id)
-                
+
                 # Update agent performance
                 self._update_agent_performance(agent, task)
-        
+
         logger.info(f"Completed task: {task.title}")
-        
+
         # Check for dependent tasks
         self._check_dependent_tasks(task_id)
-        
+
+        return True
+
+    def cancel_task(self, task_id: str, reason: Optional[str] = None) -> bool:
+        '''Cancel a task'''
+        task = self.tasks.get(task_id)
+        if not task:
+            return False
+
+        # Cannot cancel already completed tasks
+        if task.status == TaskStatus.COMPLETED:
+            logger.warning(f"Cannot cancel completed task: {task_id}")
+            return False
+
+        # Remove from agent's current tasks if assigned
+        if task.assigned_agent:
+            agent = self.agents.get(task.assigned_agent)
+            if agent and task_id in agent.current_tasks:
+                agent.current_tasks.remove(task_id)
+
+        # Remove from task queue if pending
+        if task_id in self.task_queue.get(task.priority, []):
+            self.task_queue[task.priority].remove(task_id)
+
+        # Update task status
+        task.status = TaskStatus.CANCELLED
+        if reason:
+            task.result = {'cancellation_reason': reason}
+
+        logger.info(f"Cancelled task: {task.title} (ID: {task_id})")
+        return True
+
+    def delete_task(self, task_id: str) -> bool:
+        '''Delete a task completely from the system'''
+        task = self.tasks.get(task_id)
+        if not task:
+            return False
+
+        # Remove from agent's current tasks if assigned
+        if task.assigned_agent:
+            agent = self.agents.get(task.assigned_agent)
+            if agent and task_id in agent.current_tasks:
+                agent.current_tasks.remove(task_id)
+
+        # Remove from task queue if pending
+        if task_id in self.task_queue.get(task.priority, []):
+            self.task_queue[task.priority].remove(task_id)
+
+        # Remove task from tasks dict
+        del self.tasks[task_id]
+
+        logger.info(f"Deleted task: {task.title} (ID: {task_id})")
+        return True
+
+    def update_task_status(self, task_id: str, new_status: TaskStatus) -> bool:
+        '''Update task status to a specific value'''
+        task = self.tasks.get(task_id)
+        if not task:
+            return False
+
+        old_status = task.status
+
+        # Handle transitions that need cleanup
+        if new_status in [TaskStatus.CANCELLED, TaskStatus.FAILED]:
+            # Remove from agent's current tasks if assigned
+            if task.assigned_agent:
+                agent = self.agents.get(task.assigned_agent)
+                if agent and task_id in agent.current_tasks:
+                    agent.current_tasks.remove(task_id)
+
+            # Remove from task queue if pending
+            if task_id in self.task_queue.get(task.priority, []):
+                self.task_queue[task.priority].remove(task_id)
+
+        elif new_status == TaskStatus.COMPLETED:
+            task.progress = 100
+            # Remove from agent's current tasks
+            if task.assigned_agent:
+                agent = self.agents.get(task.assigned_agent)
+                if agent and task_id in agent.current_tasks:
+                    agent.current_tasks.remove(task_id)
+                    self._update_agent_performance(agent, task)
+            # Check for dependent tasks
+            self._check_dependent_tasks(task_id)
+
+        elif new_status == TaskStatus.PENDING:
+            # Reset assignment and add back to queue if not already there
+            task.assigned_agent = None
+            task.progress = 0
+            if task_id not in self.task_queue.get(task.priority, []):
+                self.task_queue[task.priority].append(task_id)
+
+        task.status = new_status
+        logger.info(f"Updated task {task_id} status from {old_status.value} to {new_status.value}")
         return True
     
     def _update_agent_performance(self, agent: Agent, task: Task):
