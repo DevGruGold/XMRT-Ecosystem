@@ -1,11 +1,11 @@
 {
-  "timestamp": "2025-12-31T12:56:12.771829Z",
+  "timestamp": "2026-01-30T02:05:57.764899Z",
   "log_type": "full",
   "trigger": {
-    "event": "schedule",
-    "actor": "github-actions",
+    "event": "issues",
+    "actor": "DevGruGold",
     "ref": "refs/heads/main",
-    "sha": "714ecfa9822ef760e99fd31d2ad8572e8dacd1f6"
+    "sha": "43df3be9df047d5cc768b49f4a7ef8b2977c2bb8"
   },
   "repository": {
     "name": "DevGruGold/XMRT-Ecosystem",
@@ -13,14 +13,15 @@
     "private": false
   },
   "event_details": {
-    "type": "scheduled",
-    "schedule": "every 6 hours"
+    "type": "issue",
+    "action": "labeled",
+    "issue_number": "1986"
   },
   "system_health": {
     "vercel": {
       "status": "healthy",
       "status_code": 200,
-      "response_time": "0.30s"
+      "response_time": "0.19s"
     },
     "render": {
       "status": "unavailable",
