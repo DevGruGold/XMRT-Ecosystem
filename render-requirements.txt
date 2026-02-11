@@ -41,7 +41,7 @@ structlog==23.2.0
 sentry-sdk==1.45.1
 
 # Security
-cryptography==44.0.1
+cryptography==46.0.5
 PyJWT==2.8.0
 
 # Development/Testing (minimal)
