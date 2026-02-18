@@ -323,6 +323,27 @@ class MemorySystem:
             logger.error(f"❌ Failed to store learning metrics: {e}")
             return False
 
+    def store_fix_action(self, mistake_type: str, action: str, details: Dict[str, Any] = None) -> bool:
+        """Store a remediation action taken by the self-healing system"""
+        try:
+            content = f"Fix action for {mistake_type}: {action}"
+            metadata = details or {}
+            metadata['action_type'] = 'remediation'
+            metadata['mistake_type'] = mistake_type
+            
+            self.store_memory(
+                content=content,
+                memory_type="fix_action",
+                importance=0.8,
+                tags=["self-healing", "remediation", mistake_type],
+                metadata=metadata
+            )
+            logger.info(f"🔧 Stored fix action: {action} for {mistake_type}")
+            return True
+        except Exception as e:
+            logger.error(f"❌ Failed to store fix action: {e}")
+            return False
+
     def load_learning_history(self) -> Optional[Dict[str, Any]]:
         """Load learning history for autonomous controller"""
         try:
