@@ -30,6 +30,7 @@ from abc import ABC, abstractmethod
 import heapq
 import concurrent.futures
 from contextlib import asynccontextmanager
+from xmrt_coordination_core import AgentMessage, MessageType
 
 # Configure advanced logging
 logging.basicConfig(
@@ -179,6 +180,76 @@ class AgentPerformanceMetrics:
         """Combined efficiency metric"""
         return self.success_rate * (1.0 - min(1.0, self.stress_level)) * (1.0 / max(1.0, self.average_processing_time / 10.0))
 
+class MessageBus:
+    """
+    Asynchronous Message Bus for Inter-Agent Communication
+    Enables structured A2A messaging with subscription support.
+    """
+    def __init__(self):
+        self._subscribers: Dict[str, List[Callable[[AgentMessage], Any]]] = defaultdict(list)
+        self._message_queue: asyncio.Queue = asyncio.Queue()
+        self._running = False
+        self._processing_task = None
+        logger.info("🚌 A2A Message Bus initialized")
+
+    async def start(self):
+        """Start the message processing loop"""
+        if self._running:
+            return
+        self._running = True
+        self._processing_task = asyncio.create_task(self._process_messages())
+        logger.info("🚀 Message Bus started")
+
+    async def stop(self):
+        """Stop the message processing loop"""
+        self._running = False
+        if self._processing_task:
+            self._processing_task.cancel()
+            try:
+                await self._processing_task
+            except asyncio.CancelledError:
+                pass
+        logger.info("🛑 Message Bus stopped")
+
+    def subscribe(self, receiver_id: str, callback: Callable[[AgentMessage], Any]):
+        """Subscribe an agent to messages addressed to them"""
+        self._subscribers[receiver_id].append(callback)
+        logger.info(f"📝 Agent {receiver_id} subscribed to message bus")
+
+    async def post_message(self, message: AgentMessage):
+        """Post a message to the bus"""
+        await self._message_queue.put(message)
+        logger.debug(f"📨 Message {message.id} posted from {message.sender} to {message.receiver}")
+
+    async def _process_messages(self):
+        """Internal loop to distribute messages"""
+        while self._running:
+            try:
+                message = await self._message_queue.get()
+                receiver = message.receiver
+                
+                # Deliver to specific subscribers
+                if receiver in self._subscribers:
+                    for callback in self._subscribers[receiver]:
+                        try:
+                            if asyncio.iscoroutinefunction(callback):
+                                asyncio.create_task(callback(message))
+                            else:
+                                callback(message)
+                        except Exception as e:
+                            logger.error(f"Error delivering message {message.id} to {receiver}: {e}")
+                
+                # Broadcast support (if receiver is 'all' or 'broadcast')
+                if receiver in ['all', 'broadcast'] and message.receiver != 'all':
+                     # Prevent infinite loops if logic changes, but for now simple check
+                     pass
+
+                self._message_queue.task_done()
+            except asyncio.CancelledError:
+                break
+            except Exception as e:
+                logger.error(f"Error in message processing loop: {e}")
+
 class EnhancedMultiAgentCoordinator:
     """
     Advanced Multi-Agent Coordinator with intelligent orchestration
@@ -219,12 +290,18 @@ class EnhancedMultiAgentCoordinator:
         # Event handlers
         self.task_handlers: Dict[TaskType, Callable] = {}
         self.event_callbacks: Dict[str, List[Callable]] = defaultdict(list)
+        
+        # Message Bus
+        self.message_bus = MessageBus()
 
         logger.info("🤖 Enhanced Multi-Agent Coordinator initialized")
 
     async def start(self):
         """Start the coordination system"""
         self.running = True
+        
+        # Start Message Bus
+        await self.message_bus.start()
 
         # Start background processes
         coordination_task = asyncio.create_task(self._coordination_loop())
@@ -239,9 +316,10 @@ class EnhancedMultiAgentCoordinator:
     async def stop(self):
         """Gracefully stop the coordination system"""
         self.running = False
+        await self.message_bus.stop()
         logger.info("⏹️ Enhanced Multi-Agent Coordinator stopping...")
 
-    def register_agent(self, agent_id: str, capabilities: List[str], max_concurrent: int = 3):
+    def register_agent(self, agent_id: str, capabilities: List[str], max_concurrent: int = 3, message_callback: Callable = None):
         """Register a new agent with the coordinator"""
         if agent_id not in self.agent_metrics:
             self.agent_metrics[agent_id] = AgentPerformanceMetrics(
@@ -255,7 +333,11 @@ class EnhancedMultiAgentCoordinator:
                     name=cap,
                     proficiency=0.8  # Default proficiency
                 )
-
+            
+            # Subscribe agent to message bus if callback provided
+            if message_callback:
+                self.message_bus.subscribe(agent_id, message_callback)
+            
             logger.info(f"✅ Agent {agent_id} registered with capabilities: {capabilities}")
 
     def register_task_handler(self, task_type: TaskType, handler: Callable):

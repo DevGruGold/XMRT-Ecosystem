@@ -42,6 +42,25 @@ class EventType(Enum):
     APPLICATION_CREATED = "application.created"
     COORDINATION_REQUEST = "coordination.request"
 
+class MessageType(Enum):
+    REQUEST = "request"
+    RESPONSE = "response"
+    NOTIFICATION = "notification"
+
+@dataclass
+class AgentMessage:
+    id: str
+    type: MessageType
+    sender: str
+    receiver: str
+    method: str
+    params: Dict[str, Any]
+    timestamp: datetime = None
+    
+    def __post_init__(self):
+        if self.timestamp is None:
+            self.timestamp = datetime.now()
+
 @dataclass
 class CoordinationEvent:
     event_type: EventType
