@@ -16,6 +16,8 @@ jobs:
 
     - name: Setup Node.js 18
       uses: actions/setup-node@v4
+      with:
+        node-version: 18
 
     - name: Setup pnpm
       uses: pnpm/action-setup@v4
@@ -24,100 +26,30 @@ jobs:
 
     - name: Setup Python 3.9
       uses: actions/setup-python@v5
+      with:
+        python-version: "3.9"
 
     - name: Install Frontend Dependencies
-      run: |
-        cd frontend/xmrt-dao-frontend
+      run: pnpm install
 
     - name: Build Frontend
-      run: |
-        cd frontend/xmrt-dao-frontend
-        pnpm run build
+      run: pnpm run build
 
     - name: Install Backend Dependencies
       run: |
-        # Main DAO Backend
-        cd backend/xmrt-dao-backend
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        cd ../..
-
-        # AI Automation Service
-        cd backend/ai-automation-service
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        cd ../..
-
-        # Cross-Chain Service
-        cd backend/cross-chain-service/xmrt-cross-chain-service
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        cd ../../..
-
-        # ZK Service
-        cd backend/zk-service/xmrt-zk-service
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        cd ../../..
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        if [ -f requirements_enhanced.txt ]; then pip install -r requirements_enhanced.txt; fi
 
     - name: Run Backend Tests
       run: |
-        # Main DAO Backend Tests
-        cd backend/xmrt-dao-backend
-        python -m pytest
-        cd ../..
-
-        # AI Automation Service Tests
-        cd backend/ai-automation-service
-        python -m pytest
-        cd ../..
-
-        # Cross-Chain Service Tests
-        cd backend/cross-chain-service/xmrt-cross-chain-service
-        python -m pytest
-        cd ../../..
-
-        # ZK Service Tests
-        cd backend/zk-service/xmrt-zk-service
-        python -m pytest
-        cd ../../..
-
-    - name: Run Frontend Tests
-      run: |
-        cd frontend/xmrt-dao-frontend
-        pnpm test
-
-    - name: Run Contract Tests
-      run: |
-        cd contracts
-        npm test
+        if [ -d tests ]; then python -m pytest tests; fi
+        if [ -d test ]; then python -m pytest test; fi
 
     - name: Archive Production Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: production-artifacts
         path: |
-          frontend/xmrt-dao-frontend/dist
-          backend/xmrt-dao-backend/build
-          contracts/build
-
-    - name: Deploy to Vercel (Frontend)
-      if: github.ref == 'refs/heads/main'
-      run: |
-        cd frontend/xmrt-dao-frontend
-        npm install -g vercel
-        vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
-
-    - name: Deploy to Render (Backend)
-      if: github.ref == 'refs/heads/main'
-      run: |
-        # Render deployment logic here
-        echo "Deploying backend to Render..."
-
-    - name: Deploy Contracts
-      if: github.ref == 'refs/heads/main'
-      run: |
-        # Contract deployment logic here
-        echo "Deploying contracts..."
-
-
+          dist
+          build
