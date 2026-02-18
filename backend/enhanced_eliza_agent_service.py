@@ -8,6 +8,7 @@ import logging
 import json
 import os
 import time
+import re
 from datetime import datetime, timedelta
 from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass
@@ -29,6 +30,14 @@ try:
     from backend.glacier_vectordb_service import GlacierVectorDBService
     from enhanced.repository_discovery_service import RepositoryDiscoveryService
     from integrations.incentive_calculation_service import IncentiveCalculationService
+    # Attempt to import MemorySystem from root
+    try:
+        from memory_system import MemorySystem
+    except ImportError:
+        # Fallback if path not set correctly
+        sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from memory_system import MemorySystem
+
 except ImportError as e:
     logging.warning(f"Import warning: {e}")
 
@@ -88,6 +97,14 @@ class EnhancedElizaAgentService:
         self.vector_db = GlacierVectorDBService()
         self.repo_discovery = RepositoryDiscoveryService()
         self.incentive_calc = IncentiveCalculationService()
+        
+        # Initialize Enhanced Memory System
+        try:
+            self.memory_system = MemorySystem({'local_db_path': 'eliza_memory.db'})
+            self.memory_system.initialize()
+        except Exception as e:
+            self.logger.warning(f"MemorySystem failed to initialize: {e}")
+            self.memory_system = None
 
         # Learning state
         self.current_cycle: Optional[LearningCycle] = None
@@ -762,17 +779,111 @@ if __name__ == "__main__":
         if mistake_type not in self.mistake_memory:
             self.mistake_memory[mistake_type] = []
 
-        self.mistake_memory[mistake_type].append({
+        error_report = {
+            'type': mistake_type,
             'timestamp': datetime.utcnow().isoformat(),
             'message': error_message,
             'cycle_id': self.current_cycle.cycle_id if self.current_cycle else None
-        })
+        }
+
+        self.mistake_memory[mistake_type].append(error_report)
 
         # Store in vector database for long-term memory
         try:
             await self.vector_db.store_mistake_pattern(mistake_type, error_message)
         except Exception as e:
             self.logger.warning(f"Failed to store mistake pattern: {e}")
+
+        # Attempt remediation
+        await self._remediate_failure(error_report)
+
+    async def _remediate_failure(self, error_report: dict) -> bool:
+        """
+        Attempt to automatically fix common errors based on the error report.
+        Returns True if a fix was attempted.
+        """
+        mistake_type = error_report.get('type')
+        message = error_report.get('message', '')
+        
+        self.logger.info(f"Attempting remediation for {mistake_type}...")
+        
+        remediation_success = False
+
+        try:
+            if mistake_type == 'import_error':
+                # Handle ImportError / ModuleNotFoundError
+                # Regex to find module name from "No module named 'xyz'"
+                match = re.search(r"No module named ['\"]?([\w\-]+)['\"]?", message)
+                if match:
+                    module_name = match.group(1)
+                    self.logger.info(f"Identified missing module: {module_name}")
+                    
+                    # Append to requirements.txt
+                    req_path = 'requirements.txt'
+                    try:
+                        # Check if already exists to avoid duplicates
+                        current_reqs = ""
+                        if os.path.exists(req_path):
+                            with open(req_path, 'r') as f:
+                                current_reqs = f.read()
+                        
+                        if module_name not in current_reqs:
+                            with open(req_path, 'a') as f:
+                                f.write(f"\n{module_name}")
+                            self.logger.info(f"Added {module_name} to requirements.txt")
+                            remediation_success = True
+                        else:
+                            self.logger.info(f"Module {module_name} already in requirements.txt")
+                    except Exception as e:
+                        self.logger.error(f"Failed to update requirements.txt: {e}")
+
+            elif mistake_type == 'syntax_error':
+                # Flag file for "Fix-it" pass
+                # Extract filename if available in error message, or mark generic fix-it
+                # Pattern often: "File "path/to/file.py", line X"
+                match = re.search(r"File \"([^\"]+)\", line (\d+)", message)
+                if match:
+                    file_path = match.group(1)
+                    line_num = match.group(2)
+                    self.logger.info(f"Flagging {file_path} (line {line_num}) for syntax repair.")
+                    
+                    # Add to a repair queue or cycle instructions
+                    if self.current_cycle:
+                        repair_task = f"FIX_SYNTAX: {file_path}:{line_num}"
+                        if self.current_cycle.learning_insights is None:
+                            self.current_cycle.learning_insights = []
+                        self.current_cycle.learning_insights.append(repair_task)
+                        remediation_success = True
+            
+            if remediation_success:
+                self.logger.info(f"Remediation action taken for {mistake_type}")
+                # Update memory with fix action
+                action_details = {
+                    'type': mistake_type,
+                    'action': 'requirements_update' if mistake_type == 'import_error' else 'syntax_flag',
+                    'timestamp': datetime.utcnow().isoformat()
+                }
+
+                if self.memory_system:
+                    try:
+                        self.memory_system.store_fix_action(mistake_type, action_details['action'], action_details)
+                    except Exception as e:
+                        self.logger.warning(f"Failed to store fix action in MemorySystem: {e}")
+                
+                if self.current_cycle:
+                    if not hasattr(self.current_cycle, 'fix_actions'):
+                         # Monkey-patching for now if class doesn't have it, 
+                         # or just store in insights as fallback
+                         self.current_cycle.fix_actions = []
+                    
+                    # We might need to store this somewhere persistent if cycle object doesn't support it directly
+                    # For now, append to insights to ensure visibility
+                    self.current_cycle.learning_insights.append(f"REMEDIATION: {json.dumps(action_details)}")
+
+        except Exception as e:
+            self.logger.error(f"Error during remediation: {e}")
+            
+        return remediation_success
 
     async def _generate_learning_insight(self, failure: UtilityResult) -> str:
         """Generate learning insight from failure"""
