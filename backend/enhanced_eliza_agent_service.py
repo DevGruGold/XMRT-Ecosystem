@@ -28,6 +28,7 @@ try:
     from backend.eliza_agent_service import ElizaAgentService
     from backend.xmrt_blockchain_service import XMRTBlockchainService
     from backend.glacier_vectordb_service import GlacierVectorDBService
+    from backend.edge_function_architect import EdgeFunctionArchitect
     from enhanced.repository_discovery_service import RepositoryDiscoveryService
     from integrations.incentive_calculation_service import IncentiveCalculationService
     # Attempt to import MemorySystem from root
@@ -95,6 +96,7 @@ class EnhancedElizaAgentService:
         self.eliza_service = ElizaAgentService()
         self.blockchain_service = XMRTBlockchainService()
         self.vector_db = GlacierVectorDBService()
+        self.edge_architect = EdgeFunctionArchitect()
         self.repo_discovery = RepositoryDiscoveryService()
         self.incentive_calc = IncentiveCalculationService()
         
@@ -628,6 +630,21 @@ if __name__ == "__main__":
 
             # Add necessary imports
             code = self._add_required_imports(code, repo_type)
+
+            # Check for Edge Function applicability
+            if self.edge_architect and self.edge_architect.analyze_task(repo_name):
+                try:
+                    edge_res = self.edge_architect.generate_function(
+                        repo_name.replace('_', '-'),
+                        f"Autonomous serverless capability for {repo_name}"
+                    )
+                    code += f"\n\n'''\n[EDGE ARCHITECT SUGGESTION]\n"
+                    code += f"Function Name: {edge_res['function_name']}\n"
+                    code += f"Deployment Instructions:\n{edge_res['instructions']}\n"
+                    code += f"Code Template:\n{edge_res['code']}\n'''"
+                    self.logger.info(f"Attached Edge Function template to {utility_name}")
+                except Exception as ef_err:
+                    self.logger.warning(f"Edge Architect failed for {repo_name}: {ef_err}")
 
             # Test the generated code
             test_passed = await self._test_generated_code(code, utility_name)
