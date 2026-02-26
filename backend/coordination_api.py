@@ -139,13 +139,60 @@ def complete_task(task_id):
     '''Mark task as completed'''
     data = request.get_json() or {}
     result = data.get('result')
-    
+
     success = task_manager.complete_task(task_id, result)
-    
+
     if success:
         return jsonify({'message': 'Task completed successfully'})
     else:
         return jsonify({'error': 'Task not found'}), 404
+
+@coordination_bp.route('/tasks/<task_id>/cancel', methods=['POST'])
+def cancel_task(task_id):
+    '''Cancel a task'''
+    data = request.get_json() or {}
+    reason = data.get('reason')
+
+    success = task_manager.cancel_task(task_id, reason)
+
+    if success:
+        return jsonify({'message': 'Task cancelled successfully'})
+    else:
+        return jsonify({'error': 'Task not found or cannot be cancelled'}), 404
+
+@coordination_bp.route('/tasks/<task_id>', methods=['DELETE'])
+def delete_task(task_id):
+    '''Delete a task'''
+    success = task_manager.delete_task(task_id)
+
+    if success:
+        return jsonify({'message': 'Task deleted successfully'})
+    else:
+        return jsonify({'error': 'Task not found'}), 404
+
+@coordination_bp.route('/tasks/<task_id>/status', methods=['PUT'])
+def update_task_status(task_id):
+    '''Update task status'''
+    data = request.get_json()
+
+    if 'status' not in data:
+        return jsonify({'error': 'Status value required'}), 400
+
+    try:
+        new_status = TaskStatus(data['status'])
+        success = task_manager.update_task_status(task_id, new_status)
+
+        if success:
+            return jsonify({'message': f'Task status updated to {new_status.value}'})
+        else:
+            return jsonify({'error': 'Task not found'}), 404
+
+    except ValueError:
+        valid_statuses = [s.value for s in TaskStatus]
+        return jsonify({'error': f'Invalid status. Valid values: {valid_statuses}'}), 400
+    except Exception as e:
+        logger.error(f"Error updating task status: {e}")
+        return jsonify({'error': 'Internal server error'}), 500
 
 @coordination_bp.route('/agents', methods=['GET'])
 def get_agents():
