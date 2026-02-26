@@ -2,7 +2,7 @@
 # Optimized for memory constraints on free tier
 
 # Core Flask Framework
-Flask==2.3.3
+Flask==3.1.3
 gunicorn==22.0.0
 python-dotenv==1.0.0
 
